@@ -5,7 +5,7 @@ include_once("check_login.php");
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<title>Dashboard | Backend System</title>
+<title>จัดการสินค้า | Backend System</title>
 
 <!-- Bootstrap 5.3 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,7 +23,6 @@ body{
     min-height: 100vh;
 }
 
-/* Glass effect */
 .glass{
     background: rgba(255,255,255,0.18);
     backdrop-filter: blur(16px);
@@ -32,14 +31,8 @@ body{
     box-shadow: 0 25px 50px rgba(0,0,0,0.25);
 }
 
-.menu-card{
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.menu-card:hover{
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+.table thead{
+    background: rgba(255,255,255,0.9);
 }
 </style>
 </head>
@@ -47,9 +40,9 @@ body{
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg glass mb-4 mx-3 mt-3">
+<nav class="navbar navbar-expand-lg glass mx-3 mt-3 mb-4">
     <div class="container-fluid">
-        <a class="navbar-brand text-white fw-bold" href="#">
+        <a class="navbar-brand text-white fw-bold" href="index2.php">
             <i class="bi bi-stars"></i> Aurora Admin
         </a>
         <div class="text-white">
@@ -59,47 +52,57 @@ body{
     </div>
 </nav>
 
-<!-- Content -->
 <div class="container">
-    <div class="row g-4 justify-content-center">
 
-        <div class="col-md-3">
-            <a href="product.php" class="text-decoration-none text-dark">
-                <div class="glass p-4 text-center menu-card">
-                    <i class="bi bi-box-seam fs-1 text-primary"></i>
-                    <h5 class="mt-3">จัดการสินค้า</h5>
-                </div>
-            </a>
+    <!-- Header -->
+    <div class="glass p-4 mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="mb-1">
+                <i class="bi bi-box-seam text-primary"></i>
+                จัดการสินค้า
+            </h3>
+            <p class="text-muted mb-0">เพิ่ม แก้ไข และลบข้อมูลสินค้า</p>
         </div>
 
-        <div class="col-md-3">
-            <a href="orders.php" class="text-decoration-none text-dark">
-                <div class="glass p-4 text-center menu-card">
-                    <i class="bi bi-receipt fs-1 text-success"></i>
-                    <h5 class="mt-3">จัดการออเดอร์</h5>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-3">
-            <a href="customers.php" class="text-decoration-none text-dark">
-                <div class="glass p-4 text-center menu-card">
-                    <i class="bi bi-people-fill fs-1 text-warning"></i>
-                    <h5 class="mt-3">จัดการลูกค้า</h5>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-3">
-            <a href="logout.php" class="text-decoration-none text-dark">
-                <div class="glass p-4 text-center menu-card">
-                    <i class="bi bi-box-arrow-right fs-1 text-danger"></i>
-                    <h5 class="mt-3">ออกจากระบบ</h5>
-                </div>
-            </a>
-        </div>
-
+        <a href="product_add.php" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> เพิ่มสินค้า
+        </a>
     </div>
+
+    <!-- Product Table -->
+    <div class="glass p-4">
+        <h5 class="mb-3">📦 รายการสินค้า</h5>
+
+        <table class="table table-hover align-middle bg-white rounded">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>ชื่อสินค้า</th>
+                    <th>ราคา</th>
+                    <th>คงเหลือ</th>
+                    <th class="text-center">จัดการ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ตัวอย่างข้อมูล -->
+                <tr>
+                    <td>1</td>
+                    <td>เสื้อยืด</td>
+                    <td>฿250</td>
+                    <td>20</td>
+                    <td class="text-center">
+                        <a href="#" class="btn btn-sm btn-warning">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>
 
 </body>
