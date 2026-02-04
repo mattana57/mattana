@@ -5,7 +5,7 @@ include_once("check_login.php");
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<title>จัดการออเดอร์ | Backend System</title>
+<title>Orders | Aurora Admin</title>
 
 <!-- Bootstrap 5.3 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,30 +14,35 @@ include_once("check_login.php");
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
 body{
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #22d3ee, #6366f1, #a855f7);
+    font-family: 'Inter', sans-serif;
+    background:
+        radial-gradient(circle at top left, #22d3ee, transparent 35%),
+        radial-gradient(circle at bottom right, #a855f7, transparent 35%),
+        linear-gradient(135deg, #0f172a, #020617);
     min-height: 100vh;
 }
 
 .glass{
-    background: rgba(255,255,255,0.18);
-    backdrop-filter: blur(16px);
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.3);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(18px);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 35px 70px rgba(0,0,0,0.45);
 }
 
-.nav-link{
-    color: #fff !important;
-    font-weight: 500;
+.table thead{
+    background: rgba(255,255,255,0.95);
 }
 
-.nav-link:hover{
-    text-decoration: underline;
+.table tbody tr{
+    transition: .2s;
+}
+.table tbody tr:hover{
+    background: rgba(99,102,241,.08);
 }
 </style>
 </head>
@@ -50,63 +55,95 @@ body{
         <a class="navbar-brand text-white fw-bold" href="index2.php">
             <i class="bi bi-stars"></i> Aurora Admin
         </a>
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-                <span class="nav-link">
-                    <i class="bi bi-person-circle"></i>
-                    <?php echo $_SESSION['aname']; ?>
-                </span>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-danger" href="logout.php">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
-            </li>
-        </ul>
+
+        <div class="text-white fw-medium">
+            <i class="bi bi-person-circle"></i>
+            <?php echo $_SESSION['aname']; ?>
+            <a href="logout.php" class="btn btn-sm btn-outline-light ms-3">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
     </div>
 </nav>
 
-<!-- Content -->
 <div class="container">
 
-    <div class="glass p-4 mb-4">
-        <h3 class="mb-2">
-            <i class="bi bi-receipt text-primary"></i>
-            จัดการออเดอร์
-        </h3>
-        <p class="text-muted">ดู แก้ไข และจัดการคำสั่งซื้อทั้งหมด</p>
+    <!-- Header -->
+    <div class="glass p-4 mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="mb-1 text-white">
+                <i class="bi bi-receipt text-info"></i>
+                จัดการออเดอร์
+            </h3>
+            <p class="text-white-50 mb-0">
+                ดู แก้ไข และจัดการคำสั่งซื้อทั้งหมด
+            </p>
+        </div>
+
+        <input type="text" class="form-control rounded-pill w-25 d-none d-md-block"
+               placeholder="🔍 ค้นหาออเดอร์...">
     </div>
 
-    <!-- Placeholder ตารางออเดอร์ -->
+    <!-- Orders Table -->
     <div class="glass p-4">
-        <h5 class="mb-3">📦 รายการออเดอร์</h5>
-        <p class="text-muted">
-            (พื้นที่สำหรับแสดงตารางออเดอร์ในอนาคต)
-        </p>
+        <h5 class="text-white mb-3">
+            🧾 รายการออเดอร์
+        </h5>
 
-        <!-- ตัวอย่างโครงตาราง -->
-        <table class="table table-hover align-middle bg-white rounded">
-            <thead class="table-light">
-                <tr>
-                    <th>#</th>
-                    <th>ชื่อลูกค้า</th>
-                    <th>วันที่สั่ง</th>
-                    <th>สถานะ</th>
-                    <th class="text-center">จัดการ</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>ตัวอย่าง</td>
-                    <td>2026-01-01</td>
-                    <td><span class="badge bg-warning">รอดำเนินการ</span></td>
-                    <td class="text-center">
-                        <button class="btn btn-sm btn-primary">ดู</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle bg-white rounded overflow-hidden">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>ชื่อลูกค้า</th>
+                        <th>วันที่สั่ง</th>
+                        <th>ยอดรวม</th>
+                        <th>สถานะ</th>
+                        <th class="text-center">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- ตัวอย่างข้อมูล -->
+                    <tr>
+                        <td>1</td>
+                        <td>สมชาย ใจดี</td>
+                        <td>2026-01-01</td>
+                        <td>฿1,250</td>
+                        <td>
+                            <span class="badge bg-warning">
+                                รอดำเนินการ
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <a href="#" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-check-circle"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>2</td>
+                        <td>วิภา แสนดี</td>
+                        <td>2026-01-02</td>
+                        <td>฿890</td>
+                        <td>
+                            <span class="badge bg-success">
+                                ชำระเงินแล้ว
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <a href="#" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
 </div>
