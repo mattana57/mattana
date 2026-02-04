@@ -66,7 +66,7 @@ body{
 <script>
 // redirect หลัง 3 วินาที
 setTimeout(() => {
-    window.location = "login.php";
+    window.location = "index.php";
 }, 3000);
 </script>
 </head>
