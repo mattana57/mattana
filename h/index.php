@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <h1>เข้าสู่ระบบหลังบ้าน - มัทนา</h1>
+    <h1>เข้าสู่ระบบหลังบ้าน-มัทนา</h1>
 
     <form method="post" action="">
         Username <input type="text" name="auser" autofocus require><br>
