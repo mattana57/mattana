@@ -9,8 +9,8 @@
     <h1>เข้าสู่ระบบหลังบ้าน-มัทนา</h1>
 
     <form method="post" action="">
-        Username <input type="text" name="auser" autofocus require><br>
-        Password <input type="password" name="apwd"  require><br>
+        Username <input type="text" name="auser" autofocus required><br>
+        Password <input type="password" name="apwd" required><br>
         <button type="submit" name="Submit">LOGIN</button>
     </form>
 
