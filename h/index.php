@@ -13,5 +13,17 @@
         Password <input type="password" name="apwd"  require><br>
         <button type="submit" name="Submit">LOGIN</button>
     </form>
+
+    <?php
+        if(isset($_POST['Submin'])){
+            include_once("connectdb.php");
+            $sql = "SELECT*FROM admin WHERE a_username='{$_POST['auser']}' AND a_password='{$_POST['apwd']}' LIMIT1";
+            $rs = mysqli_query($conn,$sql);
+            $num = mysqli_num_rows($rs);
+
+            echo $num;
+        }
+    ?>
+
 </body>
 </html>
