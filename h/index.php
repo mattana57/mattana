@@ -8,14 +8,14 @@
 <body>
     <h1>เข้าสู่ระบบหลังบ้าน-มัทนา</h1>
 
-    <form method="post" action="">
+    <form medthod="post" action="">
         Username <input type="text" name="auser" autofocus required><br>
         Password <input type="password" name="apwd" required><br>
         <button type="submit" name="Submit">LOGIN</button>
     </form>
 
     <?php
-        if(isset($_POST['Submin'])){
+        if(isset($_POST['Submin'])) {
             include_once("connectdb.php");
             $sql = "SELECT*FROM admin WHERE a_username='{$_POST['auser']}' AND a_password='{$_POST['apwd']}' LIMIT 1";
             $rs = mysqli_query($conn,$sql);
