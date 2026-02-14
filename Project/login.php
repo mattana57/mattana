@@ -1,41 +1,54 @@
 <?php
-include "includes/header.php";
-include "includes/navbar.php";
+session_start();
 include "connectdb.php";
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+if(isset($_POST['login'])){
 
-$email = $_POST['email'];
-$password = $_POST['password'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-$stmt = mysqli_prepare($conn, 
-"SELECT * FROM users WHERE email=?");
+    $query = mysqli_query($conn,"SELECT * FROM users WHERE email='$email'");
+    $user = mysqli_fetch_assoc($query);
 
-mysqli_stmt_bind_param($stmt, "s", $email);
-mysqli_stmt_execute($stmt);
+    if($user && password_verify($password,$user['password'])){
+        $_SESSION['user'] = $user['fullname'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['user_id'] = $user['id'];
 
-$result = mysqli_stmt_get_result($stmt);
-$user = mysqli_fetch_assoc($result);
-
-if($user && password_verify($password, $user['password'])){
-    $_SESSION['user'] = $user;
-    header("Location: index.php");
-    exit();
-}else{
-    echo "<div class='container mt-3 alert alert-danger'>
-    Email หรือ Password ไม่ถูกต้อง
-    </div>";
-}
-
-mysqli_stmt_close($stmt);
+        header("Location: index.php");
+        exit();
+    } else {
+        $error = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+    }
 }
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>เข้าสู่ระบบ</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
 
-<div class="container mt-5" style="max-width:500px;">
-<h2>เข้าสู่ระบบ</h2>
+<?php include "navbar.php"; ?>
+
+<div class="container mt-5">
+<div class="col-md-6 mx-auto card p-4">
+
+<h3>เข้าสู่ระบบ</h3>
+
+<?php if(isset($error)){ ?>
+<div class="alert alert-danger"><?= $error ?></div>
+<?php } ?>
+
 <form method="POST">
-<input type="email" name="email" class="form-control mb-3" placeholder="Email" required>
-<input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
-<button class="btn btn-success w-100">เข้าสู่ระบบ</button>
+<input type="email" name="email" class="form-control mb-3" placeholder="อีเมล" required>
+<input type="password" name="password" class="form-control mb-3" placeholder="รหัสผ่าน" required>
+<button name="login" class="btn btn-primary w-100">เข้าสู่ระบบ</button>
 </form>
+
 </div>
+</div>
+
+</body>
+</html>

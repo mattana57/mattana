@@ -1,39 +1,54 @@
 <?php
-include "includes/header.php";
-include "includes/navbar.php";
+session_start();
 include "connectdb.php";
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+if(isset($_POST['register'])){
 
-$username = $_POST['username'];
-$email    = $_POST['email'];
-$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $fullname = $_POST['fullname'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-$stmt = mysqli_prepare($conn, 
-"INSERT INTO users (username,email,password) VALUES (?,?,?)");
+    $check = mysqli_query($conn,"SELECT * FROM users WHERE email='$email'");
+    if(mysqli_num_rows($check)>0){
+        $error = "อีเมลนี้ถูกใช้งานแล้ว";
+    } else {
 
-mysqli_stmt_bind_param($stmt, "sss", $username, $email, $password);
+        mysqli_query($conn,"INSERT INTO users(fullname,email,password)
+        VALUES('$fullname','$email','$password')");
 
-if(mysqli_stmt_execute($stmt)){
-    echo "<div class='container mt-3 alert alert-success'>
-    สมัครสมาชิกสำเร็จ <a href='login.php'>เข้าสู่ระบบ</a>
-    </div>";
-}else{
-    echo "<div class='container mt-3 alert alert-danger'>
-    เกิดข้อผิดพลาด
-    </div>";
-}
-
-mysqli_stmt_close($stmt);
+        header("Location: login.php");
+        exit();
+    }
 }
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>สมัครสมาชิก</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
 
-<div class="container mt-5" style="max-width:500px;">
-<h2>สมัครสมาชิก</h2>
+<?php include "navbar.php"; ?>
+
+<div class="container mt-5">
+<div class="col-md-6 mx-auto card p-4">
+
+<h3>สมัครสมาชิก</h3>
+
+<?php if(isset($error)){ ?>
+<div class="alert alert-danger"><?= $error ?></div>
+<?php } ?>
+
 <form method="POST">
-<input type="text" name="username" class="form-control mb-3" placeholder="Username" required>
-<input type="email" name="email" class="form-control mb-3" placeholder="Email" required>
-<input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
-<button class="btn btn-primary w-100">สมัครสมาชิก</button>
+<input type="text" name="fullname" class="form-control mb-3" placeholder="ชื่อ-นามสกุล" required>
+<input type="email" name="email" class="form-control mb-3" placeholder="อีเมล" required>
+<input type="password" name="password" class="form-control mb-3" placeholder="รหัสผ่าน" required>
+<button name="register" class="btn btn-warning w-100">สมัครสมาชิก</button>
 </form>
+
 </div>
+</div>
+
+</body>
+</html>
