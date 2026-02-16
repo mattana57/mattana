@@ -1,59 +1,68 @@
 <?php
+session_start();
 include "connectdb.php";
-$slug = $_GET['slug'] ?? 'all';
 
-if($slug == "all"){
-    $cat_name = "สินค้าทั้งหมด";
-    $products = $conn->query("SELECT * FROM products ORDER BY created_at DESC");
-}else{
-    $cat = $conn->query("SELECT * FROM categories WHERE slug='$slug'")->fetch_assoc();
-    if(!$cat){
-        header("Location:index.php");
-        exit();
-    }
-    $cat_name = $cat['name'];
-    $products = $conn->query("SELECT * FROM products WHERE category_id=".$cat['id']);
+$slug = $_GET['slug'] ?? "";
+$search = $_GET['search'] ?? "";
+
+/* GET CATEGORY INFO */
+$catQuery = $conn->prepare("SELECT * FROM categories WHERE slug=?");
+$catQuery->bind_param("s",$slug);
+$catQuery->execute();
+$category = $catQuery->get_result()->fetch_assoc();
+
+/* GET PRODUCTS */
+$sql = "
+SELECT products.* FROM products
+LEFT JOIN categories ON products.category_id = categories.id
+WHERE 1
+";
+
+if($slug){
+    $sql .= " AND categories.slug='".$conn->real_escape_string($slug)."'";
 }
+
+if($search){
+    $sql .= " AND products.name LIKE '%".$conn->real_escape_string($search)."%'";
+}
+
+$products = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-<title><?=$cat_name?></title>
+<meta charset="UTF-8">
+<title><?= $category['name'] ?? 'ค้นหาสินค้า'; ?></title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body style="background:#2a0845;color:white">
 
-<?php include "navbar.php"; ?>
+<div class="container py-5">
 
-<div class="container mt-4">
-<h4><?=$cat_name?></h4>
+<h3 class="mb-4">
+<?= $category['name'] ?? 'ผลการค้นหา'; ?>
+</h3>
+
+<form class="d-flex mb-4">
+<input type="hidden" name="slug" value="<?= $slug ?>">
+<input class="form-control me-2" name="search" placeholder="ค้นหาในหมวดนี้">
+<button class="btn btn-light">ค้นหา</button>
+</form>
 
 <div class="row">
 <?php while($p = $products->fetch_assoc()){ ?>
 <div class="col-md-3 mb-4">
-<div class="card shadow-sm h-100">
-<img src="images/<?=$p['image']?>" height="260" style="object-fit:cover;">
-<div class="card-body">
-<h6><?=$p['name']?></h6>
-<p class="text-danger fw-bold">฿<?=$p['price']?></p>
-
-<?php if($p['old_price']>0){ ?>
-<span class="badge bg-danger">ลดราคา</span>
-<small class="text-muted text-decoration-line-through">
-฿<?=$p['old_price']?>
-</small>
-<?php } ?>
-
-<a href="product.php?id=<?=$p['id']?>" 
-class="btn btn-primary w-100 mt-2">
-ดูรายละเอียด
-</a>
-</div>
+<div class="card p-3 text-center">
+<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
+<h6><?= $p['name']; ?></h6>
+<p><?= number_format($p['price']); ?> บาท</p>
 </div>
 </div>
 <?php } ?>
 </div>
+
+<a href="index.php" class="btn btn-light mt-3">กลับหน้าแรก</a>
 
 </div>
 </body>
