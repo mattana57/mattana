@@ -172,18 +172,18 @@ placeholder="ค้นหาสินค้า...">
 </div>
 
 <!-- ปุ่มเลื่อนซ้าย -->
-<button class="carousel-control-prev" type="button"
+<!--<button class="carousel-control-prev" type="button"
         data-bs-target="#mainBanner"
         data-bs-slide="prev">
 <span class="carousel-control-prev-icon"></span>
-</button>
+</button> -->
 
 <!-- ปุ่มเลื่อนขวา -->
-<button class="carousel-control-next" type="button"
+<!--<button class="carousel-control-next" type="button"
         data-bs-target="#mainBanner"
         data-bs-slide="next">
 <span class="carousel-control-next-icon"></span>
-</button>
+</button> -->
 
 </div>
 </div>
