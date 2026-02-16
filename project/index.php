@@ -2,6 +2,12 @@
 session_start();
 include "connectdb.php";
 
+/* ================= SEARCH ================= */
+$search = "";
+if(isset($_GET['search'])){
+    $search = trim($_GET['search']);
+}
+
 /* ================= ADD TO CART ================= */
 if(isset($_GET['add'])){
 
@@ -32,12 +38,31 @@ if(isset($_GET['add'])){
     exit();
 }
 
-$products = $conn->query("
+/* ================= GET CATEGORY ================= */
+$currentCategory = isset($_GET['category']) ? $_GET['category'] : "";
+
+/* ================= GET PRODUCTS ================= */
+$sql = "
 SELECT products.*, categories.slug 
 FROM products 
 LEFT JOIN categories ON products.category_id = categories.id
-");
+WHERE 1
+";
 
+if($search != ""){
+    $sql .= " AND products.name LIKE '%".$conn->real_escape_string($search)."%'";
+}
+
+if($currentCategory != ""){
+    $sql .= " AND categories.slug = '".$conn->real_escape_string($currentCategory)."'";
+}
+
+$products = $conn->query($sql);
+
+/* ================= GET CATEGORIES ================= */
+$categories = $conn->query("SELECT * FROM categories");
+
+/* ================= CART COUNT ================= */
 $cartCount = 0;
 if(isset($_SESSION['user_id'])){
     $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id=?");
@@ -103,15 +128,14 @@ transform:translateY(-10px);
 box-shadow:0 0 20px #bb86fc;
 }
 
-/* ================= BANNER ================= */
 .carousel-item img{
 height:400px;
 object-fit:cover;
 border-radius:10px;
 }
 
-.carousel{
-margin-top:20px;
+.category-btn{
+margin:5px;
 }
 </style>
 </head>
@@ -121,9 +145,16 @@ margin-top:20px;
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
 <div class="container">
 
-<a class="navbar-brand fw-bold text-white" href="#">
+<a class="navbar-brand fw-bold text-white" href="index.php">
 🎵 Goods Secret Store
 </a>
+
+<!-- SEARCH -->
+<form class="d-flex ms-4" method="GET">
+<input class="form-control me-2" type="search" name="search"
+placeholder="ค้นหาสินค้า..." value="<?= htmlspecialchars($search) ?>">
+<button class="brand-btn">ค้นหา</button>
+</form>
 
 <div class="ms-auto d-flex align-items-center gap-2">
 
@@ -145,31 +176,31 @@ margin-top:20px;
 </div>
 </nav>
 
-<!-- ================= BANNER SLIDER ================= -->
-<div class="container">
+<!-- BANNER -->
+<div class="container mt-3">
 <div id="mainBanner" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-
 <div class="carousel-inner">
-
 <div class="carousel-item active">
 <img src="images/BN1.png" class="d-block w-100">
 </div>
-
 <div class="carousel-item">
 <img src="images/BN2.png" class="d-block w-100">
 </div>
-
+</div>
+</div>
 </div>
 
-<button class="carousel-control-prev" type="button" data-bs-target="#mainBanner" data-bs-slide="prev">
-<span class="carousel-control-prev-icon"></span>
-</button>
+<!-- CATEGORY BUTTONS -->
+<div class="container text-center mt-4">
+<a href="index.php" class="btn btn-outline-light category-btn">ทั้งหมด</a>
 
-<button class="carousel-control-next" type="button" data-bs-target="#mainBanner" data-bs-slide="next">
-<span class="carousel-control-next-icon"></span>
-</button>
+<?php while($cat = $categories->fetch_assoc()){ ?>
+<a href="?category=<?= $cat['slug']; ?>" 
+class="btn btn-outline-light category-btn">
+<?= $cat['name']; ?>
+</a>
+<?php } ?>
 
-</div>
 </div>
 
 <!-- PRODUCTS -->
@@ -178,7 +209,7 @@ margin-top:20px;
 
 <?php while($p = $products->fetch_assoc()){ ?>
 
-<div class="col-md-4 col-lg-3 mb-4 product-item" data-category="<?= $p['slug']; ?>">
+<div class="col-md-4 col-lg-3 mb-4">
 <div class="card product-card p-3 text-center">
 
 <img src="images/<?= $p['image']; ?>" class="img-fluid mb-3">
@@ -205,6 +236,5 @@ margin-top:20px;
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
