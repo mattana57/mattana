@@ -104,7 +104,7 @@ background:#d39ddb;
 <body>
 
 <div class="card">
-<h2 class="text-center mb-4" autofocus>สมัครสมาชิก</h2>
+<h2 class="text-center mb-4" >สมัครสมาชิก</h2>
 
 <?php if($error){ ?>
 <div class="alert alert-danger"><?= $error ?></div>
@@ -118,7 +118,7 @@ background:#d39ddb;
 
 <div class="mb-3">
 <label>Username</label>
-<input type="text" name="username" class="form-control" required>
+<input type="text" name="username" class="form-control" autofocus required>
 </div>
 
 <div class="mb-3">
@@ -139,6 +139,30 @@ background:#d39ddb;
 <button class="btn btn-brand w-100">สมัครสมาชิก</button>
 
 </form>
+
+<hr class="my-4">
+
+<div class="d-grid gap-2">
+
+<a href="google_login.php" class="btn btn-light">
+<img src="https://img.icons8.com/color/20/000000/google-logo.png"/>
+</a>
+
+<a href="facebook_login.php" class="btn btn-primary">
+<i class="bi bi-facebook"></i>
+ ดำเนินการต่อด้วย Facebook
+</a>
+
+<a href="line_login.php" class="btn" style="background:#06C755;color:white;">
+ ดำเนินการต่อด้วย LINE
+</a>
+
+<a href="x_login.php" class="btn btn-dark">
+ ดำเนินการต่อด้วย X
+</a>
+
+</div>
+
 
 <p class="mt-3 text-center">
 มีบัญชีแล้ว ? <a href="login.php">เข้าสู่ระบบ</a>

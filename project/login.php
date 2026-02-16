@@ -102,7 +102,7 @@ background:#d39ddb;
 <form method="POST">
 <div class="mb-3">
 <label>Username</label>
-<input type="text" name="username" class="form-control" required>
+<input type="text" name="username" class="form-control" autofocus required>
 </div>
 
 <div class="mb-3">
