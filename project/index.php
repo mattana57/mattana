@@ -2,32 +2,49 @@
 session_start();
 include "connectdb.php";
 
-/* ================= SEARCH ================= */
+/* ================= GET CATEGORY ================= */
+$category_slug = $_GET['category'] ?? "";
 $search = $_GET['search'] ?? "";
 
-/* ================= GET CATEGORIES ================= */
-$categories = $conn->query("SELECT * FROM categories");
+/* ================= GET ALL CATEGORIES ================= */
+$categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 
-/* ================= RECOMMENDED ================= */
+/* ================= BASE SQL ================= */
+$sql = "
+SELECT products.*, categories.name as category_name, categories.slug
+FROM products
+LEFT JOIN categories ON products.category_id = categories.id
+WHERE 1
+";
+
+/* Filter Category */
+if($category_slug && $category_slug != "all"){
+    $sql .= " AND categories.slug = '".$conn->real_escape_string($category_slug)."'";
+}
+
+/* Filter Search */
+if($search){
+    $sql .= " AND products.name LIKE '%".$conn->real_escape_string($search)."%'";
+}
+
+/* หน้าแรกไม่แสดงทั้งหมด */
+$showLanding = (!$category_slug && !$search);
+
+if(!$showLanding){
+    $products = $conn->query($sql);
+}
+
+/* Landing Sections */
 $recommended = $conn->query("
-SELECT * FROM products 
-WHERE featured = 1 
-ORDER BY RAND() 
-LIMIT 8
+SELECT * FROM products WHERE featured=1 LIMIT 8
 ");
 
-/* ================= NEW ARRIVAL ================= */
 $newArrival = $conn->query("
-SELECT * FROM products 
-ORDER BY created_at DESC 
-LIMIT 8
+SELECT * FROM products ORDER BY created_at DESC LIMIT 8
 ");
 
-/* ================= DISCOUNT ================= */
 $discountProducts = $conn->query("
-SELECT * FROM products 
-WHERE discount > 0 
-LIMIT 8
+SELECT * FROM products WHERE discount > 0 LIMIT 8
 ");
 ?>
 <!DOCTYPE html>
@@ -73,10 +90,9 @@ box-shadow:0 0 20px #bb86fc;
 color:#000;
 }
 
-.search-box{
-border-radius:30px;
-padding:6px 15px;
-border:none;
+.active-category{
+background:#fff;
+color:#2a0845;
 }
 
 .product-card{
@@ -111,8 +127,8 @@ margin-bottom:20px;
 
 <div class="ms-auto d-flex align-items-center gap-3">
 
-<form action="category.php" method="GET" class="d-flex">
-<input class="form-control search-box me-2"
+<form method="GET" class="d-flex">
+<input class="form-control me-2" 
 type="search"
 name="search"
 placeholder="ค้นหาสินค้า...">
@@ -135,32 +151,27 @@ placeholder="ค้นหาสินค้า...">
 </div>
 </nav>
 
-<!-- BANNER -->
-<div class="container mt-3">
-<div id="mainBanner" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-<div class="carousel-inner">
-<div class="carousel-item active">
-<img src="images/BN1.png" class="d-block w-100" style="height:400px;object-fit:cover;border-radius:10px;">
-</div>
-<div class="carousel-item">
-<img src="images/BN2.png" class="d-block w-100" style="height:400px;object-fit:cover;border-radius:10px;">
-</div>
-</div>
-</div>
-</div>
-
 <!-- CATEGORY BUTTONS -->
 <div class="container text-center mt-4">
+
+<a href="index.php?category=all"
+class="modern-btn m-1 <?= ($category_slug=='all')?'active-category':'' ?>">
+ทั้งหมด
+</a>
+
 <?php while($cat = $categories->fetch_assoc()){ ?>
-<a href="category.php?slug=<?= $cat['slug']; ?>" 
-class="modern-btn m-1">
+<a href="index.php?category=<?= $cat['slug']; ?>"
+class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>">
 <?= $cat['name']; ?>
 </a>
 <?php } ?>
+
 </div>
 
-<!-- RECOMMENDED -->
 <div class="container my-5">
+
+<?php if($showLanding){ ?>
+
 <h4 class="section-title">⭐ สินค้าแนะนำ</h4>
 <div class="row">
 <?php while($p = $recommended->fetch_assoc()){ ?>
@@ -173,11 +184,8 @@ class="modern-btn m-1">
 </div>
 <?php } ?>
 </div>
-</div>
 
-<!-- NEW ARRIVAL -->
-<div class="container my-5">
-<h4 class="section-title">🆕 สินค้ามาใหม่</h4>
+<h4 class="section-title mt-5">🆕 สินค้ามาใหม่</h4>
 <div class="row">
 <?php while($p = $newArrival->fetch_assoc()){ ?>
 <div class="col-md-3 mb-4">
@@ -189,11 +197,8 @@ class="modern-btn m-1">
 </div>
 <?php } ?>
 </div>
-</div>
 
-<!-- DISCOUNT -->
-<div class="container my-5">
-<h4 class="section-title">🔥 สินค้าลดราคา</h4>
+<h4 class="section-title mt-5">🔥 สินค้าลดราคา</h4>
 <div class="row">
 <?php while($p = $discountProducts->fetch_assoc()){ ?>
 <div class="col-md-3 mb-4">
@@ -212,6 +217,24 @@ class="modern-btn m-1">
 </div>
 <?php } ?>
 </div>
+
+<?php } else { ?>
+
+<h4 class="section-title">ผลลัพธ์สินค้า</h4>
+<div class="row">
+<?php while($p = $products->fetch_assoc()){ ?>
+<div class="col-md-3 mb-4">
+<div class="card product-card p-3 text-center">
+<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
+<h6><?= $p['name']; ?></h6>
+<p><?= number_format($p['price']); ?> บาท</p>
+</div>
+</div>
+<?php } ?>
+</div>
+
+<?php } ?>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
