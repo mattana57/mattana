@@ -1,146 +1,121 @@
 <?php
 session_start();
-require_once "connectdb.php";
+include "db.php";
 
 $error = "";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-    $identity = trim($_POST["identity"]);
-    $password = trim($_POST["password"]);
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    if(empty($identity) || empty($password)){
-        $error = "กรุณากรอกข้อมูลให้ครบ";
-    }else{
+    $stmt = $conn->prepare("SELECT id, password FROM users WHERE username=?");
+    $stmt->bind_param("s",$username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username=? OR email=? OR phone=?");
-        $stmt->bind_param("sss",$identity,$identity,$identity);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    if($result->num_rows > 0){
+        $user = $result->fetch_assoc();
 
-        if($result->num_rows == 1){
-            $user = $result->fetch_assoc();
+        if(password_verify($password, $user['password'])){
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $username;
 
-            if(password_verify($password,$user["password"])){
-                $_SESSION["user"] = $user["username"];
-                $_SESSION["role"] = $user["role"];
-                header("Location:index.php");
-                exit();
-            }else{
-                $error = "รหัสผ่านไม่ถูกต้อง";
-            }
-        }else{
-            $error = "ไม่พบผู้ใช้งาน";
+            header("Location: index.php");
+            exit();
+        } else {
+            $error = "รหัสผ่านไม่ถูกต้อง";
         }
+    } else {
+        $error = "ไม่พบผู้ใช้นี้ในระบบ";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>เข้าสู่ระบบ | Goods Secret</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เข้าสู่ระบบ</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
 body{
-background:linear-gradient(135deg,#120018,#2a0845,#6a1b9a);
+background: linear-gradient(135deg,#2a0845,#6a1b9a,#3d1e6d);
 height:100vh;
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 font-family:'Segoe UI',sans-serif;
-color:white;
 }
 
 .card{
-width:420px;
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(12px);
 border:none;
-border-radius:0;
-box-shadow:0 0 25px #bb86fc;
+padding:40px;
+width:400px;
+box-shadow:0 0 40px rgba(187,134,252,.4);
+color:#fff;
 }
 
-input{
-border-radius:0 !important;
+.card h2,
+.card label,
+.card p,
+.card a{
+color:#fff !important;
 }
 
-.brand-btn{
+.form-control{
+background:#2a0845;
+border:1px solid #bb86fc;
+color:#fff;
+}
+
+.form-control::placeholder{
+color:#ccc;
+}
+
+.btn-brand{
 background:#E0BBE4;
-border:none;
-border-radius:0;
+color:#2a0845;
 font-weight:600;
 }
 
-.brand-btn:hover{
+.btn-brand:hover{
 background:#d39ddb;
-}
-
-.social-btn{
-border-radius:0;
 }
 </style>
 </head>
 <body>
 
-<div class="card p-4">
+<div class="card">
+<h2 class="text-center mb-4">เข้าสู่ระบบ</h2>
 
-<h3 class="text-center mb-4">เข้าสู่ระบบ</h3>
-
-<?php if($error!=""){ ?>
-<div class="alert alert-danger text-center"><?= $error ?></div>
+<?php if($error){ ?>
+<div class="alert alert-danger"><?= $error ?></div>
 <?php } ?>
 
 <form method="POST">
+<div class="mb-3">
+<label>Username</label>
+<input type="text" name="username" class="form-control" required>
+</div>
 
 <div class="mb-3">
-<label>Username / Email / เบอร์โทร</label>
-<input type="text" name="identity" class="form-control" autofocus required>
-</div>
-
-<div class="mb-3 position-relative">
 <label>รหัสผ่าน</label>
-<input type="password" name="password" id="password" class="form-control" required>
-<i class="bi bi-eye-slash position-absolute"
-style="right:10px; top:38px; cursor:pointer;"
-onclick="togglePassword()"></i>
+<input type="password" name="password" class="form-control" required>
 </div>
 
-<button type="submit" class="btn brand-btn w-100 mb-3">
-เข้าสู่ระบบ
-</button>
-
-<div class="text-center mb-3">
-<a href="#" class="text-warning">เข้าสู่ระบบด้วย SMS</a>
-</div>
-
-<hr>
-
-<button type="button" class="btn btn-light social-btn w-100 mb-2">
-<i class="bi bi-google"></i> ดำเนินการต่อด้วย Google
-</button>
-
-<button type="button" class="btn btn-primary social-btn w-100">
-<i class="bi bi-facebook"></i> ดำเนินการต่อด้วย Facebook
-</button>
-
-<div class="text-center mt-3">
-ยังไม่มีบัญชี ?
-<a href="register.php" class="text-warning">สมัครสมาชิก</a>
-</div>
-
+<button class="btn btn-brand w-100">เข้าสู่ระบบ</button>
 </form>
-</div>
 
-<script>
-function togglePassword(){
-let pass=document.getElementById("password");
-pass.type = pass.type==="password"?"text":"password";
-}
-</script>
+<p class="mt-3 text-center">
+ยังไม่มีบัญชี ? <a href="register.php">สมัครสมาชิก</a>
+</p>
+
+</div>
 
 </body>
 </html>

@@ -1,119 +1,110 @@
 <?php
-require_once "connectdb.php";
+session_start();
+include "db.php";
 
-$error="";
-$success="";
+$error = "";
+$success = "";
 
-if($_SERVER["REQUEST_METHOD"]=="POST"){
+if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-$username=trim($_POST["username"]);
-$email=trim($_POST["email"]);
-$phone=trim($_POST["phone"]);
-$password=$_POST["password"];
-$confirm=$_POST["confirm"];
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-if($password!==$confirm){
-$error="รหัสผ่านไม่ตรงกัน";
-}else{
+    // เช็คซ้ำ
+    $check = $conn->prepare("SELECT id FROM users WHERE username=?");
+    $check->bind_param("s",$username);
+    $check->execute();
+    $check->store_result();
 
-$check=$conn->prepare("SELECT id FROM users WHERE username=? OR email=? OR phone=?");
-$check->bind_param("sss",$username,$email,$phone);
-$check->execute();
-$res=$check->get_result();
+    if($check->num_rows > 0){
+        $error = "Username นี้ถูกใช้แล้ว";
+    } else {
 
-if($res->num_rows>0){
-$error="ข้อมูลนี้ถูกใช้แล้ว";
-}else{
+        $stmt = $conn->prepare("INSERT INTO users(username,password) VALUES(?,?)");
+        $stmt->bind_param("ss",$username,$password);
 
-$hash=password_hash($password,PASSWORD_DEFAULT);
-$role="member";
-
-$stmt=$conn->prepare("INSERT INTO users(username,email,phone,password,role) VALUES(?,?,?,?,?)");
-$stmt->bind_param("sssss",$username,$email,$phone,$hash,$role);
-
-if($stmt->execute()){
-$success="สมัครสมาชิกสำเร็จ!";
-}else{
-$error="เกิดข้อผิดพลาด";
-}
-}
-}
+        if($stmt->execute()){
+            $success = "สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบ";
+        } else {
+            $error = "เกิดข้อผิดพลาด";
+        }
+    }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>สมัครสมาชิก | Goods Secret</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สมัครสมาชิก</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
 body{
-background:linear-gradient(135deg,#120018,#2a0845,#6a1b9a);
+background: linear-gradient(135deg,#2a0845,#6a1b9a,#3d1e6d);
 height:100vh;
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 font-family:'Segoe UI',sans-serif;
-color:white;
 }
 
 .card{
-width:450px;
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(12px);
 border:none;
-border-radius:0;
-box-shadow:0 0 25px #bb86fc;
+padding:40px;
+width:400px;
+box-shadow:0 0 40px rgba(187,134,252,.4);
+color:#fff;
 }
 
-input{
-border-radius:0 !important;
+.card h2,
+.card label,
+.card p,
+.card a{
+color:#fff !important;
 }
 
-.brand-btn{
+.form-control{
+background:#2a0845;
+border:1px solid #bb86fc;
+color:#fff;
+}
+
+.form-control::placeholder{
+color:#ccc;
+}
+
+.btn-brand{
 background:#E0BBE4;
-border:none;
-border-radius:0;
+color:#2a0845;
 font-weight:600;
 }
 
-.brand-btn:hover{
+.btn-brand:hover{
 background:#d39ddb;
 }
 </style>
 </head>
 <body>
 
-<div class="card p-4">
+<div class="card">
+<h2 class="text-center mb-4">สมัครสมาชิก</h2>
 
-<h3 class="text-center mb-4">สมัครสมาชิก</h3>
-
-<?php if($error!=""){ ?>
-<div class="alert alert-danger text-center"><?= $error ?></div>
+<?php if($error){ ?>
+<div class="alert alert-danger"><?= $error ?></div>
 <?php } ?>
 
-<?php if($success!=""){ ?>
-<div class="alert alert-success text-center"><?= $success ?></div>
+<?php if($success){ ?>
+<div class="alert alert-success"><?= $success ?></div>
 <?php } ?>
 
 <form method="POST">
-
 <div class="mb-3">
 <label>Username</label>
-<input type="text" name="username" class="form-control" autofocus required>
-</div>
-
-<div class="mb-3">
-<label>Email</label>
-<input type="email" name="email" class="form-control" required>
-</div>
-
-<div class="mb-3">
-<label>เบอร์โทรศัพท์</label>
-<input type="text" name="phone" class="form-control" required>
+<input type="text" name="username" class="form-control" required>
 </div>
 
 <div class="mb-3">
@@ -121,31 +112,13 @@ background:#d39ddb;
 <input type="password" name="password" class="form-control" required>
 </div>
 
-<div class="mb-3">
-<label>ยืนยันรหัสผ่าน</label>
-<input type="password" name="confirm" class="form-control" required>
-</div>
-
-<button type="submit" class="btn brand-btn w-100 mb-3">
-สมัครสมาชิก
-</button>
-
-<hr>
-
-<button type="button" class="btn btn-light w-100 mb-2">
-<i class="bi bi-google"></i> สมัครด้วย Google
-</button>
-
-<button type="button" class="btn btn-primary w-100">
-<i class="bi bi-facebook"></i> สมัครด้วย Facebook
-</button>
-
-<div class="text-center mt-3">
-มีบัญชีแล้ว ?
-<a href="login.php" class="text-warning">เข้าสู่ระบบ</a>
-</div>
-
+<button class="btn btn-brand w-100">สมัครสมาชิก</button>
 </form>
+
+<p class="mt-3 text-center">
+มีบัญชีแล้ว ? <a href="login.php">เข้าสู่ระบบ</a>
+</p>
+
 </div>
 
 </body>
