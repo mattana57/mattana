@@ -1,77 +1,48 @@
 <?php
+session_start();
 include "connectdb.php";
+
 $id = intval($_GET['id']);
 $product = $conn->query("SELECT * FROM products WHERE id=$id")->fetch_assoc();
-if(!$product){
-    header("Location:index.php");
-    exit();
-}
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
-<title><?=$product['name']?></title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body style="background:#2a0845;color:white">
 
-<?php include "navbar.php"; ?>
+<div class="container py-5 text-center">
 
-<div class="container mt-5">
+<img src="images/<?= $product['image']; ?>" width="300">
+<h2><?= $product['name']; ?></h2>
+<p><?= number_format($product['price']); ?> บาท</p>
 
-<div class="row">
-<div class="col-md-5">
-<img src="images/<?=$product['image']?>" class="img-fluid">
-</div>
+<p><?= $product['description']; ?></p>
 
-<div class="col-md-7">
-<h3><?=$product['name']?></h3>
-
-<h4 class="text-danger">฿<?=$product['price']?></h4>
-
-<?php if($product['old_price']>0){ ?>
-<p>
-<span class="badge bg-danger">SALE</span>
-<small class="text-muted text-decoration-line-through">
-฿<?=$product['old_price']?>
-</small>
-</p>
-<?php } ?>
-
-<p><?=$product['description']?></p>
-
-<a href="cart.php?add=<?=$product['id']?>" 
-class="btn btn-success btn-lg">
+<?php if(isset($_SESSION['user_id'])){ ?>
+<a href="add_to_cart.php?id=<?= $product['id']; ?>" class="btn btn-warning">
 เพิ่มลงตะกร้า
 </a>
-</div>
-</div>
-
-<hr>
-
-<h5>🔥 หนังสือที่คุณอาจสนใจ</h5>
-<div class="row">
-<?php
-$recommend = $conn->query("SELECT * FROM products WHERE is_trending=1 AND id!=$id LIMIT 4");
-while($r = $recommend->fetch_assoc()){
-?>
-<div class="col-md-3">
-<div class="card shadow-sm">
-<img src="images/<?=$r['image']?>" height="200">
-<div class="card-body">
-<h6><?=$r['name']?></h6>
-<p class="text-danger">฿<?=$r['price']?></p>
-<a href="product.php?id=<?=$r['id']?>" 
-class="btn btn-outline-primary w-100">
-ดูสินค้า
-</a>
-</div>
-</div>
-</div>
+<?php } else { ?>
+<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#loginModal">
+เพิ่มลงตะกร้า
+</button>
 <?php } ?>
-</div>
 
 </div>
+
+<!-- MODAL -->
+<div class="modal fade" id="loginModal">
+<div class="modal-dialog">
+<div class="modal-content text-center p-4">
+<p>กรุณาเข้าสู่ระบบก่อนสั่งซื้อ</p>
+<a href="login.php" class="btn btn-primary">เข้าสู่ระบบ</a>
+<a href="register.php" class="btn btn-secondary">สมัครสมาชิก</a>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
