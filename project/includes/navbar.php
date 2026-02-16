@@ -2,59 +2,53 @@
 if(session_status() === PHP_SESSION_NONE){
     session_start();
 }
+include "connectdb.php";
 ?>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-<div class="container-fluid px-4">
+<style>
+.nav-purple {
+    background: linear-gradient(90deg,#3c1a5b,#5b2a86);
+}
+.category-btn {
+    border:1px solid #fff;
+    color:#fff;
+}
+.category-btn:hover {
+    background:#fff;
+    color:#3c1a5b;
+}
+</style>
 
-<a class="navbar-brand fw-bold" href="index.php">
-🎵 Goods Secret Store
+<nav class="navbar navbar-expand-lg nav-purple navbar-dark">
+<div class="container">
+
+<a class="navbar-brand fw-bold text-white" href="index.php">
+📚 ComicShop
 </a>
 
-<div class="d-flex align-items-center w-100 justify-content-end">
+<div class="d-flex flex-wrap gap-2">
 
-<input id="searchInput"
-class="form-control me-3"
-style="max-width:400px;"
-placeholder="ค้นหาสินค้า...">
-
-<a href="cart.php"
-class="btn btn-warning position-relative me-3">
-<i class="bi bi-cart"></i>
-<span id="cartCount"
-class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-0
-</span>
+<?php
+$cats = $conn->query("SELECT * FROM categories");
+while($c = $cats->fetch_assoc()){
+?>
+<a href="category.php?slug=<?=$c['slug']?>"
+class="btn btn-sm category-btn">
+<?=$c['name']?>
 </a>
-
-<?php if(isset($_SESSION['user'])){ ?>
-
-<div class="dropdown">
-<button class="btn btn-outline-light dropdown-toggle"
-data-bs-toggle="dropdown">
-👤 <?= $_SESSION['user']; ?>
-</button>
-
-<ul class="dropdown-menu dropdown-menu-end">
-<li><a class="dropdown-item" href="#">โปรไฟล์</a></li>
-<li><a class="dropdown-item" href="#">คำสั่งซื้อ</a></li>
-<li><hr class="dropdown-divider"></li>
-<li><a class="dropdown-item" href="logout.php">ออกจากระบบ</a></li>
-</ul>
-</div>
-
-<?php } else { ?>
-
-<a href="login.php" class="btn btn-outline-light me-2">
-เข้าสู่ระบบ
-</a>
-
-<a href="register.php" class="btn btn-warning">
-สมัครสมาชิก
-</a>
-
 <?php } ?>
 
 </div>
+
+<div class="ms-auto d-flex gap-2">
+<?php if(isset($_SESSION['user'])){ ?>
+<a href="cart.php" class="btn btn-light px-4">ตะกร้า</a>
+<a href="logout.php" class="btn btn-dark px-4">ออกจากระบบ</a>
+<?php } else { ?>
+<a href="login.php" class="btn btn-light px-4">เข้าสู่ระบบ</a>
+<a href="register.php" class="btn btn-warning px-4">สมัครสมาชิก</a>
+<?php } ?>
+</div>
+
 </div>
 </nav>
