@@ -10,85 +10,114 @@ session_start();
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
 <style>
+
+/* ================= GLOBAL THEME ================= */
 body{
-background:#f4f5f7;
+background:
+radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%),
+radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%),
+linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
+background-attachment: fixed;
+color:#fff;
 font-family:'Segoe UI',sans-serif;
 }
 
-/* NAVBAR */
+/* ================= NAVBAR ================= */
 .navbar{
-background:linear-gradient(135deg,#111,#2a0845);
+background:linear-gradient(90deg,#1a0028,#3d1e6d);
 padding:15px 0;
 }
 
-/* HERO */
-.hero{
-background:linear-gradient(135deg,#111,#6f42c1);
-color:white;
-padding:80px 0;
-text-align:center;
+.navbar .form-control{
+background:#2a0845;
+border:1px solid #6f42c1;
+color:#fff;
 }
 
-/* PRODUCT */
-.product-card{
+.navbar .form-control::placeholder{
+color:#ccc;
+}
+
+/* ปุ่มหลักสีแบรนด์ */
+.brand-btn{
+background:#E0BBE4;
+color:#2a0845;
 border:none;
-border-radius:15px;
+border-radius:0;
+font-weight:600;
+padding:8px 18px;
 transition:.3s;
-overflow:hidden;
+}
+
+.brand-btn:hover{
+background:#d39ddb;
+color:#000;
+transform:translateY(-2px);
+}
+
+/* ================= HERO ================= */
+.hero{
+background:
+linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),
+linear-gradient(135deg,#2a0845,#6a1b9a,#9c27b0);
+padding:100px 0;
+text-align:center;
+box-shadow:0 10px 40px rgba(0,0,0,.5);
+}
+
+.hero h1{
+font-size:3rem;
+font-weight:bold;
+letter-spacing:2px;
+text-shadow:0 0 15px #bb86fc;
+}
+
+.hero p{
+color:#e1bee7;
+}
+
+/* ================= FILTER BUTTONS ================= */
+.filter-btn{
+border-radius:0;
+font-weight:500;
+}
+
+.filter-btn.active{
+background:#E0BBE4;
+color:#2a0845;
+border:none;
+}
+
+/* ================= PRODUCT CARD ================= */
+.product-card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:0;
+backdrop-filter:blur(8px);
+transition:.3s;
 }
 
 .product-card:hover{
 transform:translateY(-10px);
-box-shadow:0 15px 35px rgba(0,0,0,.2);
+box-shadow:0 0 20px #bb86fc;
 }
 
-/* FILTER BUTTON ACTIVE */
-.filter-btn.active{
-background:#6f42c1;
-color:white;
+.product-card h6{
+color:#fff;
 }
 
-/* MODAL */
-.custom-modal{
-border-radius:15px;
-overflow:hidden;
-border:none;
-box-shadow:0 20px 50px rgba(0,0,0,.4);
+.product-card p{
+color:#E0BBE4;
+font-weight:bold;
 }
 
-.custom-header{
-background:linear-gradient(135deg,#2a0845,#6441a5);
-color:white;
-border:none;
-}
-
-.modal-icon i{
-font-size:60px;
-background:linear-gradient(135deg,#6f42c1,#d63384);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-.btn-gradient{
-background:linear-gradient(135deg,#6f42c1,#d63384);
-color:white;
-border:none;
-transition:.3s;
-}
-
-.btn-gradient:hover{
-transform:translateY(-3px);
-box-shadow:0 10px 25px rgba(111,66,193,.5);
-color:white;
-}
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- ================= NAVBAR ================= -->
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
 <div class="container">
 
@@ -96,22 +125,22 @@ color:white;
 🎵 Goods Secret Store
 </a>
 
-<div class="ms-auto d-flex align-items-center">
+<div class="ms-auto d-flex align-items-center gap-2">
 
-<input id="searchInput" class="form-control me-3" placeholder="ค้นหาสินค้า...">
+<input id="searchInput" class="form-control me-2" placeholder="ค้นหาสินค้า...">
 
-<button class="btn btn-warning position-relative me-3">
+<button class="brand-btn position-relative">
 <i class="bi bi-cart"></i>
 <span id="cartCount"
-class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+class="position-absolute top-0 start-100 translate-middle badge bg-danger">0</span>
 </button>
 
 <?php if(isset($_SESSION['user'])){ ?>
 
 <div class="dropdown">
-<button class="btn btn-light dropdown-toggle px-4"
+<button class="brand-btn dropdown-toggle"
 data-bs-toggle="dropdown">
-👤 <?= $_SESSION['user']; ?>
+<?= $_SESSION['user']; ?>
 </button>
 <ul class="dropdown-menu dropdown-menu-end">
 <li><a class="dropdown-item" href="logout.php">ออกจากระบบ</a></li>
@@ -120,14 +149,13 @@ data-bs-toggle="dropdown">
 
 <?php } else { ?>
 
-<div class="d-flex gap-2">
-<a href="login.php" class="btn btn-outline-light px-4 fw-semibold">
+<a href="login.php" class="brand-btn">
 เข้าสู่ระบบ
 </a>
-<a href="register.php" class="btn btn-warning px-4 fw-semibold shadow">
+
+<a href="register.php" class="brand-btn">
 สมัครสมาชิก
 </a>
-</div>
 
 <?php } ?>
 
@@ -135,146 +163,63 @@ data-bs-toggle="dropdown">
 </div>
 </nav>
 
-<!-- HERO -->
+<!-- ================= HERO ================= -->
 <section class="hero">
-<h1 class="display-5 fw-bold">Goods Secret Store</h1>
-<p>ศิลปินเกาหลี | ศิลปินไทย | มันฮวา | มานฮัว</p>
+<h1>Goods Secret Store</h1>
+<p>ศิลปินเกาหลี | ศิลปินไทย | มันฮวา | มานฮัว | มังงะ | การ์ตูนไทย</p>
 </section>
 
-<!-- FILTER -->
-<div class="container my-4">
-<div class="d-flex justify-content-center flex-wrap gap-3">
+<!-- ================= FILTER ================= -->
+<div class="container my-5 text-center">
+<div class="d-flex flex-wrap justify-content-center gap-3">
 
-<button class="btn btn-outline-dark filter-btn active" data-category="all">
-ทั้งหมด
-</button>
-
-<button class="btn btn-outline-primary filter-btn" data-category="kpop">
-ศิลปินเกาหลี
-</button>
-
-<button class="btn btn-outline-success filter-btn" data-category="thai">
-ศิลปินไทย
-</button>
-
-<button class="btn btn-outline-danger filter-btn" data-category="manhwa">
-มันฮวาเกาหลี
-</button>
-
-<button class="btn btn-outline-warning filter-btn" data-category="manhua">
-มานฮัวจีน
-</button>
+<button class="btn btn-outline-light filter-btn active" data-category="all">ทั้งหมด</button>
+<button class="btn btn-outline-light filter-btn" data-category="kpop">ศิลปินเกาหลี</button>
+<button class="btn btn-outline-light filter-btn" data-category="thai">ศิลปินไทย</button>
+<button class="btn btn-outline-light filter-btn" data-category="manhwa">มันฮวาเกาหลี</button>
+<button class="btn btn-outline-light filter-btn" data-category="manhua">มานฮัวจีน</button>
+<button class="btn btn-outline-light filter-btn" data-category="manga">Manga – มังงะ (ญี่ปุ่น)</button>
+<button class="btn btn-outline-light filter-btn" data-category="thaicomic">Thai Comic – การ์ตูนไทย</button>
 
 </div>
 </div>
 
-<!-- PRODUCTS -->
+<!-- ================= PRODUCTS ================= -->
 <div class="container">
 <div class="row" id="productList"></div>
-</div>
-
-<!-- LOGIN REQUIRED MODAL -->
-<div class="modal fade" id="loginRequiredModal" tabindex="-1">
-<div class="modal-dialog modal-dialog-centered">
-<div class="modal-content custom-modal">
-
-<div class="modal-header custom-header">
-<h5 class="modal-title">
-<i class="bi bi-stars me-2"></i> Goods Secret Exclusive
-</h5>
-<button class="btn-close btn-close-white"
-data-bs-dismiss="modal"></button>
-</div>
-
-<div class="modal-body text-center py-4">
-
-<div class="modal-icon mb-3">
-<i class="bi bi-person-lock"></i>
-</div>
-
-<h5 class="fw-bold mb-3">
-กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อ
-</h5>
-
-<div class="d-flex justify-content-center gap-3 mt-4">
-<a href="login.php" class="btn btn-gradient px-4">
-เข้าสู่ระบบ
-</a>
-
-<a href="register.php" class="btn btn-warning px-4">
-สมัครสมาชิก
-</a>
-</div>
-
-</div>
-</div>
-</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
-const isLoggedIn = <?php echo isset($_SESSION['user']) ? 'true' : 'false'; ?>;
-
 const products = [
 { id:1,name:"BTS Lightstick",price:2500,category:"kpop",img:"https://via.placeholder.com/300"},
-{ id:2,name:"BLACKPINK Album",price:1800,category:"kpop",img:"https://via.placeholder.com/300"},
-{ id:3,name:"Billkin Photobook",price:1200,category:"thai",img:"https://via.placeholder.com/300"},
-{ id:4,name:"4EVE Hoodie",price:1500,category:"thai",img:"https://via.placeholder.com/300"},
-{ id:5,name:"Solo Leveling Artbook",price:900,category:"manhwa",img:"https://via.placeholder.com/300"},
-{ id:6,name:"Heaven Official Blessing Set",price:1100,category:"manhua",img:"https://via.placeholder.com/300"}
+{ id:2,name:"Solo Leveling",price:900,category:"manhwa",img:"https://via.placeholder.com/300"},
+{ id:3,name:"Heaven Official",price:1100,category:"manhua",img:"https://via.placeholder.com/300"},
+{ id:4,name:"One Piece Vol.1",price:350,category:"manga",img:"https://via.placeholder.com/300"},
+{ id:5,name:"ขายหัวเราะ",price:120,category:"thaicomic",img:"https://via.placeholder.com/300"},
 ];
-
-let cart=[];
 
 function renderProducts(filter="all"){
 const list=document.getElementById("productList");
 list.innerHTML="";
-let search=document.getElementById("searchInput").value.toLowerCase();
 
 products
 .filter(p=>filter==="all"||p.category===filter)
-.filter(p=>p.name.toLowerCase().includes(search))
 .forEach(p=>{
 list.innerHTML+=`
 <div class="col-md-4 col-lg-3 mb-4">
-<div class="card product-card">
-<img src="${p.img}" class="card-img-top">
-<div class="card-body text-center">
+<div class="card product-card p-3 text-center">
+<img src="${p.img}" class="img-fluid mb-3">
 <h6>${p.name}</h6>
-<p class="fw-bold">${p.price} บาท</p>
-<button class="btn btn-primary w-100"
-onclick="addToCart(${p.id})">
+<p>${p.price} บาท</p>
+<button class="brand-btn w-100">
 เพิ่มลงตะกร้า
 </button>
 </div>
-</div>
 </div>`;
 });
-}
-
-function addToCart(id){
-
-if(!isLoggedIn){
-let modal=new bootstrap.Modal(document.getElementById('loginRequiredModal'));
-modal.show();
-return;
-}
-
-let item=cart.find(p=>p.id===id);
-if(item){item.qty++;}
-else{
-let product=products.find(p=>p.id===id);
-cart.push({...product,qty:1});
-}
-
-updateCart();
-}
-
-function updateCart(){
-document.getElementById("cartCount").innerText=
-cart.reduce((a,b)=>a+(b.qty||1),0);
 }
 
 document.querySelectorAll(".filter-btn").forEach(btn=>{
@@ -285,10 +230,8 @@ renderProducts(this.dataset.category);
 });
 });
 
-document.getElementById("searchInput")
-.addEventListener("input",()=>renderProducts());
-
 renderProducts();
+
 </script>
 
 </body>
