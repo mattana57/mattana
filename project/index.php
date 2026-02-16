@@ -10,7 +10,6 @@ if(isset($_GET['search'])){
 
 /* ================= ADD TO CART ================= */
 if(isset($_GET['add'])){
-
     if(!isset($_SESSION['user_id'])){
         header("Location: login.php");
         exit();
@@ -38,10 +37,9 @@ if(isset($_GET['add'])){
     exit();
 }
 
-/* ================= GET CATEGORY ================= */
-$currentCategory = isset($_GET['category']) ? $_GET['category'] : "";
+/* ================= CATEGORY ================= */
+$currentCategory = $_GET['category'] ?? "";
 
-/* ================= GET PRODUCTS ================= */
 $sql = "
 SELECT products.*, categories.slug 
 FROM products 
@@ -58,8 +56,6 @@ if($currentCategory != ""){
 }
 
 $products = $conn->query($sql);
-
-/* ================= GET CATEGORIES ================= */
 $categories = $conn->query("SELECT * FROM categories");
 
 /* ================= CART COUNT ================= */
@@ -95,29 +91,29 @@ font-family:'Segoe UI',sans-serif;
 
 .navbar{
 background:linear-gradient(90deg,#1a0028,#3d1e6d);
-padding:15px 0;
 }
 
 .brand-btn{
 background:#E0BBE4;
 color:#2a0845;
 border:none;
-border-radius:0;
 font-weight:600;
-padding:8px 18px;
+padding:6px 16px;
 transition:.3s;
 }
 
 .brand-btn:hover{
 background:#d39ddb;
-color:#000;
 transform:translateY(-2px);
+}
+
+.search-input{
+border-radius:20px;
 }
 
 .product-card{
 background:rgba(255,255,255,0.05);
 border:1px solid rgba(255,255,255,0.1);
-border-radius:0;
 backdrop-filter:blur(8px);
 transition:.3s;
 color:#fff;
@@ -133,45 +129,54 @@ height:400px;
 object-fit:cover;
 border-radius:10px;
 }
-
-.category-btn{
-margin:5px;
-}
 </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top py-3">
 <div class="container">
 
 <a class="navbar-brand fw-bold text-white" href="index.php">
 🎵 Goods Secret Store
 </a>
 
-<!-- SEARCH -->
-<form class="d-flex ms-4" method="GET">
-<input class="form-control me-2" type="search" name="search"
-placeholder="ค้นหาสินค้า..." value="<?= htmlspecialchars($search) ?>">
-<button class="brand-btn">ค้นหา</button>
+<div class="collapse navbar-collapse">
+
+<div class="ms-auto d-flex align-items-center gap-3">
+
+<!-- SEARCH RIGHT SIDE -->
+<form class="d-flex" method="GET">
+<input class="form-control search-input me-2"
+type="search"
+name="search"
+placeholder="ค้นหาสินค้า..."
+value="<?= htmlspecialchars($search) ?>">
+<button class="brand-btn">
+<i class="bi bi-search"></i>
+</button>
 </form>
 
-<div class="ms-auto d-flex align-items-center gap-2">
+<?php if(isset($_SESSION['user_id'])){ ?>
 
-<a href="cart.php" class="brand-btn position-relative">
+<!-- CART SHOW ONLY WHEN LOGIN -->
+<a href="cart.php" class="btn btn-outline-light position-relative">
 <i class="bi bi-cart"></i>
 <span class="position-absolute top-0 start-100 translate-middle badge bg-danger">
 <?= $cartCount ?>
 </span>
 </a>
 
-<?php if(isset($_SESSION['user_id'])){ ?>
 <a href="logout.php" class="brand-btn">ออกจากระบบ</a>
+
 <?php } else { ?>
+
 <a href="login.php" class="brand-btn">เข้าสู่ระบบ</a>
 <a href="register.php" class="brand-btn">สมัครสมาชิก</a>
+
 <?php } ?>
 
+</div>
 </div>
 </div>
 </nav>
@@ -192,15 +197,13 @@ placeholder="ค้นหาสินค้า..." value="<?= htmlspecialchars($
 
 <!-- CATEGORY BUTTONS -->
 <div class="container text-center mt-4">
-<a href="index.php" class="btn btn-outline-light category-btn">ทั้งหมด</a>
-
+<a href="index.php" class="btn btn-outline-light m-1">ทั้งหมด</a>
 <?php while($cat = $categories->fetch_assoc()){ ?>
 <a href="?category=<?= $cat['slug']; ?>" 
-class="btn btn-outline-light category-btn">
+class="btn btn-outline-light m-1">
 <?= $cat['name']; ?>
 </a>
 <?php } ?>
-
 </div>
 
 <!-- PRODUCTS -->
@@ -208,7 +211,6 @@ class="btn btn-outline-light category-btn">
 <div class="row">
 
 <?php while($p = $products->fetch_assoc()){ ?>
-
 <div class="col-md-4 col-lg-3 mb-4">
 <div class="card product-card p-3 text-center">
 
@@ -229,7 +231,6 @@ class="btn btn-outline-light category-btn">
 
 </div>
 </div>
-
 <?php } ?>
 
 </div>
