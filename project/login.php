@@ -119,7 +119,6 @@ background:#d39ddb;
 
 <a href="google_login.php" class="btn btn-light">
 <img src="https://img.icons8.com/color/20/000000/google-logo.png"/>
- ดำเนินการต่อด้วย Google
 </a>
 
 <a href="facebook_login.php" class="btn btn-primary">
