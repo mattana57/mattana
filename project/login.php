@@ -40,6 +40,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
 <style>
 body{
 background: linear-gradient(135deg,#2a0845,#6a1b9a,#3d1e6d);
@@ -110,6 +112,30 @@ background:#d39ddb;
 
 <button class="btn btn-brand w-100">เข้าสู่ระบบ</button>
 </form>
+
+<hr class="my-4">
+
+<div class="d-grid gap-2">
+
+<a href="google_login.php" class="btn btn-light">
+<img src="https://img.icons8.com/color/20/000000/google-logo.png"/>
+ ดำเนินการต่อด้วย Google
+</a>
+
+<a href="facebook_login.php" class="btn btn-primary">
+<i class="bi bi-facebook"></i>
+ ดำเนินการต่อด้วย Facebook
+</a>
+
+<a href="line_login.php" class="btn" style="background:#06C755;color:white;">
+ ดำเนินการต่อด้วย LINE
+</a>
+
+<a href="x_login.php" class="btn btn-dark">
+ ดำเนินการต่อด้วย X
+</a>
+
+</div>
 
 <p class="mt-3 text-center">
 ยังไม่มีบัญชี ? <a href="register.php">สมัครสมาชิก</a>
