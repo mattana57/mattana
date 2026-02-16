@@ -89,17 +89,17 @@ background:#d39ddb;
 color:#000;
 transform:translateY(-2px);
 }
-.product-card{
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.1);
-border-radius:0;
-backdrop-filter:blur(8px);
-transition:.3s;
+.product-card h6{
+    color:#fff;
+    font-weight:600;
+    text-shadow:0 0 8px rgba(255,255,255,0.4);
 }
-.product-card:hover{
-transform:translateY(-10px);
-box-shadow:0 0 20px #bb86fc;
+
+.product-card p{
+    color:#E0BBE4;
+    font-weight:bold;
 }
+
 </style>
 </head>
 <body>
