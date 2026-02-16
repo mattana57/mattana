@@ -143,5 +143,24 @@ background:#d39ddb;
 
 </div>
 
+<script>
+document.querySelectorAll(".toggle-password").forEach(icon=>{
+    icon.addEventListener("click", function(){
+        let input = document.getElementById(this.dataset.target);
+
+        if(input.type === "password"){
+            input.type = "text";
+            this.classList.remove("bi-eye-slash");
+            this.classList.add("bi-eye");
+        }else{
+            input.type = "password";
+            this.classList.remove("bi-eye");
+            this.classList.add("bi-eye-slash");
+        }
+    });
+});
+</script>
+
+
 </body>
 </html>
