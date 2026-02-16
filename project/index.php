@@ -151,6 +151,44 @@ placeholder="ค้นหาสินค้า...">
 </div>
 </nav>
 
+<!-- BANNER -->
+<div class="container mt-4">
+<div id="mainBanner" class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden"
+     data-bs-ride="carousel"
+     data-bs-interval="3500">
+
+<div class="carousel-inner">
+
+<div class="carousel-item active">
+<img src="images/BN1.png" class="d-block w-100"
+     style="height:420px;object-fit:cover;">
+</div>
+
+<div class="carousel-item">
+<img src="images/BN2.png" class="d-block w-100"
+     style="height:420px;object-fit:cover;">
+</div>
+
+</div>
+
+<!-- ปุ่มเลื่อนซ้าย -->
+<button class="carousel-control-prev" type="button"
+        data-bs-target="#mainBanner"
+        data-bs-slide="prev">
+<span class="carousel-control-prev-icon"></span>
+</button>
+
+<!-- ปุ่มเลื่อนขวา -->
+<button class="carousel-control-next" type="button"
+        data-bs-target="#mainBanner"
+        data-bs-slide="next">
+<span class="carousel-control-next-icon"></span>
+</button>
+
+</div>
+</div>
+
+
 <!-- CATEGORY BUTTONS -->
 <div class="container text-center mt-4">
 
