@@ -2,111 +2,146 @@
 session_start();
 include "connectdb.php";
 
+$error = "";
 
-if(isset($_POST['login'])){
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username=?");
+    $stmt = $conn->prepare("SELECT id, password FROM users WHERE username=?");
     $stmt->bind_param("s",$username);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    if($result->num_rows>0){
+    if($result->num_rows > 0){
         $user = $result->fetch_assoc();
-        if(password_verify($password,$user['password'])){
-            $_SESSION['user_id']=$user['id'];
-            $_SESSION['username']=$user['username'];
-            header("Location:index.php");
+
+        if(password_verify($password, $user['password'])){
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $username;
+
+            header("Location: index.php");
             exit();
-        }else{
-            echo "<script>alert('รหัสผ่านไม่ถูกต้อง');</script>";
+        } else {
+            $error = "รหัสผ่านไม่ถูกต้อง";
         }
-    }else{
-        echo "<script>alert('ไม่พบผู้ใช้งาน');</script>";
+    } else {
+        $error = "ไม่พบผู้ใช้นี้ในระบบ";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>เข้าสู่ระบบ</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
 body{
-background:linear-gradient(135deg,#4b0082,#6a0dad,#8a2be2);
-color:white;
+background: linear-gradient(135deg,#2a0845,#6a1b9a,#3d1e6d);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family:'Segoe UI',sans-serif;
 }
-.form-box{
-background:rgba(255,255,255,0.1);
+
+.card{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(12px);
+border:none;
 padding:40px;
-border-radius:15px;
+width:400px;
+box-shadow:0 0 40px rgba(187,134,252,.4);
+color:#fff;
 }
-.password-wrapper{
-position:relative;
+
+.card h2,
+.card label,
+.card p,
+.card a{
+color:#fff !important;
 }
-.password-wrapper i{
-position:absolute;
-right:15px;
-top:50%;
-transform:translateY(-50%);
-cursor:pointer;
+
+.form-control{
+background:#2a0845;
+border:1px solid #bb86fc;
+color:#fff;
+}
+
+.form-control::placeholder{
 color:#ccc;
+}
+
+.btn-brand{
+background:#E0BBE4;
+color:#2a0845;
+font-weight:600;
+}
+
+.btn-brand:hover{
+background:#d39ddb;
 }
 </style>
 </head>
-
 <body>
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
-<div class="col-md-5 form-box">
-
+<div class="card">
 <h2 class="text-center mb-4">เข้าสู่ระบบ</h2>
 
-<form method="POST">
+<?php if($error){ ?>
+<div class="alert alert-danger"><?= $error ?></div>
+<?php } ?>
 
+<form method="POST">
 <div class="mb-3">
 <label>Username</label>
-<input type="text" name="username" class="form-control" required>
+<input type="text" name="username" class="form-control" autofocus required>
 </div>
 
-<div class="mb-3 password-wrapper">
+<div class="mb-3">
 <label>รหัสผ่าน</label>
-<input type="password" name="password" id="login_password" class="form-control" required>
-<i class="bi bi-eye-slash toggle-password" data-target="login_password"></i>
+<input type="password" name="password" class="form-control" required>
+<i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
 </div>
 
-<button type="submit" name="login" class="btn btn-light w-100">
-เข้าสู่ระบบ
-</button>
-
+<button class="btn btn-brand w-100">เข้าสู่ระบบ</button>
 </form>
 
-</div>
+<hr class="my-4">
+
+<div class="d-grid gap-2">
+
+<a href="google_login.php" class="btn btn-light">
+<img src="https://img.icons8.com/color/20/000000/google-logo.png"/>
+</a>
+
+<a href="facebook_login.php" class="btn btn-primary">
+<i class="bi bi-facebook"></i>
+ ดำเนินการต่อด้วย Facebook
+</a>
+
+<a href="line_login.php" class="btn" style="background:#06C755;color:white;">
+ ดำเนินการต่อด้วย LINE
+</a>
+
+<a href="x_login.php" class="btn btn-dark">
+ ดำเนินการต่อด้วย X
+</a>
+
 </div>
 
-<script>
-document.querySelectorAll(".toggle-password").forEach(icon=>{
-    icon.addEventListener("click", function(){
-        let input = document.getElementById(this.dataset.target);
+<p class="mt-3 text-center">
+ยังไม่มีบัญชี ? <a href="register.php">สมัครสมาชิก</a>
+</p>
 
-        if(input.type === "password"){
-            input.type = "text";
-            this.classList.remove("bi-eye-slash");
-            this.classList.add("bi-eye");
-        }else{
-            input.type = "password";
-            this.classList.remove("bi-eye");
-            this.classList.add("bi-eye-slash");
-        }
-    });
-});
-</script>
+</div>
 
 </body>
 </html>
