@@ -1,6 +1,5 @@
 <?php
 session_start();
-include "connectdb.php";
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -41,6 +40,7 @@ color:#fff;
 color:#ccc;
 }
 
+/* ปุ่มหลักสีแบรนด์ */
 .brand-btn{
 background:#E0BBE4;
 color:#2a0845;
@@ -78,7 +78,7 @@ text-shadow:0 0 15px #bb86fc;
 color:#e1bee7;
 }
 
-/* ================= FILTER ================= */
+/* ================= FILTER BUTTONS ================= */
 .filter-btn{
 border-radius:0;
 font-weight:500;
@@ -129,19 +129,11 @@ font-weight:bold;
 
 <input id="searchInput" class="form-control me-2" placeholder="ค้นหาสินค้า...">
 
-<a href="cart.php" class="brand-btn position-relative">
+<button class="brand-btn position-relative">
 <i class="bi bi-cart"></i>
-<span class="position-absolute top-0 start-100 translate-middle badge bg-danger">
-<?php
-if(isset($_SESSION['user'])){
-$count = $conn->query("SELECT COUNT(*) as c FROM cart WHERE user_id=".$_SESSION['user'])->fetch_assoc();
-echo $count['c'];
-}else{
-echo "0";
-}
-?>
-</span>
-</a>
+<span id="cartCount"
+class="position-absolute top-0 start-100 translate-middle badge bg-danger">0</span>
+</button>
 
 <?php if(isset($_SESSION['user'])){ ?>
 
@@ -157,8 +149,13 @@ data-bs-toggle="dropdown">
 
 <?php } else { ?>
 
-<a href="login.php" class="brand-btn">เข้าสู่ระบบ</a>
-<a href="register.php" class="brand-btn">สมัครสมาชิก</a>
+<a href="login.php" class="brand-btn">
+เข้าสู่ระบบ
+</a>
+
+<a href="register.php" class="brand-btn">
+สมัครสมาชิก
+</a>
 
 <?php } ?>
 
@@ -177,81 +174,63 @@ data-bs-toggle="dropdown">
 <div class="d-flex flex-wrap justify-content-center gap-3">
 
 <button class="btn btn-outline-light filter-btn active" data-category="all">ทั้งหมด</button>
-<button class="btn btn-outline-light filter-btn" data-category="korean-artist">ศิลปินเกาหลี</button>
-<button class="btn btn-outline-light filter-btn" data-category="thai-artist">ศิลปินไทย</button>
-<button class="btn btn-outline-light filter-btn" data-category="korean-manga">มันฮวาเกาหลี</button>
-<button class="btn btn-outline-light filter-btn" data-category="china-manhua">มานฮัวจีน</button>
-<button class="btn btn-outline-light filter-btn" data-category="japan-manga">Manga – มังงะ (ญี่ปุ่น)</button>
-<button class="btn btn-outline-light filter-btn" data-category="thai-comic">Thai Comic – การ์ตูนไทย</button>
+<button class="btn btn-outline-light filter-btn" data-category="kpop">ศิลปินเกาหลี</button>
+<button class="btn btn-outline-light filter-btn" data-category="thai">ศิลปินไทย</button>
+<button class="btn btn-outline-light filter-btn" data-category="manhwa">มันฮวาเกาหลี</button>
+<button class="btn btn-outline-light filter-btn" data-category="manhua">มานฮัวจีน</button>
+<button class="btn btn-outline-light filter-btn" data-category="manga">Manga – มังงะ (ญี่ปุ่น)</button>
+<button class="btn btn-outline-light filter-btn" data-category="thaicomic">Thai Comic – การ์ตูนไทย</button>
 
 </div>
 </div>
 
 <!-- ================= PRODUCTS ================= -->
 <div class="container">
-<div class="row" id="productList">
-
-<?php
-$result = $conn->query("
-SELECT products.*, categories.slug 
-FROM products 
-LEFT JOIN categories ON products.category_id = categories.id
-");
-
-while($p = $result->fetch_assoc()){
-?>
-
-<div class="col-md-4 col-lg-3 mb-4 product-item"
-data-category="<?= $p['slug']; ?>"
-data-name="<?= strtolower($p['name']); ?>">
-
-<div class="card product-card p-3 text-center">
-<img src="images/<?= $p['image']; ?>" class="img-fluid mb-3">
-<h6><?= $p['name']; ?></h6>
-<p><?= number_format($p['price']); ?> บาท</p>
-
-<a href="product.php?id=<?= $p['id']; ?>" class="brand-btn w-100">
-ดูรายละเอียด
-</a>
-
-</div>
-</div>
-
-<?php } ?>
-
-</div>
+<div class="row" id="productList"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
-// FILTER
+const products = [
+{ id:1,name:"BTS Lightstick",price:2500,category:"kpop",img:"https://via.placeholder.com/300"},
+{ id:2,name:"Solo Leveling",price:900,category:"manhwa",img:"https://via.placeholder.com/300"},
+{ id:3,name:"Heaven Official",price:1100,category:"manhua",img:"https://via.placeholder.com/300"},
+{ id:4,name:"One Piece Vol.1",price:350,category:"manga",img:"https://via.placeholder.com/300"},
+{ id:5,name:"ขายหัวเราะ",price:120,category:"thaicomic",img:"https://via.placeholder.com/300"},
+];
+
+function renderProducts(filter="all"){
+const list=document.getElementById("productList");
+list.innerHTML="";
+
+products
+.filter(p=>filter==="all"||p.category===filter)
+.forEach(p=>{
+list.innerHTML+=`
+<div class="col-md-4 col-lg-3 mb-4">
+<div class="card product-card p-3 text-center">
+<img src="${p.img}" class="img-fluid mb-3">
+<h6>${p.name}</h6>
+<p>${p.price} บาท</p>
+<button class="brand-btn w-100">
+เพิ่มลงตะกร้า
+</button>
+</div>
+</div>`;
+});
+}
+
 document.querySelectorAll(".filter-btn").forEach(btn=>{
 btn.addEventListener("click",function(){
 document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
 this.classList.add("active");
-
-let category=this.dataset.category;
-
-document.querySelectorAll(".product-item").forEach(item=>{
-if(category==="all" || item.dataset.category===category){
-item.style.display="block";
-}else{
-item.style.display="none";
-}
-});
+renderProducts(this.dataset.category);
 });
 });
 
-// SEARCH
-document.getElementById("searchInput").addEventListener("keyup",function(){
-let keyword=this.value.toLowerCase();
-document.querySelectorAll(".product-item").forEach(item=>{
-let name=item.dataset.name;
-item.style.display = name.includes(keyword) ? "block":"none";
-});
-});
+renderProducts();
 
 </script>
 
