@@ -52,6 +52,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <title>สมัครสมาชิก</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
 body{
@@ -99,6 +100,19 @@ font-weight:600;
 .btn-brand:hover{
 background:#d39ddb;
 }
+
+.password-wrapper{
+    position: relative;
+}
+
+.password-wrapper i{
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
 </style>
 </head>
 <body>
@@ -150,7 +164,7 @@ background:#d39ddb;
     <input type="password" id="password" class="form-control" required>
     <i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
 </div>
-
+<br>
 <button class="btn btn-brand w-100">สมัครสมาชิก</button>
 
 </form>
