@@ -126,16 +126,29 @@ background:#d39ddb;
 <input type="text" name="phone" class="form-control" required>
 </div>
 
-<div class="mb-3">
+<!--<div class="mb-3">
 <label>รหัสผ่าน</label>
 <input type="password" name="password" class="form-control" required>
 <i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
+</div> -->
+
+<div class="password-wrapper">
+    <label>รหัสผ่าน</label>
+    <input type="password" id="password" class="form-control" required>
+    <i class="bi bi-eye-slash toggle-password" data-target="password"></i>
 </div>
 
-<div class="mb-3">
+
+<!--<div class="mb-3">
 <label>ยืนยันรหัสผ่าน</label>
 <input type="password" name="confirm_password" class="form-control" required>
 <i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
+</div> -->
+
+<div class="password-wrapper">
+    <label>ยืนยันรหัสผ่าน</label>
+    <input type="password" id="password" class="form-control" required>
+    <i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
 </div>
 
 <button class="btn btn-brand w-100">สมัครสมาชิก</button>
