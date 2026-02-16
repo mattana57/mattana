@@ -13,7 +13,6 @@ if(isset($_GET['add'])){
     $product_id = intval($_GET['add']);
     $user_id = $_SESSION['user_id'];
 
-    // เช็คก่อนว่ามีอยู่แล้วไหม
     $stmt = $conn->prepare("SELECT id FROM cart WHERE user_id=? AND product_id=?");
     $stmt->bind_param("ii",$user_id,$product_id);
     $stmt->execute();
@@ -33,14 +32,12 @@ if(isset($_GET['add'])){
     exit();
 }
 
-/* ================= GET PRODUCTS ================= */
 $products = $conn->query("
 SELECT products.*, categories.slug 
 FROM products 
 LEFT JOIN categories ON products.category_id = categories.id
 ");
 
-/* ================= CART COUNT ================= */
 $cartCount = 0;
 if(isset($_SESSION['user_id'])){
     $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id=?");
@@ -61,7 +58,6 @@ if(isset($_SESSION['user_id'])){
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-/* ===== GLOBAL THEME ===== */
 body{
 background:
 radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%),
@@ -71,10 +67,12 @@ background-attachment: fixed;
 color:#fff;
 font-family:'Segoe UI',sans-serif;
 }
+
 .navbar{
 background:linear-gradient(90deg,#1a0028,#3d1e6d);
 padding:15px 0;
 }
+
 .brand-btn{
 background:#E0BBE4;
 color:#2a0845;
@@ -84,22 +82,37 @@ font-weight:600;
 padding:8px 18px;
 transition:.3s;
 }
+
 .brand-btn:hover{
 background:#d39ddb;
 color:#000;
 transform:translateY(-2px);
 }
-.product-card h6{
-    color:#fff;
-    font-weight:600;
-    text-shadow:0 0 8px rgba(255,255,255,0.4);
+
+.product-card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:0;
+backdrop-filter:blur(8px);
+transition:.3s;
+color:#fff;
 }
 
-.product-card p{
-    color:#E0BBE4;
-    font-weight:bold;
+.product-card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 20px #bb86fc;
 }
 
+/* ================= BANNER ================= */
+.carousel-item img{
+height:400px;
+object-fit:cover;
+border-radius:10px;
+}
+
+.carousel{
+margin-top:20px;
+}
 </style>
 </head>
 <body>
@@ -131,6 +144,33 @@ transform:translateY(-2px);
 </div>
 </div>
 </nav>
+
+<!-- ================= BANNER SLIDER ================= -->
+<div class="container">
+<div id="mainBanner" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+
+<div class="carousel-inner">
+
+<div class="carousel-item active">
+<img src="images/BN1.png" class="d-block w-100">
+</div>
+
+<div class="carousel-item">
+<img src="images/BN2.png" class="d-block w-100">
+</div>
+
+</div>
+
+<button class="carousel-control-prev" type="button" data-bs-target="#mainBanner" data-bs-slide="prev">
+<span class="carousel-control-prev-icon"></span>
+</button>
+
+<button class="carousel-control-next" type="button" data-bs-target="#mainBanner" data-bs-slide="next">
+<span class="carousel-control-next-icon"></span>
+</button>
+
+</div>
+</div>
 
 <!-- PRODUCTS -->
 <div class="container my-5">
@@ -164,24 +204,7 @@ transform:translateY(-2px);
 </div>
 </div>
 
-<script>
-// Filter แบบเดิม
-document.querySelectorAll(".filter-btn").forEach(btn=>{
-btn.addEventListener("click",function(){
-document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
-this.classList.add("active");
-
-let category=this.dataset.category;
-document.querySelectorAll(".product-item").forEach(item=>{
-if(category==="all"||item.dataset.category===category){
-item.style.display="block";
-}else{
-item.style.display="none";
-}
-});
-});
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
