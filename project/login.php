@@ -88,6 +88,18 @@ font-weight:600;
 .btn-brand:hover{
 background:#d39ddb;
 }
+
+.password-wrapper{
+    position: relative;
+}
+
+.password-wrapper i{
+    position: absolute;
+    right: 15px;
+    top: 70%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -104,11 +116,17 @@ background:#d39ddb;
 <label>Username</label>
 <input type="text" name="username" class="form-control" autofocus required>
 </div>
-
+<!--
 <div class="mb-3">
 <label>รหัสผ่าน</label>
 <input type="password" name="password" class="form-control" required>
 <i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
+</div> -->
+
+<div class="password-wrapper">
+    <label>รหัสผ่าน</label>
+    <input type="password" name="password" class="form-control" required>
+    <i class="bi bi-eye-slash toggle-password" data-target="password"></i>
 </div>
 
 <button class="btn btn-brand w-100">เข้าสู่ระบบ</button>

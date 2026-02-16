@@ -108,7 +108,7 @@ background:#d39ddb;
 .password-wrapper i{
     position: absolute;
     right: 15px;
-    top: 75%;
+    top: 70%;
     transform: translateY(-50%);
     cursor: pointer;
 }
@@ -148,7 +148,7 @@ background:#d39ddb;
 
 <div class="password-wrapper">
     <label>รหัสผ่าน</label>
-    <input type="password" id="password" class="form-control" required>
+    <input type="password" name="password" class="form-control" required>
     <i class="bi bi-eye-slash toggle-password" data-target="password"></i>
 </div>
 
@@ -161,7 +161,7 @@ background:#d39ddb;
 
 <div class="password-wrapper">
     <label>ยืนยันรหัสผ่าน</label>
-    <input type="password" id="password" class="form-control" required>
+    <input type="password" name="password" class="form-control" required>
     <i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
 </div>
 <br>
