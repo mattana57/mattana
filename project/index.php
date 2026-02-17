@@ -37,7 +37,7 @@ if(isset($_SESSION['user_id'])){
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-/* --- Neon Glassmorphism Theme --- */
+/* --- Neon Glassmorphism Theme (คงเดิมของคุณ) --- */
 body {
     background: radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%), 
                 radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%), 
@@ -45,7 +45,6 @@ body {
     color: #fff; font-family: 'Segoe UI', sans-serif; min-height: 100vh;
 }
 
-/* Navbar แบบลอยและโปร่งแสง */
 .navbar { 
     background: rgba(26, 0, 40, 0.85) !important; 
     backdrop-filter: blur(15px); 
@@ -53,7 +52,6 @@ body {
     border-bottom: 1px solid rgba(187, 134, 252, 0.2); 
 }
 
-/* ปุ่มเมนูด้านบน */
 .modern-btn { 
     background: rgba(255,255,255,0.1); color:#fff; 
     border: 1px solid rgba(255,255,255,0.2); 
@@ -62,7 +60,6 @@ body {
 }
 .modern-btn:hover, .active-category { background: #bb86fc; color: #120018; border-color: #bb86fc; box-shadow: 0 0 15px #bb86fc; }
 
-/* การ์ดสินค้ากดได้ทั้งใบ */
 .product-card {
     background: rgba(255, 255, 255, 0.03); 
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -75,88 +72,40 @@ body {
     border-color: #bb86fc; box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(187, 134, 252, 0.3);
 }
 
-/* ปุ่มลงตะกร้านีออนม่วง */
 .btn-neon-purple {
     background: rgba(187, 134, 252, 0.1); border: 1px solid #bb86fc; color: #bb86fc;
     font-weight: 600; border-radius: 12px; transition: 0.3s;
 }
 .btn-neon-purple:hover { background: #bb86fc; color: #120018; box-shadow: 0 0 15px #bb86fc; }
 
-/* ปุ่มสั่งซื้อนีออนชมพู */
 .btn-neon-pink {
     background: linear-gradient(135deg, #f107a3, #ff0080); border: none; color: white;
     font-weight: bold; border-radius: 12px; transition: 0.3s;
 }
 .btn-neon-pink:hover { transform: scale(1.05); box-shadow: 0 0 20px #f107a3; color: white; }
 
-.section-title { border-left: 5px solid #f107a3; padding-left: 15px; margin-bottom: 30px; font-weight: 700; text-shadow: 0 0 10px rgba(241, 7, 163, 0.5); }
+.section-title { border-left: 5px solid #f107a3; padding-left: 15px; margin-bottom: 30px; font-weight: 700; color: #ffffff; text-shadow: 0 0 10px rgba(241, 7, 163, 0.8); }
 .badge-cart { position: absolute; top: -5px; right: -5px; background: #f107a3; color: white; font-size: 10px; padding: 3px 7px; border-radius: 50%; font-weight: bold; }
 
-body {
-    background: radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%), 
-                radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%), 
-                linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
-    color: #ffffff; /* ปรับเป็นขาวบริสุทธิ์ */
-    font-family: 'Segoe UI', sans-serif;
-    min-height: 100vh;
-}
-
-.product-card h6 {
-    color: #ffffff !important; /* ชื่อสินค้าต้องขาวชัดเจน */
-    font-weight: 600;
-}
-
-.text-info {
-    color: #00f2fe !important; /* ปรับราคาสี Cyan Neon ตัดกับพื้นหลังม่วงได้ดีกว่า */
-    text-shadow: 0 0 5px rgba(0, 242, 254, 0.5);
-}
-
-.section-title { 
-    border-left: 5px solid #f107a3; 
-    padding-left: 15px; 
-    margin-bottom: 30px; 
-    font-weight: 700; 
-    color: #ffffff; /* หัวข้อขาวสว่าง */
-    text-shadow: 0 0 10px rgba(241, 7, 163, 0.8); 
-}
-
-/* ปรับปรุงช่องค้นหาให้โดดเด่นขึ้น */
 .search-input {
-    background: #c6a9cdd5 !important; /* เพิ่มความสว่างของพื้นหลังช่องค้นหา */
-    border: 1px solid rgba(187, 134, 252, 0.5) !important; /* เพิ่มเส้นขอบสีม่วงนีออนจางๆ */
-    color: #ffffff !important; /* กำหนดตัวอักษรเป็นสีขาวบริสุทธิ์ */
+    background: #c6a9cdd5 !important;
+    border: 1px solid rgba(187, 134, 252, 0.5) !important;
+    color: #ffffff !important;
     border-radius: 25px !important;
     padding-left: 20px !important;
     transition: all 0.3s ease;
 }
 
-/* เอฟเฟกต์เมื่อคลิกที่ช่องค้นหา */
-.search-input:focus {
-    background: rgba(255, 255, 255, 0.25) !important;
-    border-color: #bb86fc !important;
-    box-shadow: 0 0 10px rgba(187, 134, 252, 0.5) !important;
-    outline: none;
-}
-
-/* ปรับสีตัวอักษร Placeholder (คำเกริ่นในช่อง) */
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-}
-
-/* ดีไซน์ Modal แบบ Glassmorphism */
 .modal-content.custom-popup {
     background: rgba(26, 0, 40, 0.85);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(187, 134, 252, 0.3);
     border-radius: 25px;
     color: #fff;
-    box-shadow: 0 0 30px rgba(187, 134, 252, 0.2);
 }
 
-/* ไอคอนนีออนกะพริบ */
 .neon-icon {
-    font-size: 4rem;
-    color: #bb86fc;
+    font-size: 4rem; color: #bb86fc;
     text-shadow: 0 0 10px #bb86fc, 0 0 20px #bb86fc;
     animation: neon-glow 1.5s ease-in-out infinite alternate;
 }
@@ -166,21 +115,10 @@ body {
     to { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #f107a3, 0 0 30px #f107a3; color: #f107a3; }
 }
 
-/* ปุ่มตกลงดีไซน์ใหม่ */
 .btn-neon-close {
     background: linear-gradient(135deg, #bb86fc, #7c3aed);
-    border: none;
-    border-radius: 30px;
-    padding: 10px 40px;
-    font-weight: 600;
-    color: white;
-    transition: 0.3s;
-}
-
-.btn-neon-close:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(187, 134, 252, 0.5);
-    color: white;
+    border: none; border-radius: 30px; padding: 10px 40px;
+    font-weight: 600; color: white; transition: 0.3s;
 }
 </style>
 </head>
@@ -194,10 +132,17 @@ body {
             <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาความสินค้า...">
             <button class="modern-btn"><i class="bi bi-search"></i></button>
         </form>
+        
         <?php if(isset($_SESSION['user_id'])){ ?>
+            <a href="profile.php" class="modern-btn" title="บัญชีของฉัน">
+                <i class="bi bi-person-circle"></i> บัญชีของฉัน
+            </a>
+
             <a href="cart.php" class="modern-btn position-relative">
                 <i class="bi bi-cart"></i>
-                <span id="cart-badge" class="badge-cart" style="<?= ($cart_count > 0) ? '' : 'display:none;' ?>"><?= $cart_count ?></span>
+                <span id="cart-badge" class="badge-cart" style="<?= ($cart_count > 0) ? '' : 'display:none;' ?>">
+                    <?= $cart_count ?>
+                </span>
             </a>
             <a href="logout.php" class="modern-btn">ออกจากระบบ</a>
         <?php } else { ?>
@@ -226,14 +171,13 @@ body {
 
 <div class="container my-5">
     <?php if($showLanding){ ?>
-        
         <h4 class="section-title">⭐ สินค้าแนะนำ</h4>
         <div class="row mb-5">
             <?php while($p = $recommended->fetch_assoc()){ ?>
             <div class="col-md-3 mb-4">
                 <div class="card product-card p-3 text-center h-100" onclick="location.href='product.php?id=<?= $p['id'] ?>'">
                     <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded-4" style="height:200px; object-fit:cover;">
-                    <h6 class="text-truncate px-2"><?= $p['name']; ?></h6>
+                    <h6 class="text-truncate px-2 text-white"><?= $p['name']; ?></h6>
                     <p class="text-info fw-bold mb-3"><?= number_format($p['price']); ?> บาท</p>
                     <div class="mt-auto d-flex gap-2 p-2" onclick="event.stopPropagation();">
                         <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-neon-purple btn-sm w-50 py-2">ลงตะกร้า</button>
@@ -250,7 +194,7 @@ body {
             <div class="col-md-3 mb-4">
                 <div class="card product-card p-3 text-center h-100" onclick="location.href='product.php?id=<?= $p['id'] ?>'">
                     <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded-4" style="height:200px; object-fit:cover;">
-                    <h6 class="text-truncate px-2"><?= $p['name']; ?></h6>
+                    <h6 class="text-truncate px-2 text-white"><?= $p['name']; ?></h6>
                     <p class="text-info fw-bold mb-3"><?= number_format($p['price']); ?> บาท</p>
                     <div class="mt-auto d-flex gap-2 p-2" onclick="event.stopPropagation();">
                         <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-neon-purple btn-sm w-50 py-2">ลงตะกร้า</button>
@@ -260,27 +204,6 @@ body {
             </div>
             <?php } ?>
         </div>
-
-        <h4 class="section-title">🔥 สินค้าลดราคา</h4>
-        <div class="row">
-            <?php while($p = $discountProducts->fetch_assoc()){ ?>
-            <div class="col-md-3 mb-4">
-                <div class="card product-card p-3 text-center h-100" onclick="location.href='product.php?id=<?= $p['id'] ?>'">
-                    <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded-4" style="height:200px; object-fit:cover;">
-                    <h6 class="text-truncate px-2"><?= $p['name']; ?></h6>
-                    <p class="mb-3">
-                        <span class="text-danger fw-bold"><?= number_format($p['price'] - $p['discount']); ?> บาท</span>
-                        <small class="text-light opacity-50 text-decoration-line-through ms-1"><?= number_format($p['price']); ?></small>
-                    </p>
-                    <div class="mt-auto d-flex gap-2 p-2" onclick="event.stopPropagation();">
-                        <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-neon-purple btn-sm w-50 py-2">ลงตะกร้า</button>
-                        <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-neon-pink btn-sm w-50 py-2 d-flex align-items-center justify-content-center text-decoration-none">สั่งซื้อ</a>
-                    </div>
-                </div>
-            </div>
-            <?php } ?>
-        </div>
-
     <?php } else { ?>
         <h4 class="section-title">🔍 ผลลัพธ์การค้นหา</h4>
         <div class="row">
@@ -288,7 +211,7 @@ body {
             <div class="col-md-3 mb-4">
                 <div class="card product-card p-3 text-center h-100" onclick="location.href='product.php?id=<?= $p['id'] ?>'">
                     <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded-4" style="height:200px; object-fit:cover;">
-                    <h6 class="text-truncate px-2"><?= $p['name']; ?></h6>
+                    <h6 class="text-truncate px-2 text-white"><?= $p['name']; ?></h6>
                     <p class="text-info fw-bold mb-3"><?= number_format($p['price']); ?> บาท</p>
                     <div class="mt-auto d-flex gap-2 p-2" onclick="event.stopPropagation();">
                         <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-neon-purple btn-sm w-50 py-2">ลงตะกร้า</button>
@@ -305,9 +228,7 @@ body {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content custom-popup">
             <div class="modal-body text-center py-5">
-                <div class="mb-4">
-                    <i class="bi bi-magic neon-icon"></i>
-                </div>
+                <div class="mb-4"><i class="bi bi-magic neon-icon"></i></div>
                 <h3 class="fw-bold mb-3" style="color: #00f2fe;">เพิ่มสินค้าสำเร็จ!</h3>
                 <p class="fs-5 opacity-75 mb-4">สินค้าชิ้นนี้ถูกเพิ่มลงในตะกร้าของคุณแล้ว 🔮</p>
                 <button type="button" class="btn btn-neon-close" data-bs-dismiss="modal">ตกลง</button>
@@ -315,29 +236,19 @@ body {
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function addToCart(productId) {
-    // ส่งข้อมูลแบบ AJAX ไปยัง add_to_cart.php
+function addToCart(productId) {
     fetch('add_to_cart.php?id=' + productId + '&ajax=1')
     .then(response => response.json())
     .then(data => {
         if(data.status === 'success') {
-            // 1. อัปเดตตัวเลขที่ไอคอนตะกร้าบน Navbar
             const badge = document.getElementById('cart-badge');
-            if(badge) { 
-                badge.textContent = data.total; 
-                badge.style.display = 'block'; 
-            }
-            
-            // 2. เรียกใช้ Bootstrap Modal สวยๆ แทน alert() แบบเดิม
+            if(badge) { badge.textContent = data.total; badge.style.display = 'block'; }
             var myModal = new bootstrap.Modal(document.getElementById('cartModal'));
             myModal.show();
-            
-        } else { 
-            // กรณีไม่ได้ Login ให้เด้งไปหน้า Login
-            window.location.href = 'login.php'; 
-        }
+        } else { window.location.href = 'login.php'; }
     })
     .catch(error => console.error('Error:', error));
 }
