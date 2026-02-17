@@ -150,7 +150,7 @@ $items_q = $conn->query("SELECT od.*, p.name FROM order_details od JOIN products
             <div class="modal-body">
                 <i class="bi bi-exclamation-triangle text-warning display-1 mb-4"></i>
                 <h3 class="text-neon-purple fw-bold mb-3">ยืนยันการยกเลิก?</h3>
-                <p class="opacity-75 mb-4">คุณแน่ใจหรือไม่ที่จะยกเลิกคำสั่งซื้อายการนี้? การกระทำนี้ไม่สามารถย้อนคืนได้</p>
+                <p class="opacity-75 mb-4">คุณแน่ใจหรือไม่ที่จะยกเลิกคำสั่งซื้อรายการนี้? การกระทำนี้ไม่สามารถย้อนคืนได้</p>
                 <form method="POST">
                     <div class="d-flex gap-2 justify-content-center">
                         <button type="button" class="btn btn-outline-light px-4 rounded-pill" data-bs-dismiss="modal">ไม่ยกเลิก</button>
