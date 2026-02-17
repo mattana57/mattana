@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// --- [ส่วนที่ปรับเพิ่ม 1]: ระบบจัดการจำนวนสินค้า (Action) ---
+// --- [ส่วนที่แทรกเพิ่ม 1]: ระบบจัดการจำนวนสินค้า (บวกลบ) ---
 if (isset($_GET['action']) && isset($_GET['product_id'])) {
     $p_id = intval($_GET['product_id']);
     $v_id = isset($_GET['variant_id']) ? intval($_GET['variant_id']) : 0;
@@ -23,7 +23,7 @@ if (isset($_GET['action']) && isset($_GET['product_id'])) {
     exit();
 }
 
-// --- [ส่วนที่ปรับเพิ่ม 2]: แก้ไขฟังก์ชันลบให้เช็ค Variant ID ด้วย ---
+// --- [ส่วนที่แทรกเพิ่ม 2]: แก้ไขฟังก์ชันลบเดิมให้เช็ค variant_id ด้วย เพื่อไม่ให้ลบผิดแบบ ---
 if (isset($_GET['delete_id'])) {
     $del_id = intval($_GET['delete_id']);
     $v_id = isset($_GET['variant_id']) ? intval($_GET['variant_id']) : 0;
@@ -32,7 +32,7 @@ if (isset($_GET['delete_id'])) {
     exit();
 }
 
-// --- [ส่วนที่ปรับเพิ่ม 3]: แก้ไข Query ให้ดึงชื่อแบบสินค้า (Variant Name) มาด้วย ---
+// --- [ส่วนที่แทรกเพิ่ม 3]: แก้ไข Query ให้ดึงชื่อแบบสินค้า (variant_name) มาแสดงด้วย ---
 $sql = "SELECT cart.*, products.name, products.price, products.image, pv.variant_name 
         FROM cart 
         JOIN products ON cart.product_id = products.id 
@@ -49,7 +49,7 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        /* CSS เดิมของคุณทั้งหมด (คงไว้ 100%) */
+        /* --- [โค้ด CSS เดิมของคุณทั้งหมด] --- */
         body {
             background-color: #0f172a;
             color: #ffffff !important;
@@ -57,28 +57,52 @@ $result = $conn->query($sql);
                               radial-gradient(circle at bottom left, #1e1b4b, transparent);
             min-height: 100vh;
         }
-        h2, h4, h5 { color: #ffffff !important; font-weight: 700; }
+        h2, h4, h5 {
+            color: #ffffff !important;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
         .table { color: #ffffff !important; }
-        .table thead th { color: #bb86fc !important; border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important; }
-        .text-neon-cyan { color: #00f2fe !important; text-shadow: 0 0 12px rgba(0, 242, 254, 0.6); }
+        .table thead th {
+            color: #bb86fc !important;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+        .fw-bold.text-white, .fs-5.text-white { color: #ffffff !important; }
+        .text-secondary-bright { color: #e2e8f0 !important; }
+        .text-neon-cyan {
+            color: #00f2fe !important; 
+            text-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+        }
         .glass-panel {
             background: rgba(255, 255, 255, 0.03) !important;
             backdrop-filter: blur(10px);
-            border: 1.5px solid rgba(187, 134, 252, 0.3) !important;
+            border: 1.5px solid rgba(187, 134, 252, 0.3) !important; 
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(187, 134, 252, 0.1) !important; 
             padding: 25px;
+            transition: all 0.3s ease;
         }
-        .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }
+        .glass-panel:hover {
+            border-color: rgba(187, 134, 252, 0.6) !important;
+            transform: translateY(-5px);
+        }
+        .table { --bs-table-bg: transparent !important; background-color: transparent !important; }
+        .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
         .btn-checkout {
             background: linear-gradient(135deg, #f107a3, #ff0080) !important;
             border: none !important; color: #ffffff !important; font-weight: 700;
-            padding: 15px; border-radius: 50px; width: 100%; box-shadow: 0 5px 20px rgba(241, 7, 163, 0.5);
+            padding: 15px 30px; border-radius: 50px; transition: 0.4s;
+            box-shadow: 0 5px 20px rgba(241, 7, 163, 0.5); width: 100%;
         }
-        .btn-remove { color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; cursor: pointer; }
-        .btn-remove:hover { color: #ff4d4d; }
+        .btn-checkout:hover { transform: translateY(-5px); filter: brightness(1.2); }
+        .btn-remove { color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; transition: 0.3s; cursor: pointer; }
+        .btn-remove:hover { color: #ff4d4d; transform: rotate(15deg) scale(1.2); }
+        .modal-content.delete-popup { background: rgba(40, 0, 10, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255, 77, 77, 0.3); border-radius: 25px; color: #fff; }
 
-        /* [สไตล์ที่ปรับเพิ่ม]: สำหรับปุ่มบวกลบ */
+        /* --- [ส่วนที่แทรกเพิ่ม]: สไตล์สำหรับปุ่มบวกลบ --- */
         .qty-btn { color: #bb86fc; font-size: 1.2rem; text-decoration: none; transition: 0.2s; }
         .qty-btn:hover { color: #00f2fe; transform: scale(1.1); }
         .qty-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(187,134,252,0.3); border-radius: 8px; min-width: 40px; display: inline-block; }
@@ -193,16 +217,16 @@ $result = $conn->query($sql);
     </div>
 </div>
 
-<div class=\"modal fade\" id=\"deleteConfirmModal\" tabindex=\"-1\" aria-hidden=\"true\">
-    <div class=\"modal-dialog modal-dialog-centered\">
-        <div class=\"modal-content delete-popup\">
-            <div class=\"modal-body text-center py-5\">
-                <div class=\"mb-4\"><i class=\"bi bi-trash3 neon-delete-icon\" style=\"font-size: 4rem; color: #ff4d4d;\"></i></div>
-                <h3 class=\"fw-bold mb-3\" style=\"color: #ff4d4d;\">ยืนยันการลบ?</h3>
-                <p class=\"fs-5 opacity-75 mb-4 text-white\">ลบสินค้าชิ้นนี้ออกจากตะกร้า?</p>
-                <div class=\"d-flex justify-content-center gap-3\">
-                    <button type=\"button\" class=\"btn btn-outline-light rounded-pill px-4\" data-bs-dismiss=\"modal\">ยกเลิก</button>
-                    <a id=\"confirmDeleteBtn\" href=\"#\" class=\"btn btn-danger rounded-pill px-4 text-decoration-none\">ยืนยัน</a>
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content delete-popup">
+            <div class="modal-body text-center py-5">
+                <div class="mb-4"><i class="bi bi-trash3 neon-delete-icon" style="font-size: 4rem; color: #ff4d4d;"></i></div>
+                <h3 class="fw-bold mb-3" style="color: #ff4d4d;">ยืนยันการลบ?</h3>
+                <p class="fs-5 opacity-75 mb-4 text-white">ลบสินค้าชิ้นนี้ออกจากตะกร้า?</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">ยกเลิก</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger rounded-pill px-4 text-decoration-none">ยืนยัน</a>
                 </div>
             </div>
         </div>
@@ -211,7 +235,7 @@ $result = $conn->query($sql);
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // [ปรับเพิ่ม]: ฟังก์ชันลบให้รองรับ variantId
+    // [แทรกเพิ่ม]: ฟังก์ชันลบให้รองรับ variantId
     function showDeleteModal(productId, variantId) {
         const deleteUrl = 'cart.php?delete_id=' + productId + '&variant_id=' + variantId;
         document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
