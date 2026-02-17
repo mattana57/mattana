@@ -117,14 +117,14 @@ background:#d39ddb;
 </head>
 <body>
 
-<div class="card">
-<h2 class="text-center mb-4" >สมัครสมาชิก</h2>
+<div class="card p-4">
+<h2 class="text-center mb-4">สมัครสมาชิก</h2>
 
-<?php if($error){ ?>
+<?php if(!empty($error)){ ?>
 <div class="alert alert-danger"><?= $error ?></div>
 <?php } ?>
 
-<?php if($success){ ?>
+<?php if(!empty($success)){ ?>
 <div class="alert alert-success"><?= $success ?></div>
 <?php } ?>
 
@@ -132,7 +132,7 @@ background:#d39ddb;
 
 <div class="mb-3">
 <label>Username</label>
-<input type="text" name="username" class="form-control" autofocus required>
+<input type="text" name="username" class="form-control" required autofocus>
 </div>
 
 <div class="mb-3">
@@ -140,34 +140,31 @@ background:#d39ddb;
 <input type="text" name="phone" class="form-control" required>
 </div>
 
-<!--<div class="mb-3">
+<div class="mb-3 position-relative">
 <label>รหัสผ่าน</label>
-<input type="password" name="password" class="form-control" required>
-<i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
-</div> -->
-
-<div class="password-wrapper">
-    <label>รหัสผ่าน</label>
-    <input type="password" name="password" class="form-control" required>
-    <i class="bi bi-eye-slash toggle-password" data-target="password"></i>
+<input type="password" id="password" name="password" class="form-control" required>
+<i class="bi bi-eye-slash toggle-password"
+   data-target="password"
+   style="position:absolute; right:15px; top:38px; cursor:pointer;"></i>
 </div>
 
-
-<!--<div class="mb-3">
+<div class="mb-3 position-relative">
 <label>ยืนยันรหัสผ่าน</label>
-<input type="password" name="confirm_password" class="form-control" required>
-<i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
-</div> -->
-
-<div class="password-wrapper">
-    <label>ยืนยันรหัสผ่าน</label>
-    <input type="password" name="password" class="form-control" required>
-    <i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
+<input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+<i class="bi bi-eye-slash toggle-password"
+   data-target="confirm_password"
+   style="position:absolute; right:15px; top:38px; cursor:pointer;"></i>
 </div>
+
 <br>
-<button class="btn btn-brand w-100">สมัครสมาชิก</button>
+
+<button type="submit" class="btn btn-brand w-100">
+สมัครสมาชิก
+</button>
 
 </form>
+</div>
+
 
 <hr class="my-4">
 
@@ -200,22 +197,22 @@ background:#d39ddb;
 </div>
 
 <script>
-document.querySelectorAll(".toggle-password").forEach(icon=>{
-    icon.addEventListener("click", function(){
-        let input = document.getElementById(this.dataset.target);
-
-        if(input.type === "password"){
-            input.type = "text";
+document.querySelectorAll('.toggle-password').forEach(function(icon){
+    icon.addEventListener('click', function(){
+        const target = document.getElementById(this.dataset.target);
+        if(target.type === "password"){
+            target.type = "text";
             this.classList.remove("bi-eye-slash");
             this.classList.add("bi-eye");
-        }else{
-            input.type = "password";
+        } else {
+            target.type = "password";
             this.classList.remove("bi-eye");
             this.classList.add("bi-eye-slash");
         }
     });
 });
 </script>
+
 
 
 </body>
