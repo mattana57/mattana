@@ -72,16 +72,16 @@ if(session_status() === PHP_SESSION_NONE){
             🎵 Goods Secret Store
         </div>
 
-        <!-- ค้นหา -->
-        <form method="GET" class="d-flex">
-        <input class="form-control me-2" type="search" name="search" placeholder="ค้นหาสินค้า...">
-        <button class="modern-btn">
-            <i class="bi bi-search"></i>
-        </button>
-        </form>
 
         <!-- เมนูด้านขวา -->
         <div class="nav-right d-flex align-items-center gap-3">
+            <!-- ค้นหา -->
+            <form method="GET" class="d-flex">
+            <input class="form-control me-2" type="search" name="search" placeholder="ค้นหาสินค้า...">
+            <button class="modern-btn">
+                <i class="bi bi-search">ค้นหา</i>
+            </button>
+            </form>
 
             <?php if(isset($_SESSION['user_id'])){ ?>
 
