@@ -13,7 +13,6 @@ if(!$product){
     exit();
 }
 
-/* --- ส่วนที่เพิ่ม: ดึงจำนวนสินค้ามาโชว์ที่บาร์ให้เหมือนหน้าแรก --- */
 $cart_count = 0;
 if(isset($_SESSION['user_id'])){
     $u_id = $_SESSION['user_id'];
@@ -32,12 +31,12 @@ if(isset($_SESSION['user_id'])){
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <style>
-/* --- Neon Mystery Theme & Typography Adjustment --- */
+/* --- ธีมหลักและสไตล์ดั้งเดิมของคุณทั้งหมด --- */
 body {
     background: radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%), 
                 radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%), 
                 linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
-    color: #ffffff; /* ปรับตัวอักษรเป็นขาวบริสุทธิ์ให้อ่านง่าย */
+    color: #ffffff !important;
     font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
 }
@@ -51,7 +50,6 @@ body {
     border-bottom: 1px solid rgba(187, 134, 252, 0.2); 
 }
 
-/* Glass Panel Styling */
 .product-card-panel { 
     background: rgba(255, 255, 255, 0.05); 
     backdrop-filter: blur(15px); 
@@ -68,38 +66,24 @@ body {
 }
 
 .product-price { 
-    color: #00f2fe; /* สี Cyan Neon ตัดกับธีมและอ่านง่ายขึ้น */
+    color: #00f2fe !important;
     font-size: 30px; 
     font-weight: 700; 
     text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
 }
 
-.product-card-panel p {
-    color: rgba(255, 255, 255, 0.95) !important; /* ปรับรายละเอียดสินค้าให้สว่างขึ้น */
-}
-
-/* Search Input Styling */
 .search-input {
-    background: #c6a9cdd5 !important; /* เพิ่มความสว่างของพื้นหลังช่องค้นหา */
-    border: 1px solid rgba(187, 134, 252, 0.5) !important; /* เพิ่มเส้นขอบสีม่วงนีออนจางๆ */
-    color: #ffffff !important; /* กำหนดตัวอักษรเป็นสีขาวบริสุทธิ์ */
+    background: #c6a9cdd5 !important;
+    border: 1px solid rgba(187, 134, 252, 0.5) !important;
+    color: #ffffff !important;
     border-radius: 25px !important;
     padding-left: 20px !important;
-    transition: all 0.3s ease;
-}
-.search-input:focus {
-    background: rgba(255, 255, 255, 0.25) !important;
-    border-color: #bb86fc !important;
-    box-shadow: 0 0 10px rgba(187, 134, 252, 0.5) !important;
-    outline: none;
 }
 
-/* ปรับสีตัวอักษร Placeholder (คำเกริ่นในช่อง) */
 .search-input::placeholder {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* Button Colors (Neon Purple & Pink) */
 .btn-neon-purple {
     background: rgba(187, 134, 252, 0.1);
     border: 1px solid #bb86fc;
@@ -108,6 +92,7 @@ body {
     border-radius: 12px;
     padding: 15px;
     transition: 0.3s;
+    width: 100%;
 }
 .btn-neon-purple:hover {
     background: #bb86fc;
@@ -150,47 +135,7 @@ body {
 }
 .modern-btn:hover { background: #bb86fc; color:#120018; }
 
-/* ดีไซน์ Modal แบบ Glassmorphism */
-.modal-content.custom-popup {
-    background: rgba(26, 0, 40, 0.85);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(187, 134, 252, 0.3);
-    border-radius: 25px;
-    color: #fff;
-    box-shadow: 0 0 30px rgba(187, 134, 252, 0.2);
-}
-
-/* ไอคอนนีออนกะพริบ */
-.neon-icon {
-    font-size: 4rem;
-    color: #bb86fc;
-    text-shadow: 0 0 10px #bb86fc, 0 0 20px #bb86fc;
-    animation: neon-glow 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes neon-glow {
-    from { opacity: 0.8; transform: scale(1); }
-    to { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #f107a3, 0 0 30px #f107a3; color: #f107a3; }
-}
-
-/* ปุ่มตกลงดีไซน์ใหม่ */
-.btn-neon-close {
-    background: linear-gradient(135deg, #bb86fc, #7c3aed);
-    border: none;
-    border-radius: 30px;
-    padding: 10px 40px;
-    font-weight: 600;
-    color: white;
-    transition: 0.3s;
-}
-
-.btn-neon-close:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(187, 134, 252, 0.5);
-    color: white;
-}
-
-/* --- ส่วนเพิ่ม: สไตล์ตัวเลือกจำนวน --- */
+/* --- สไตล์ส่วนใหม่ (จำนวนสินค้า และ สินค้าแนะนำ) --- */
 .qty-control {
     width: 140px;
     display: flex;
@@ -200,30 +145,38 @@ body {
     border-radius: 10px;
     overflow: hidden;
 }
-.qty-btn {
-    background: transparent;
-    border: none;
-    color: white;
-    width: 40px;
-    height: 40px;
+.qty-btn { background: transparent; border: none; color: white; width: 40px; height: 40px; transition: 0.3s; }
+.qty-btn:hover { background: rgba(187, 134, 252, 0.2); }
+#product_qty { background: transparent !important; border: none !important; color: white !important; text-align: center; width: 60px; font-weight: bold; }
+
+.suggested-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
     transition: 0.3s;
+    cursor: pointer;
 }
-.qty-btn:hover {
-    background: rgba(187, 134, 252, 0.2);
+.suggested-card:hover {
+    transform: translateY(-8px);
+    border-color: #bb86fc;
+    box-shadow: 0 10px 20px rgba(187, 134, 252, 0.2);
 }
-#product_qty {
-    background: transparent !important;
-    border: none !important;
-    color: white !important;
-    text-align: center;
-    width: 60px;
-    font-weight: bold;
+
+.modal-content.custom-popup {
+    background: rgba(26, 0, 40, 0.85);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(187, 134, 252, 0.3);
+    border-radius: 25px;
+    color: #fff;
 }
-/* ซ่อนปุ่มลูกศรใน input number */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.neon-icon {
+    font-size: 4rem; color: #bb86fc; text-shadow: 0 0 10px #bb86fc, 0 0 20px #bb86fc;
+    animation: neon-glow 1.5s ease-in-out infinite alternate;
+}
+@keyframes neon-glow {
+    from { opacity: 0.8; transform: scale(1); }
+    to { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #f107a3; color: #f107a3; }
 }
 </style>
 </head>
@@ -260,7 +213,11 @@ input::-webkit-inner-spin-button {
             <div class="text-center">
                 <img id="mainImage" src="images/<?= $product['image']; ?>" class="img-fluid mb-4 rounded-4 shadow-lg border border-secondary" style="max-height: 480px; object-fit: contain; background: rgba(0,0,0,0.2);">
                 <div class="d-flex gap-2 justify-content-center flex-wrap">
-                    <?php while($img = $product_images->fetch_assoc()){ ?>
+                    <?php 
+                    // รีเซ็ต pointer ของรูปภาพแกลเลอรี่เพื่อให้วนลูปแสดงผลได้
+                    $product_images->data_seek(0);
+                    while($img = $product_images->fetch_assoc()){ 
+                    ?>
                         <img src="images/<?= $img['image']; ?>" class="img-thumbnail border-secondary bg-dark" style="width: 80px; cursor: pointer;" onclick="document.getElementById('mainImage').src=this.src">
                     <?php } ?>
                 </div>
@@ -279,7 +236,7 @@ input::-webkit-inner-spin-button {
                     </div>
                 <?php } ?>
 
-                <p class="mt-2" style="line-height: 1.8; font-size: 1.1rem;">
+                <p class="mt-2" style="line-height: 1.8; font-size: 1.1rem; color: rgba(255, 255, 255, 0.9);">
                     <?=$product['description']?>
                 </p>
 
@@ -307,9 +264,9 @@ input::-webkit-inner-spin-button {
                             </div>
                         </div>
                     <?php } else { ?>
-                        <button class="btn btn-neon-purple w-100 py-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <a href="login.php" class="btn btn-neon-purple w-100 py-3 text-center text-decoration-none d-block">
                             <i class="bi bi-cart-plus me-2"></i> เข้าสู่ระบบเพื่อสั่งซื้อสินค้า
-                        </button>
+                        </a>
                     <?php } ?>
                 </div>
 
@@ -323,13 +280,32 @@ input::-webkit-inner-spin-button {
             </div>
         </div>
     </div>
+
+    <div class="mt-5 pt-5">
+        <h3 class="mb-4 text-white"><i class="bi bi-stars text-warning me-2"></i>สินค้าที่คุณอาจสนใจ</h3>
+        <div class="row g-4">
+            <?php 
+            $related = $conn->query("SELECT * FROM products WHERE id != $id ORDER BY RAND() LIMIT 4");
+            while($rp = $related->fetch_assoc()):
+            ?>
+            <div class="col-6 col-md-3">
+                <div class="card suggested-card h-100 p-2 border-0" onclick="location.href='product.php?id=<?= $rp['id'] ?>'">
+                    <img src="images/<?= $rp['image'] ?>" class="card-img-top rounded-3" style="height: 180px; object-fit: cover;">
+                    <div class="card-body p-2 text-center">
+                        <h6 class="text-white text-truncate small"><?= $rp['name'] ?></h6>
+                        <p class="text-info fw-bold mb-0">฿<?= number_format($rp['price']) ?></p>
+                    </div>
+                </div>
+            </div>
+            <?php endwhile; ?>
+        </div>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content custom-popup">
-            <div class="modal-body text-center py-5">
+        <div class="modal-content custom-popup text-center py-5">
+            <div class="modal-body">
                 <div class="mb-4">
                     <i class="bi bi-magic neon-icon"></i>
                 </div>
@@ -341,48 +317,39 @@ input::-webkit-inner-spin-button {
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // ฟังก์ชันบวก/ลดตัวเลข
     function changeQty(amt) {
         let q = document.getElementById('product_qty');
         let v = parseInt(q.value) + amt;
         if (v >= 1) q.value = v;
     }
 
-    // ฟังก์ชันสั่งซื้อทันที (ส่งจำนวนไปด้วย)
     function buyNow(pid) {
         let qty = document.getElementById('product_qty').value;
         window.location.href = 'add_to_cart.php?id=' + pid + '&qty=' + qty + '&action=buy';
     }
 
     function addToCart(productId) {
-    let qty = document.getElementById('product_qty').value;
-    // ส่งข้อมูลแบบ AJAX ไปยัง add_to_cart.php พร้อมค่า qty
-    fetch('add_to_cart.php?id=' + productId + '&qty=' + qty + '&ajax=1')
-    .then(response => response.json())
-    .then(data => {
-        if(data.status === 'success') {
-            // 1. อัปเดตตัวเลขที่ไอคอนตะกร้าบน Navbar
-            const badge = document.getElementById('cart-badge');
-            if(badge) { 
-                badge.textContent = data.total; 
-                badge.style.display = 'block'; 
+        let qty = document.getElementById('product_qty').value;
+        fetch('add_to_cart.php?id=' + productId + '&qty=' + qty + '&ajax=1')
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                const badge = document.getElementById('cart-badge');
+                if(badge) { 
+                    badge.textContent = data.total; 
+                    badge.style.display = 'block'; 
+                }
+                document.getElementById('modal_qty').textContent = qty;
+                var myModal = new bootstrap.Modal(document.getElementById('cartModal'));
+                myModal.show();
+            } else { 
+                window.location.href = 'login.php'; 
             }
-            
-            // 2. แสดงจำนวนใน Modal
-            document.getElementById('modal_qty').textContent = qty;
-
-            // 3. เรียกใช้ Bootstrap Modal
-            var myModal = new bootstrap.Modal(document.getElementById('cartModal'));
-            myModal.show();
-            
-        } else { 
-            // กรณีไม่ได้ Login ให้เด้งไปหน้า Login
-            window.location.href = 'login.php'; 
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
+        })
+        .catch(error => console.error('Error:', error));
+    }
 </script>
 </body>
 </html>
