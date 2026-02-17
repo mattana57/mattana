@@ -136,17 +136,44 @@ min-height: 100vh;
         <p class="mt-4 text-light opacity-75" style="line-height: 1.6;"><?=$product['description']?></p>
 
         <div class="mt-4">
-            <?php if(isset($_SESSION['user_id'])){ ?>
-                <a href="add_to_cart.php?id=<?=$product['id']?>" class="btn btn-cart">
-                    <i class="bi bi-cart-plus me-2"></i> เพิ่มลงตะกร้า
+    <?php if(isset($_SESSION['user_id'])){ ?>
+        <div class="row g-2">
+            <div class="col-6">
+                <a href="add_to_cart.php?id=<?=$product['id']?>&action=buy" class="btn btn-buy-now w-100 py-3 shadow">
+                    <i class="bi bi-bag-check-fill me-2"></i> สั่งซื้อทันที
                 </a>
-            <?php } else { ?>
-                <button class="btn btn-cart" data-bs-toggle="modal" data-bs-target="#loginModal">
+            </div>
+            <div class="col-6">
+                <button onclick="addToCart(<?=$product['id']?>)" class="btn btn-cart w-100 py-3">
                     <i class="bi bi-cart-plus me-2"></i> เพิ่มลงตะกร้า
                 </button>
-            <?php } ?>
+            </div>
         </div>
+    <?php } else { ?>
+        <button class="btn btn-cart py-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <i class="bi bi-cart-plus me-2"></i> เพิ่มลงตะกร้า
+        </button>
+    <?php } ?>
+</div>
 
+<script>
+function addToCart(productId) {
+    fetch('add_to_cart.php?id=' + productId + '&ajax=1')
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === 'success') {
+            const badge = document.getElementById('cart-badge');
+            if(badge) {
+                badge.textContent = data.total;
+                badge.style.display = 'block';
+            }
+            alert('เพิ่มสินค้าลงตะกร้าแล้ว! 🔮');
+        } else {
+            window.location.href = 'login.php';
+        }
+    });
+}
+</script>
         <div class="mt-4 border-top border-secondary pt-3 text-light opacity-50 small">
             <div class="mb-1"><i class="bi bi-check2-circle me-2"></i> สินค้าพร้อมส่ง</div>
             <div class="mb-1"><i class="bi bi-truck me-2"></i> จัดส่งภายใน 1-2 วัน</div>
