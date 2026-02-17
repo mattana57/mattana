@@ -8,10 +8,12 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+$update_success = false;
 
 // --- ระบบบันทึกการแก้ไขข้อมูล ---
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     $fullname = $conn->real_escape_string($_POST['fullname']);
+    $email = $conn->real_escape_string($_POST['email']);
     $phone = $conn->real_escape_string($_POST['phone']);
     $address = $conn->real_escape_string($_POST['address']);
     $province = $conn->real_escape_string($_POST['province']);
@@ -19,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
 
     $sql = "UPDATE users SET 
             fullname = '$fullname', 
+            email = '$email', 
             phone = '$phone', 
             address = '$address', 
             province = '$province', 
@@ -26,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
             WHERE id = $user_id";
     
     if($conn->query($sql)) {
-        echo "<script>alert('อัปเดตข้อมูลส่วนตัวเรียบร้อยแล้ว ✨'); window.location.href='profile.php';</script>";
+        $update_success = true; // ใช้สำหรับเปิด Modal แจ้งเตือน
     }
 }
 
@@ -37,11 +40,11 @@ if (isset($_GET['clear_address'])) {
     exit();
 }
 
-// ดึงข้อมูลผู้ใช้ล่าสุด
+// 1. ดึงข้อมูลผู้ใช้ล่าสุด
 $user_q = $conn->query("SELECT * FROM users WHERE id = $user_id");
 $user_data = $user_q->fetch_assoc();
 
-// ดึงประวัติการสั่งซื้อ
+// 2. ดึงประวัติการสั่งซื้อ
 $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY created_at DESC");
 ?>
 
@@ -54,106 +57,71 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        :root {
-            --neon-cyan: #00f2fe;
-            --neon-purple: #bb86fc;
-            --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-        }
-
+        /* --- Neon Glassmorphism Theme จากหน้าหลักพี่เลยจ้ะ --- */
         body {
-            background-color: var(--bg-dark);
-            color: #fff;
-            font-family: 'Segoe UI', sans-serif;
-            background-image: radial-gradient(circle at top right, #3d1263, transparent), 
-                              radial-gradient(circle at bottom left, #1e1b4b, transparent);
-            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%), 
+                        radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%), 
+                        linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
+            color: #fff; font-family: 'Segoe UI', sans-serif; min-height: 100vh;
         }
 
         .card-profile {
-            background: var(--card-bg);
+            background: rgba(26, 0, 40, 0.65);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(187, 134, 252, 0.3);
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .text-neon-cyan {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-        }
+        .text-neon-cyan { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
 
-        /* แต่ง Input ให้เข้ากับธีม */
+        /* Input สไตล์ลึกลับ กดยังไงก็สวย */
         .custom-input {
             background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(187, 134, 252, 0.3) !important;
+            border: 1px solid rgba(187, 134, 252, 0.4) !important;
             color: #fff !important;
             border-radius: 12px !important;
-            padding: 12px;
-            transition: 0.3s;
+            transition: 0.3s ease;
         }
-
         .custom-input:focus {
-            border-color: var(--neon-cyan) !important;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3) !important;
+            border-color: #00f2fe !important;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4) !important;
             background: rgba(255, 255, 255, 0.1) !important;
         }
 
-        /* แก้ปัญหาช่องอีเมลสีไม่สวย */
-        .custom-input-readonly {
-            background: rgba(255, 255, 255, 0.02) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: rgba(255, 255, 255, 0.4) !important;
-            cursor: not-allowed;
-            border-radius: 12px !important;
-        }
-
+        /* ปุ่มบันทึกนีออน Cyan */
         .btn-neon-save {
             background: linear-gradient(45deg, #00f2fe, #00c6ff);
-            color: #0f172a;
-            border: none;
-            font-weight: bold;
-            border-radius: 12px;
-            padding: 12px;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #0f172a; border: none; font-weight: bold;
+            border-radius: 12px; padding: 15px; transition: 0.3s;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
         }
-
         .btn-neon-save:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(0, 242, 254, 0.6);
-            color: #000;
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.5);
         }
 
-        .table-custom {
-            color: #fff;
-            border-collapse: separate;
-            border-spacing: 0 10px;
+        /* ตารางประวัติสั่งซื้อนีออนม่วง */
+        .table-custom tr { background: rgba(255, 255, 255, 0.03); border-bottom: 8px solid transparent; }
+        .badge-status { 
+            background: rgba(187, 134, 252, 0.1); color: #bb86fc; 
+            border: 1px solid #bb86fc; padding: 5px 12px; border-radius: 20px; 
         }
 
-        .table-custom tr {
-            background: rgba(255, 255, 255, 0.03);
-            transition: 0.3s;
+        /* Modal ดีไซน์ลึกลับ */
+        .modal-content.custom-popup {
+            background: rgba(26, 0, 40, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(187, 134, 252, 0.4);
+            border-radius: 25px; color: #fff;
         }
-
-        .table-custom tr:hover {
-            background: rgba(255, 255, 255, 0.08);
+        .neon-icon {
+            font-size: 4rem; color: #bb86fc; text-shadow: 0 0 20px #bb86fc;
+            animation: neon-glow 1.5s ease-in-out infinite alternate;
         }
-
-        .table-custom td, .table-custom th {
-            border: none;
-            padding: 15px;
-            vertical-align: middle;
-        }
-
-        .badge-status {
-            background: rgba(0, 242, 254, 0.1);
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 12px;
+        @keyframes neon-glow {
+            from { opacity: 0.8; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #f107a3, 0 0 30px #f107a3; color: #f107a3; }
         }
     </style>
 </head>
@@ -166,80 +134,63 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
         <div class="col-lg-5">
             <div class="card-profile p-4 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="text-neon-cyan mb-0">
-                        <i class="bi bi-person-bounding-box me-2"></i> บัญชีของฉัน
-                    </h4>
-                    <a href="?clear_address=1" class="btn btn-outline-danger btn-sm rounded-pill" onclick="return confirm('ต้องการล้างข้อมูลที่อยู่ทั้งหมดใช่หรือไม่?')">
+                    <h4 class="text-neon-cyan mb-0"><i class="bi bi-person-gear me-2"></i> ข้อมูลผู้ใช้งาน</h4>
+                    <a href="?clear_address=1" class="btn btn-outline-danger btn-sm rounded-pill" onclick="return confirm('ล้างข้อมูลที่อยู่ทั้งหมด?')">
                         <i class="bi bi-trash"></i>
                     </a>
                 </div>
                 
                 <form action="" method="POST">
                     <div class="mb-3">
-                        <label class="small opacity-75 mb-2">อีเมล (ใช้สำหรับเข้าสู่ระบบ)</label>
-                        <input type="text" class="form-control custom-input-readonly" value="<?= $user_data['email'] ?>" readonly title="ไม่สามารถเปลี่ยนอีเมลได้">
+                        <label class="small text-white-50 mb-2">อีเมล (ID ของคุณ)</label>
+                        <input type="email" name="email" class="form-control custom-input" value="<?= $user_data['email'] ?>" required>
                     </div>
-
                     <div class="mb-3">
-                        <label class="small opacity-75 mb-2">ชื่อ-นามสกุลผู้รับ</label>
-                        <input type="text" name="fullname" class="form-control custom-input" value="<?= $user_data['fullname'] ?? '' ?>" placeholder="ยังไม่ได้ระบุชื่อ">
+                        <label class="small text-white-50 mb-2">ชื่อ-นามสกุลผู้รับ</label>
+                        <input type="text" name="fullname" class="form-control custom-input" value="<?= $user_data['fullname'] ?? '' ?>" placeholder="ระบุชื่อจริงสำหรับการจัดส่ง">
                     </div>
-
                     <div class="mb-3">
-                        <label class="small opacity-75 mb-2">เบอร์โทรศัพท์</label>
+                        <label class="small text-white-50 mb-2">เบอร์โทรศัพท์</label>
                         <input type="tel" name="phone" class="form-control custom-input" value="<?= $user_data['phone'] ?? '' ?>" placeholder="08x-xxx-xxxx">
                     </div>
-                    
                     <div class="mb-3">
-                        <label class="small opacity-75 mb-2">ที่อยู่จัดส่ง</label>
-                        <textarea name="address" class="form-control custom-input" rows="3" placeholder="เลขที่บ้าน, ถนน, ซอย, แขวง/ตำบล..."><?= $user_data['address'] ?? '' ?></textarea>
+                        <label class="small text-white-50 mb-2">ที่อยู่จัดส่ง</label>
+                        <textarea name="address" class="form-control custom-input" rows="3"><?= $user_data['address'] ?? '' ?></textarea>
                     </div>
-
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="small opacity-75 mb-2">จังหวัด</label>
+                            <label class="small text-white-50 mb-2">จังหวัด</label>
                             <input type="text" name="province" class="form-control custom-input" value="<?= $user_data['province'] ?? '' ?>">
                         </div>
                         <div class="col-md-6">
-                            <label class="small opacity-75 mb-2">รหัสไปรษณีย์</label>
+                            <label class="small text-white-50 mb-2">รหัสไปรษณีย์</label>
                             <input type="text" name="zipcode" class="form-control custom-input" value="<?= $user_data['zipcode'] ?? '' ?>">
                         </div>
                     </div>
-
-                    <button type="submit" name="update_profile" class="btn btn-neon-save w-100 mt-4 shadow-sm">
-                        <i class="bi bi-save2 me-2"></i> บันทึกข้อมูล
-                    </button>
+                    <button type="submit" name="update_profile" class="btn btn-neon-save w-100 mt-4">บันทึกข้อมูลใหม่</button>
                 </form>
             </div>
         </div>
 
         <div class="col-lg-7">
             <div class="card-profile p-4 h-100">
-                <h4 class="text-neon-cyan mb-4">
-                    <i class="bi bi-bag-check me-2"></i> ประวัติการสั่งซื้อ
-                </h4>
-                
+                <h4 class="text-neon-cyan mb-4"><i class="bi bi-clock-history me-2"></i> ประวัติความลับที่คุณสั่งซื้อ</h4>
                 <?php if($orders->num_rows > 0): ?>
                     <div class="table-responsive">
-                        <table class="table table-custom">
+                        <table class="table table-custom text-white">
                             <thead>
-                                <tr class="text-white-50 small">
-                                    <th>เลขออเดอร์</th>
-                                    <th>วันที่สั่งซื้อ</th>
-                                    <th>ยอดรวม</th>
-                                    <th class="text-end">สถานะ</th>
+                                <tr class="text-white-50 small border-0">
+                                    <th>ออเดอร์</th><th>วันที่สั่ง</th><th>ยอดรวม</th><th class="text-end">สถานะ</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php while($row = $orders->fetch_assoc()): ?>
-                                <tr>
-                                    <td class="fw-bold text-info">#<?= str_pad($row['id'], 5, '0', STR_PAD_LEFT) ?></td>
+                                <tr class="border-0">
+                                    <td class="fw-bold" style="color: #bb86fc;">#<?= str_pad($row['id'], 5, '0', STR_PAD_LEFT) ?></td>
                                     <td class="small"><?= date('d/m/Y', strtotime($row['created_at'])) ?></td>
                                     <td class="text-neon-cyan fw-bold">฿<?= number_format($row['total_price']) ?></td>
                                     <td class="text-end">
-                                        <span class="badge-status">
-                                            <?= ($row['status'] == 'pending') ? 'รอตรวจสอบ' : 'สำเร็จ' ?>
-                                        </span>
+                                        <span class="badge-status"><?= ($row['status'] == 'pending') ? 'รอตรวจสอบ' : 'สำเร็จ' ?></span>
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>
@@ -247,10 +198,9 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
                         </table>
                     </div>
                 <?php else: ?>
-                    <div class="text-center py-5">
-                        <i class="bi bi-cart-x display-1 opacity-10"></i>
-                        <p class="mt-3 opacity-50">คุณยังไม่มีรายการสั่งซื้อในขณะนี้</p>
-                        <a href="index.php" class="btn btn-outline-info btn-sm rounded-pill mt-2">ไปช้อปเลย!</a>
+                    <div class="text-center py-5 opacity-25">
+                        <i class="bi bi-bag-x display-1"></i>
+                        <p class="mt-3">ยังไม่มีรายการสั่งซื้อในระบบความลับ</p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -258,6 +208,25 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
     </div>
 </div>
 
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content custom-popup text-center py-5">
+            <div class="modal-body">
+                <i class="bi bi-magic neon-icon mb-4"></i>
+                <h3 class="fw-bold mb-3" style="color: #00f2fe;">อัปเดตสำเร็จ!</h3>
+                <p class="fs-5 opacity-75 mb-4">ข้อมูลส่วนตัวของคุณถูกบันทึกเรียบร้อยแล้ว ✨</p>
+                <button type="button" class="btn px-5 py-2 rounded-pill text-white" style="background: linear-gradient(45deg, #7c3aed, #db2777); border:none;" data-bs-dismiss="modal">ตกลง</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<?php if ($update_success): ?>
+<script>
+    var myModal = new bootstrap.Modal(document.getElementById('successModal'));
+    myModal.show();
+</script>
+<?php endif; ?>
 </body>
 </html>
