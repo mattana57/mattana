@@ -122,7 +122,7 @@ body {
 
 /* ปรับปรุงช่องค้นหาให้โดดเด่นขึ้น */
 .search-input {
-    background: rgba(255, 255, 255, 0.15) !important; /* เพิ่มความสว่างของพื้นหลังช่องค้นหา */
+    background: #eadfedd5 !important; /* เพิ่มความสว่างของพื้นหลังช่องค้นหา */
     border: 1px solid rgba(187, 134, 252, 0.5) !important; /* เพิ่มเส้นขอบสีม่วงนีออนจางๆ */
     color: #ffffff !important; /* กำหนดตัวอักษรเป็นสีขาวบริสุทธิ์ */
     border-radius: 25px !important;
@@ -151,7 +151,7 @@ body {
     <a class="navbar-brand fw-bold text-white" href="index.php">🎵 Goods Secret Store</a>
     <div class="ms-auto d-flex align-items-center gap-3">
         <form method="GET" class="d-flex d-none d-md-flex">
-            <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาความลับ...">
+            <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาความสินค้า...">
             <button class="modern-btn"><i class="bi bi-search"></i></button>
         </form>
         <?php if(isset($_SESSION['user_id'])){ ?>
