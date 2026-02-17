@@ -64,35 +64,46 @@ if(session_status() === PHP_SESSION_NONE){
 }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-dark py-3">
-<div class="container">
+<nav class="navbar-custom">
+    <div class="container d-flex justify-content-between align-items-center">
 
-<a class="navbar-brand fw-bold text-white" href="index.php">
-🎵 Goods Secret Store
-</a>
+        <!-- โลโก้ -->
+        <div class="logo">
+            🎵 Goods Secret Store
+        </div>
 
-<div class="ms-auto d-flex align-items-center gap-3">
+        <!-- ค้นหา -->
+        <form class="search-box d-flex" action="search.php" method="GET">
+            <input type="text" name="keyword" placeholder="ค้นหาสินค้า..." required>
+            <button type="submit">🔍</button>
+        </form>
 
-<form method="GET" class="d-flex">
-<input class="form-control me-2" 
-type="search"
-name="search"
-placeholder="ค้นหาสินค้า...">
-<button class="modern-btn">
-<i class="bi bi-search"></i>
-</button>
-</form>
+        <!-- เมนูด้านขวา -->
+        <div class="nav-right d-flex align-items-center gap-3">
 
-<?php if(isset($_SESSION['user_id'])){ ?>
-<a href="cart.php" class="modern-btn">
-<i class="bi bi-cart"></i>
-</a>
-<a href="logout.php" class="modern-btn">ออกจากระบบ</a>
-<?php } else { ?>
-<a href="login.php" class="modern-btn">เข้าสู่ระบบ</a>
-<a href="register.php" class="modern-btn">สมัครสมาชิก</a>
-<?php } ?>
+            <?php if(isset($_SESSION['user_id'])){ ?>
 
-</div>
-</div>
+                <!-- กรณีเข้าสู่ระบบแล้ว -->
+                <a href="cart.php" class="icon-btn">🛒</a>
+
+                <a href="logout.php" class="logout-btn">
+                    ออกจากระบบ
+                </a>
+
+            <?php } else { ?>
+
+                <!-- กรณียังไม่เข้าสู่ระบบ -->
+                <a href="login.php" class="login-btn">
+                    เข้าสู่ระบบ
+                </a>
+
+                <a href="register.php" class="register-btn">
+                    สมัครสมาชิก
+                </a>
+
+            <?php } ?>
+
+        </div>
+
+    </div>
 </nav>
