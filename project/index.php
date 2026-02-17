@@ -150,6 +150,21 @@ margin-bottom:20px;
 .btn-outline-modern:hover {
     background: rgba(255,255,255,0.1);
 }
+
+.btn-warning {
+    background: linear-gradient(135deg, #bb86fc, #7b2ff7);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #d1a3ff, #9b4dff);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(187,134,252,0.7);
+}
 </style>
 </head>
 <body>
