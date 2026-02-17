@@ -77,10 +77,13 @@ font-family:'Segoe UI',sans-serif;
 
 body {
     padding-top: 60px;
+    padding-bottom: 60px;
+
 }
 
 .card {
     margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 
