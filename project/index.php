@@ -122,7 +122,7 @@ body {
 
 /* ปรับปรุงช่องค้นหาให้โดดเด่นขึ้น */
 .search-input {
-    background: #eadfedd5 !important; /* เพิ่มความสว่างของพื้นหลังช่องค้นหา */
+    background: #c6a9cdd5 !important; /* เพิ่มความสว่างของพื้นหลังช่องค้นหา */
     border: 1px solid rgba(187, 134, 252, 0.5) !important; /* เพิ่มเส้นขอบสีม่วงนีออนจางๆ */
     color: #ffffff !important; /* กำหนดตัวอักษรเป็นสีขาวบริสุทธิ์ */
     border-radius: 25px !important;
