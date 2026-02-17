@@ -166,6 +166,42 @@ $result = $conn->query($sql);
     transform: rotate(15deg) scale(1.2); /* หมุนและขยาย */
     filter: drop-shadow(0 0 8px #ff4d4d);
 }
+/* ดีไซน์ Modal ยืนยันการลบแบบ Glassmorphism */
+.modal-content.delete-popup {
+    background: rgba(40, 0, 10, 0.85); /* โทนแดงมืด */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    border-radius: 25px;
+    color: #fff;
+    box-shadow: 0 0 30px rgba(255, 77, 77, 0.2);
+}
+
+/* ไอคอนถังขยะนีออนกะพริบ */
+.neon-delete-icon {
+    font-size: 4rem;
+    color: #ff4d4d;
+    text-shadow: 0 0 10px #ff4d4d, 0 0 20px #ff4d4d;
+    animation: delete-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes delete-glow {
+    from { opacity: 0.8; transform: scale(1); }
+    to { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #ff944d, 0 0 30px #ff944d; color: #ff944d; }
+}
+
+/* ปุ่มยืนยันและยกเลิก */
+.btn-neon-confirm {
+    background: linear-gradient(135deg, #ff4d4d, #ff944d);
+    border: none; border-radius: 30px; padding: 10px 30px; font-weight: 600; color: white; transition: 0.3s;
+}
+.btn-neon-confirm:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 77, 77, 0.5); color: white; }
+
+.btn-neon-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px; padding: 10px 30px; font-weight: 600; color: white; transition: 0.3s;
+}
+.btn-neon-cancel:hover { background: rgba(255, 255, 255, 0.2); color: white; }
     </style>
 </head>
 <body>
@@ -263,5 +299,33 @@ $result = $conn->query($sql);
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content delete-popup">
+            <div class="modal-body text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-trash3 neon-delete-icon"></i>
+                </div>
+                <h3 class="fw-bold mb-3" style="color: #ff4d4d;">ยืนยันการลบ?</h3>
+                <p class="fs-5 opacity-75 mb-4">คุณแน่ใจใช่ไหมที่จะลบความลับชิ้นนี้ออกจากตะกร้า?</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <button type="button" class="btn btn-neon-cancel" data-bs-dismiss="modal">ยกเลิก</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-neon-confirm text-decoration-none">ยืนยันการลบ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function showDeleteModal(productId) {
+    // กำหนด Link สำหรับการลบจริงให้กับปุ่มยืนยันใน Modal
+    const deleteUrl = 'cart.php?delete_id=' + productId;
+    document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
+    
+    // แสดง Modal
+    var myModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    myModal.show();
+}
+</script>
 </body>
 </html>
