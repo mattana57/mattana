@@ -32,45 +32,63 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        body {
-            background-color: #0f172a; /* สีดำเข้มน้ำเงิน */
-            color: #f1f5f9;
-            background-image: radial-gradient(circle at top right, #2e1065, transparent), 
-                              radial-gradient(circle at bottom left, #1e1b4b, transparent);
-            min-height: 100vh;
-        }
-        .glass-panel {
-    /* ปรับพื้นหลังให้สว่างขึ้นจาก 0.03 เป็น 0.1 หรือ 0.15 */
-            background: rgba(255, 255, 255, 0.12); 
-            backdrop-filter: blur(15px);
-    /* ปรับเส้นขอบให้เป็นสีขาวที่สว่างและหนาขึ้นเล็กน้อย */
-            border: 1px solid rgba(255, 255, 255, 0.3); 
-            border-radius: 1rem;
-    /* เพิ่มเงาสีขาวจางๆ รอบกรอบเพื่อให้ดูมีมิติและลอยออกมา */
-            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.1); 
-        }
+        /* ปรับปรุงสีตัวอักษรหลักให้เป็นสีขาวสว่าง */
+body {
+    background-color: #0f172a;
+    color: #ffffff !important; /* บังคับให้เป็นสีขาวบริสุทธิ์ */
+    background-image: radial-gradient(circle at top right, #2e1065, transparent), 
+                      radial-gradient(circle at bottom left, #1e1b4b, transparent);
+    min-height: 100vh;
+}
 
-/* หากต้องการให้ตารางข้างในดูสว่างและอ่านง่ายขึ้นด้วย */
-        .table thead th {
-            color: #ffffff !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
+/* ปรับปรุงข้อความหัวข้อ */
+h2, h5 {
+    color: #ffffff !important;
+    font-weight: 600;
+}
 
-        .table tbody td {
-            color: rgba(255, 255, 255, 0.9) !important;
-        }
-        .product-img {
-            width: 70px; height: 70px;
-            object-fit: cover; border-radius: 10px;
-        }
-        .btn-checkout {
-            background: linear-gradient(45deg, #7c3aed, #db2777);
-            border: none; color: white;
-            font-weight: 600; padding: 12px;
-        }
-        .btn-checkout:hover {
-            filter: brightness(1.2); color: white;
-        }
+/* ปรับปรุงความสว่างของกรอบ Glass Panel */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.12); /* เพิ่มความสว่างพื้นหลัง */
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3); /* เส้นขอบขาวชัดเจน */
+    border-radius: 1rem;
+    color: #ffffff !important;
+}
+
+/* ปรับปรุงตัวหนังสือในตาราง */
+.table {
+    color: #ffffff !important;
+}
+
+.table thead th {
+    color: #ffffff !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+/* ปรับปรุงสีของชื่อสินค้าและรายละเอียด */
+.fw-bold.text-white, .text-white {
+    color: #ffffff !important;
+}
+
+/* ปรับปรุงสีของข้อความรอง (Secondary) ให้สว่างขึ้นจากเดิม */
+.text-secondary {
+    color: #cbd5e1 !important; /* ปรับจากเทาเข้มเป็นเทาอ่อนสว่าง */
+}
+
+/* ปรับปรุงยอดเงินรวมสุทธิให้เด่นชัด */
+.text-info {
+    color: #00f2fe !important; /* สี Cyan Neon สว่าง */
+    text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+}
+
+/* ปรับปรุงข้อความเมื่อไม่มีสินค้าในตะกร้า */
+.py-5 p.text-secondary {
+    color: #e2e8f0 !important;
+    font-size: 1.1rem;
+}
     </style>
 </head>
 <body>
