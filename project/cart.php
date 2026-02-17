@@ -33,16 +33,58 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        body {
-            background-color: #0f172a;
-            color: #ffffff !important;
-            background-image: radial-gradient(circle at top right, #3d1263, transparent), 
-                              radial-gradient(circle at bottom left, #1e1b4b, transparent),
-                              linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
-            min-height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-        }
+        /* 1. ปรับปรุงสีตัวอักษรหลักให้เป็นสีขาวสว่างชัดเจน */
+body {
+    background-color: #0f172a;
+    color: #ffffff !important; /* บังคับให้เป็นสีขาวบริสุทธิ์ */
+    background-image: radial-gradient(circle at top right, #3d1263, transparent), 
+                      radial-gradient(circle at bottom left, #1e1b4b, transparent);
+    min-height: 100vh;
+}
 
+/* 2. ปรับปรุงความสว่างของหัวข้อ */
+h2, h4, h5 {
+    color: #ffffff !important;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* 3. ปรับปรุงตารางข้อมูลสินค้าให้อ่านง่ายขึ้น */
+.table {
+    color: #ffffff !important;
+}
+
+.table thead th {
+    color: #bb86fc !important; /* หัวข้อตารางเป็นสีม่วงนีออนสว่าง */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+/* 4. ปรับสีชื่อสินค้าและรหัสสินค้า */
+.fw-bold.text-white, .fs-5.text-white {
+    color: #ffffff !important;
+}
+
+.text-secondary-bright {
+    color: #e2e8f0 !important; /* ปรับจากสีเทามืดเป็นสีขาวเทาสว่าง */
+}
+
+/* 5. ปรับยอดรวมเงินให้เด่นชัด (สี Cyan Neon) */
+.text-neon-cyan {
+    color: #00f2fe !important; 
+    text-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+}
+
+/* 6. ปรับปรุงสีข้อความสรุปรายการสั่งซื้อ */
+.d-flex.justify-content-between span {
+    color: #ffffff !important;
+}
+
+.d-flex.justify-content-between .text-secondary-bright {
+    color: #cbd5e1 !important;
+}
         /* --- ปรับปรุงกรอบสินค้าให้ดูลอยและมีมิตินีออน --- */
 .glass-panel {
     background: rgba(255, 255, 255, 0.03) !important; /* พื้นหลังโปร่งแสงเล็กน้อย */
