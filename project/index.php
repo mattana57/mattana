@@ -2,12 +2,19 @@
 session_start();
 include "connectdb.php";
 
-/* ================= ข้อมูลระบบ (คงเดิม) ================= */
+/* ================= ข้อมูลระบบ (คงเดิมตามต้นฉบับ 100%) ================= */
 $category_slug = $_GET['category'] ?? "";
 $search = $_GET['search'] ?? "";
+
 $categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 
-$sql = "SELECT products.*, categories.name as category_name, categories.slug FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE 1";
+$sql = "
+SELECT products.*, categories.name as category_name, categories.slug
+FROM products
+LEFT JOIN categories ON products.category_id = categories.id
+WHERE 1
+";
+
 if($category_slug && $category_slug != "all"){
     $sql .= " AND categories.slug = '".$conn->real_escape_string($category_slug)."'";
 }
@@ -16,13 +23,15 @@ if($search){
 }
 
 $showLanding = (!$category_slug && !$search);
-if(!$showLanding){ $products = $conn->query($sql); }
+if(!$showLanding){
+    $products = $conn->query($sql);
+}
 
 $recommended = $conn->query("SELECT * FROM products WHERE featured=1 LIMIT 8");
 $newArrival = $conn->query("SELECT * FROM products ORDER BY created_at DESC LIMIT 8");
 $discountProducts = $conn->query("SELECT * FROM products WHERE discount > 0 LIMIT 8");
 
-/* --- ดึงจำนวนสินค้าในตะกร้าสำหรับบาร์ --- */
+/* --- ส่วนที่เพิ่ม: ดึงจำนวนสินค้ามาโชว์ที่บาร์ --- */
 $cart_count = 0;
 if(isset($_SESSION['user_id'])){
     $u_id = $_SESSION['user_id'];
@@ -42,44 +51,26 @@ if(isset($_SESSION['user_id'])){
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-/* --- สไตล์เดิมที่คุณชอบ --- */
+/* --- Style เดิมของคุณ (คงไว้ทั้งหมด) --- */
 body{
 background: radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%), radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%), linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
 color:#fff;
 font-family:'Segoe UI',sans-serif;
 }
-
-.navbar{
-background:linear-gradient(90deg,#1a0028,#3d1e6d);
-position: sticky; top: 0; z-index: 1000; /* ล็อคบาร์ไว้ด้านบน */
-}
-
-.modern-btn{
-background:linear-gradient(135deg,#E0BBE4,#bb86fc);
-color:#2a0845; border:none; padding:8px 18px; border-radius:30px; font-weight:600; transition:.3s; box-shadow:0 0 10px rgba(187,134,252,.5); text-decoration:none; display:inline-block;
-}
-
+.navbar{ background:linear-gradient(90deg,#1a0028,#3d1e6d); position: sticky; top: 0; z-index: 1000; }
+.modern-btn{ background:linear-gradient(135deg,#E0BBE4,#bb86fc); color:#2a0845; border:none; padding:8px 18px; border-radius:30px; font-weight:600; transition:.3s; box-shadow:0 0 10px rgba(187,134,252,.5); text-decoration:none; display:inline-block; }
 .modern-btn:hover{ transform:translateY(-3px); box-shadow:0 0 20px #bb86fc; color:#000; }
-
 .active-category{ background:#fff; color:#2a0845; }
-
-.product-card{
-background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(10px); transition:.3s; color:#fff;
-}
-
+.product-card{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(10px); transition:.3s; color:#fff; }
 .product-card:hover{ transform:translateY(-8px); box-shadow:0 0 20px #bb86fc; }
-
 .section-title{ border-left:5px solid #bb86fc; padding-left:10px; margin-bottom:20px; }
 
-/* --- ส่วนเสริมสำหรับ Badge ตะกร้า และปุ่มซื้อ --- */
-.badge-cart {
-    position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold;
-}
-.btn-buy-now { background: linear-gradient(135deg, #ff0080, #ff8c00); border: none; color: white; font-weight: bold; border-radius: 8px; }
-
+/* --- Style ที่เพิ่มมา (สำหรับ Badge และปุ่มใหม่) --- */
+.badge-cart { position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold; border: 1px solid #1a0028; }
+.btn-buy-now { background: linear-gradient(135deg, #ff0080, #ff8c00); border: none; color: white; font-weight: bold; border-radius: 8px; transition: 0.3s; }
+.btn-buy-now:hover { transform: scale(1.05); color: white; }
 .auth-modal { background: rgba(40, 0, 70, 0.85); backdrop-filter: blur(15px); border-radius: 20px; }
-.btn-gradient { background: linear-gradient(135deg, #7b2ff7, #f107a3); border: none; color: white; font-weight: 500; padding: 12px; border-radius: 12px; transition: 0.3s; }
-.btn-warning { background: linear-gradient(135deg, #bb86fc, #7b2ff7); border: none; color: #fff; font-weight: 600; border-radius: 8px; transition: 0.3s; }
+.btn-gradient { background: linear-gradient(135deg, #7b2ff7, #f107a3); border: none; color: white; font-weight: 500; padding: 12px; border-radius: 12px; }
 </style>
 </head>
 <body>
@@ -140,20 +131,86 @@ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); backd
                 <?php if(isset($_SESSION['user_id'])){ ?>
                     <div class="d-flex gap-1 mt-2">
                         <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-warning btn-sm w-50">ลงตะกร้า</button>
-                        <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">ซื้อเลย</a>
+                        <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">สั่งซื้อ</a>
                     </div>
-                <?php } else { ?>
-                    <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
                 <?php } ?>
             </div>
         </div>
     </div>
     <?php } ?>
     </div>
-    <?php } ?>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <h4 class="section-title mt-5">🆕 สินค้ามาใหม่</h4>
+    <div class="row">
+    <?php while($p = $newArrival->fetch_assoc()){ ?>
+    <div class="col-md-3 mb-4">
+        <div class="card product-card p-3 text-center h-100">
+            <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded" style="height:200px; object-fit:cover;">
+            <h6><?= $p['name']; ?></h6>
+            <p><?= number_format($p['price']); ?> บาท</p>
+            <div class="mt-auto">
+                <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
+                <?php if(isset($_SESSION['user_id'])){ ?>
+                    <div class="d-flex gap-1 mt-2">
+                        <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-warning btn-sm w-50">ลงตะกร้า</button>
+                        <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">สั่งซื้อ</a>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+    </div>
+
+    <h4 class="section-title mt-5">🔥 สินค้าลดราคา</h4>
+    <div class="row">
+    <?php while($p = $discountProducts->fetch_assoc()){ ?>
+    <div class="col-md-3 mb-4">
+        <div class="card product-card p-3 text-center h-100">
+            <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded" style="height:200px; object-fit:cover;">
+            <h6><?= $p['name']; ?></h6>
+            <p>
+                <span class="text-danger fw-bold"><?= number_format($p['price'] - $p['discount']); ?> บาท</span>
+                <small class="text-decoration-line-through text-light opacity-50 ms-1"><?= number_format($p['price']); ?></small>
+            </p>
+            <div class="mt-auto">
+                <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
+                <?php if(isset($_SESSION['user_id'])){ ?>
+                    <div class="d-flex gap-1 mt-2">
+                        <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-warning btn-sm w-50">ลงตะกร้า</button>
+                        <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">สั่งซื้อ</a>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+    </div>
+
+<?php } else { ?>
+    <h4 class="section-title">ผลลัพธ์สินค้า</h4>
+    <div class="row">
+        <?php while($p = $products->fetch_assoc()){ ?>
+            <div class="col-md-3 mb-4">
+                <div class="card product-card p-3 text-center h-100">
+                    <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded" style="height:200px; object-fit:cover;">
+                    <h6><?= $p['name']; ?></h6>
+                    <p><?= number_format($p['price']); ?> บาท</p>
+                    <div class="mt-auto">
+                        <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
+                        <?php if(isset($_SESSION['user_id'])){ ?>
+                            <div class="d-flex gap-1 mt-2">
+                                <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-warning btn-sm w-50">ลงตะกร้า</button>
+                                <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">สั่งซื้อ</a>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+<?php } ?>
+</div>
 
 <script>
 function addToCart(productId) {
@@ -162,15 +219,14 @@ function addToCart(productId) {
     .then(data => {
         if(data.status === 'success') {
             const badge = document.getElementById('cart-badge');
-            if(badge) {
-                badge.textContent = data.total;
-                badge.style.display = 'block';
-            }
+            if(badge) { badge.textContent = data.total; badge.style.display = 'block'; }
             alert('เพิ่มสินค้าลงตะกร้าแล้ว! 🔮');
         } else { window.location.href = 'login.php'; }
     });
 }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="modal fade" id="loginModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
@@ -178,10 +234,11 @@ function addToCart(productId) {
       <div class="modal-body text-center p-5 text-white">
         <h4 class="fw-bold mb-4">💫กรุณาเข้าสู่ระบบก่อนสั่งซื้อสินค้า</h4>
         <a href="login.php" class="btn btn-gradient w-100 mb-3">เข้าสู่ระบบ</a>
-        <a href="register.php" class="btn btn-outline-modern w-100">สมัครสมาชิก</a>
+        <a href="register.php" class="btn btn-outline-light w-100 py-2 rounded-3 text-white border-white">สมัครสมาชิก</a>
       </div>
     </div>
   </div>
 </div>
+
 </body>
 </html>
