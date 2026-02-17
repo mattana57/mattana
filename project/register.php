@@ -127,7 +127,6 @@ background:#d39ddb;
 </style>
 </head>
 <body>
-<?php include "includes/navbar.php"; ?>
 
 <div class="card p-4">
 <h2 class="text-center mb-4">สมัครสมาชิก</h2>
