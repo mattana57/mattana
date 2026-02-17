@@ -27,5 +27,5 @@ WHERE cart.user_id=$user");
 </table>
 </div>
 <body>
-    <?php include "navbar.php"; ?>
+    <?php include "includes/navbar.php"; ?>
 </body>
