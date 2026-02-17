@@ -248,6 +248,23 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
 <h6><?= $p['name']; ?></h6>
 <p><?= number_format($p['price']); ?> บาท</p>
+<a href="product.php?id=<?= $p['id'] ?>" 
+   class="btn btn-light btn-sm mt-2">
+   รายละเอียด
+</a>
+
+<?php if(isset($_SESSION['user_id'])){ ?>
+<a href="add_to_cart.php?id=<?= $p['id'] ?>" 
+   class="btn btn-warning btn-sm mt-2">
+   เพิ่มลงตะกร้า
+</a>
+<?php } else { ?>
+<button class="btn btn-warning btn-sm mt-2" 
+        data-bs-toggle="modal" 
+        data-bs-target="#loginModal">
+   เพิ่มลงตะกร้า
+</button>
+<?php } ?>
 </div>
 </div>
 <?php } ?>
@@ -266,6 +283,23 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 </span>
 <small class="text-decoration-line-through text-light">
 <?= number_format($p['price']); ?>
+<a href="product.php?id=<?= $p['id'] ?>" 
+   class="btn btn-light btn-sm mt-2">
+   รายละเอียด
+</a>
+
+<?php if(isset($_SESSION['user_id'])){ ?>
+<a href="add_to_cart.php?id=<?= $p['id'] ?>" 
+   class="btn btn-warning btn-sm mt-2">
+   เพิ่มลงตะกร้า
+</a>
+<?php } else { ?>
+<button class="btn btn-warning btn-sm mt-2" 
+        data-bs-toggle="modal" 
+        data-bs-target="#loginModal">
+   เพิ่มลงตะกร้า
+</button>
+<?php } ?>
 </small>
 </p>
 </div>
@@ -283,6 +317,23 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
 <h6><?= $p['name']; ?></h6>
 <p><?= number_format($p['price']); ?> บาท</p>
+<a href="product.php?id=<?= $p['id'] ?>" 
+   class="btn btn-light btn-sm mt-2">
+   รายละเอียด
+</a>
+
+<?php if(isset($_SESSION['user_id'])){ ?>
+<a href="add_to_cart.php?id=<?= $p['id'] ?>" 
+   class="btn btn-warning btn-sm mt-2">
+   เพิ่มลงตะกร้า
+</a>
+<?php } else { ?>
+<button class="btn btn-warning btn-sm mt-2" 
+        data-bs-toggle="modal" 
+        data-bs-target="#loginModal">
+   เพิ่มลงตะกร้า
+</button>
+<?php } ?>
 </div>
 </div>
 <?php } ?>
