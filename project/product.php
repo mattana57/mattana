@@ -158,7 +158,7 @@ body {
     <a class="navbar-brand fw-bold text-white" href="index.php">🎵 Goods Secret Store</a>
     <div class="ms-auto d-flex align-items-center gap-3">
         <form method="GET" action="index.php" class="d-flex">
-            <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาความลับ...">
+            <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาสินค้า...">
             <button class="modern-btn"><i class="bi bi-search"></i></button>
         </form>
 
