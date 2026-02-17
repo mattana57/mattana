@@ -3,7 +3,7 @@ session_start();
 include 'connectdb.php'; // ถ้ามีไฟล์เชื่อมต่อฐานข้อมูล
 
 if(!isset($_GET['id'])){
-    header("Location: index.php");
+    header("Location: cart.php");
     exit();
 }
 
