@@ -165,41 +165,19 @@ margin-bottom:20px;
     transform: translateY(-2px);
     box-shadow: 0 0 15px rgba(187,134,252,0.7);
 }
+
+/* เพิ่มเติม: ปุ่มสั่งซื้อทันที (Buy Now) */
+.btn-buy-now {
+    background: linear-gradient(135deg, #ff0080, #ff8c00);
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+}
 </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark py-3">
-<div class="container">
-
-<a class="navbar-brand fw-bold text-white" href="index.php">
-🎵 Goods Secret Store
-</a>
-
-<div class="ms-auto d-flex align-items-center gap-3">
-
-<form method="GET" class="d-flex">
-<input class="form-control me-2" 
-type="search"
-name="search"
-placeholder="ค้นหาสินค้า...">
-<button class="modern-btn">
-<i class="bi bi-search"></i>
-</button>
-</form>
-
-<?php if(isset($_SESSION['user_id'])){ ?>
-<a href="cart.php" class="modern-btn">
-<i class="bi bi-cart"></i>
-</a>
-<a href="logout.php" class="modern-btn">ออกจากระบบ</a>
-<?php } else { ?>
-<a href="login.php" class="modern-btn">เข้าสู่ระบบ</a>
-<a href="register.php" class="modern-btn">สมัครสมาชิก</a>
-<?php } ?>
-
-</div>
-</div>
-</nav>
+<?php include "navbar.php"; ?>
 
 <div class="container mt-4">
 <div id="mainBanner" class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden"
@@ -254,7 +232,10 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="mt-auto">
     <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
     <?php if(isset($_SESSION['user_id'])){ ?>
-        <a href="add_to_cart.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-2 w-100">เพิ่มลงตะกร้า</a>
+        <div class="d-flex gap-1 mt-2">
+            <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-warning btn-sm w-50">เพิ่มลงตะกร้า</button>
+            <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">สั่งซื้อ</a>
+        </div>
     <?php } else { ?>
         <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
     <?php } ?>
@@ -275,7 +256,10 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="mt-auto">
     <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
     <?php if(isset($_SESSION['user_id'])){ ?>
-        <a href="add_to_cart.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-2 w-100">เพิ่มลงตะกร้า</a>
+        <div class="d-flex gap-1 mt-2">
+            <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-warning btn-sm w-50">เพิ่มลงตะกร้า</button>
+            <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">สั่งซื้อ</a>
+        </div>
     <?php } else { ?>
         <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
     <?php } ?>
@@ -299,7 +283,10 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="mt-auto">
     <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
     <?php if(isset($_SESSION['user_id'])){ ?>
-        <a href="add_to_cart.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-2 w-100">เพิ่มลงตะกร้า</a>
+        <div class="d-flex gap-1 mt-2">
+            <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-warning btn-sm w-50">เพิ่มลงตะกร้า</button>
+            <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">สั่งซื้อ</a>
+        </div>
     <?php } else { ?>
         <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
     <?php } ?>
@@ -322,7 +309,10 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="mt-auto">
     <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
     <?php if(isset($_SESSION['user_id'])){ ?>
-        <a href="add_to_cart.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-2 w-100">เพิ่มลงตะกร้า</a>
+        <div class="d-flex gap-1 mt-2">
+            <button onclick="addToCart(<?= $p['id'] ?>)" class="btn btn-warning btn-sm w-50">เพิ่มลงตะกร้า</button>
+            <a href="add_to_cart.php?id=<?= $p['id'] ?>&action=buy" class="btn btn-buy-now btn-sm w-50">สั่งซื้อ</a>
+        </div>
     <?php } else { ?>
         <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
     <?php } ?>
@@ -349,5 +339,26 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
     </div>
   </div>
 </div>
+
+<script>
+function addToCart(productId) {
+    fetch('add_to_cart.php?id=' + productId + '&ajax=1')
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === 'success') {
+            const badge = document.getElementById('cart-badge');
+            if(badge) {
+                badge.textContent = data.total;
+                badge.style.display = 'block';
+            }
+            alert('เพิ่มสินค้าลงตะกร้าแล้ว! 🔮');
+        } else {
+            window.location.href = 'login.php';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+
 </body>
 </html>
