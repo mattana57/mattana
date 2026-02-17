@@ -168,7 +168,6 @@ margin-bottom:20px;
 </style>
 </head>
 <body>
-<?php include "includes/navbar.php"; ?>
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark py-3">
 <div class="container">
