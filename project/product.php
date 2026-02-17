@@ -2,6 +2,10 @@
 include "connectdb.php";
 $id = intval($_GET['id']);
 $product = $conn->query("SELECT * FROM products WHERE id=$id")->fetch_assoc();
+$product_images = $conn->query("
+    SELECT * FROM product_images 
+    WHERE product_id = $id
+");
 if(!$product){
     header("Location:index.php");
     exit();
@@ -22,7 +26,24 @@ if(!$product){
 
 <div class="row">
 <div class="col-md-5">
-<img src="images/<?=$product['image']?>" class="img-fluid">
+<div class="row">
+    <div class="col-md-12 text-center">
+        <!-- รูปหลัก -->
+        <img id="mainImage"
+             src="images/<?= $product['image']; ?>"
+             class="img-fluid mb-3 rounded shadow">
+    </div>
+
+    <!-- รูปย่อย -->
+    <div class="col-12 d-flex gap-2 justify-content-center flex-wrap">
+        <?php while($img = $product_images->fetch_assoc()){ ?>
+            <img src="images/<?= $img['image']; ?>"
+                 class="img-thumbnail"
+                 style="width:80px; cursor:pointer;"
+                 onclick="changeImage(this.src)">
+        <?php } ?>
+    </div>
+</div>
 </div>
 
 <div class="col-md-7">
@@ -73,5 +94,10 @@ class="btn btn-outline-primary w-100">
 </div>
 
 </div>
+<script>
+function changeImage(src){
+    document.getElementById("mainImage").src = src;
+}
+</script>
 </body>
 </html>
