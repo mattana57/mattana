@@ -33,59 +33,38 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        /* 1. ธีมพื้นหลังหลัก */
         body {
             background-color: #0f172a;
             color: #ffffff !important;
             background-image: radial-gradient(circle at top right, #3d1263, transparent), 
                               radial-gradient(circle at bottom left, #1e1b4b, transparent);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        /* 2. ปรับกรอบตาราง (จากขาวล้วนเป็นโปร่งแสงเข้าธีม) */
+        /* แก้ไขจุดนี้: เปลี่ยนจากขาวทึบเป็นโปร่งแสง (Glassmorphism) */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.05) !important; /* ปรับจากขาวล้วนเป็นโปร่งแสง */
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.05) !important; /* ความใส 5% */
+            backdrop-filter: blur(20px); /* เอฟเฟกต์กระจกฝ้า */
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             padding: 25px;
         }
 
-        /* 3. ตารางข้อมูลสินค้า */
-        .table {
-            color: #ffffff !important;
-            margin-bottom: 0;
-        }
+        .table { color: #ffffff !important; margin-bottom: 0; }
         .table thead th {
-            color: #bb86fc !important; /* หัวข้อตารางสีม่วงนีออน */
+            color: #bb86fc !important;
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
         }
-        .table td {
-            vertical-align: middle;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 1.5rem 0.75rem;
-        }
+        .table td { vertical-align: middle; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 1.5rem 0.75rem; }
 
-        /* 4. รายละเอียดสินค้า */
-        .product-img {
-            width: 80px; height: 80px;
-            object-fit: cover; border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .text-neon-cyan {
-            color: #00f2fe !important;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-        }
-        .text-secondary-bright {
-            color: #cbd5e1 !important;
-        }
+        .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .text-neon-cyan { color: #00f2fe !important; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
+        .text-secondary-bright { color: #cbd5e1 !important; }
 
-        /* 5. ปุ่มชำระเงิน */
+        /* ปุ่มชำระเงิน Neon */
         .btn-checkout {
             background: linear-gradient(135deg, #f107a3, #ff0080) !important;
             border: none !important;
@@ -93,31 +72,27 @@ $result = $conn->query($sql);
             font-weight: 700;
             padding: 15px 30px;
             border-radius: 50px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.4s;
             box-shadow: 0 5px 20px rgba(241, 7, 163, 0.5);
             width: 100%;
         }
-        .btn-checkout:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(241, 7, 163, 0.7);
-            filter: brightness(1.2);
-        }
+        .btn-checkout:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(241, 7, 163, 0.7); filter: brightness(1.2); }
 
-        /* ปุ่มลบสินค้า */
-        .btn-remove {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 1.2rem;
-            transition: 0.3s;
-        }
-        .btn-remove:hover { color: #ff4d4d; transform: scale(1.1); }
-        
-        /* Modal Style */
+        .btn-remove { color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; transition: 0.3s; cursor: pointer; }
+        .btn-remove:hover { color: #ff4d4d; transform: rotate(15deg) scale(1.2); }
+
+        /* Modal Delete */
         .modal-content.delete-popup {
             background: rgba(40, 0, 10, 0.85);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 77, 77, 0.3);
             border-radius: 25px;
+            color: #fff;
         }
+        .neon-delete-icon { font-size: 4rem; color: #ff4d4d; animation: delete-glow 1.5s infinite alternate; }
+        @keyframes delete-glow { from { opacity: 0.8; } to { text-shadow: 0 0 20px #ff944d; color: #ff944d; } }
+        .btn-neon-confirm { background: linear-gradient(135deg, #ff4d4d, #ff944d); border: none; border-radius: 30px; padding: 10px 30px; color: white; font-weight: 600; }
+        .btn-neon-cancel { background: rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 10px 30px; color: white; border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
@@ -129,7 +104,8 @@ $result = $conn->query($sql);
     
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="glass-panel"> <?php if($result->num_rows > 0): ?>
+            <div class="glass-panel">
+                <?php if($result->num_rows > 0): ?>
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -151,7 +127,7 @@ $result = $conn->query($sql);
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img src="images/<?= $row['image'] ?>" class="product-img me-3 shadow">
+                                        <img src="images/<?= $row['image'] ?>" class="product-img me-3">
                                         <div>
                                             <div class="fw-bold text-white fs-5"><?= $row['name'] ?></div>
                                             <div class="text-secondary-bright small">ID: #<?= $row['product_id'] ?></div>
@@ -176,8 +152,8 @@ $result = $conn->query($sql);
                 <?php else: ?>
                     <div class="text-center py-5">
                         <i class="bi bi-bag-x display-1 opacity-25"></i>
-                        <p class="mt-4 fs-4 text-secondary-bright">ยังไม่มีสินค้าในตะกร้าของคุณ</p>
-                        <a href="index.php" class="btn btn-outline-info rounded-pill px-4 mt-2">กลับไปเลือกซื้อสินค้า</a>
+                        <p class="mt-4 fs-4 text-secondary-bright">ยังไม่มีสินค้าในตะกร้า</p>
+                        <a href="index.php" class="btn btn-outline-info rounded-pill px-4 mt-2">เริ่มช้อปปิ้ง</a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -185,28 +161,25 @@ $result = $conn->query($sql);
 
         <div class="col-lg-4">
             <div class="glass-panel h-100">
-                <h4 class="mb-4 text-white">สรุปรายการสั่งซื้อ</h4>
+                <h4 class="mb-4 text-white">สรุปการสั่งซื้อ</h4>
                 <div class="d-flex justify-content-between mb-3 fs-5">
-                    <span class="text-secondary-bright">รวมยอดสินค้า</span>
+                    <span class="text-secondary-bright">ยอดรวม</span>
                     <span class="text-white">฿<?= number_format($grand_total ?? 0) ?></span>
                 </div>
                 <div class="d-flex justify-content-between mb-3 fs-5">
-                    <span class="text-secondary-bright">ค่าจัดส่ง</span>
+                    <span class="text-secondary-bright">ค่าส่ง</span>
                     <span class="text-success fw-bold">ฟรี</span>
                 </div>
                 <hr class="my-4 border-secondary opacity-50">
                 <div class="d-flex justify-content-between mb-5">
-                    <span class="h4 text-white">ยอดสุทธิ</span>
+                    <span class="h4 text-white">รวมสุทธิ</span>
                     <span class="h3 fw-bold text-neon-cyan">฿<?= number_format($grand_total ?? 0) ?></span>
                 </div>
                 
                 <button class="btn btn-checkout mb-4" <?= ($grand_total <= 0) ? 'disabled' : '' ?>>
                     ชำระเงิน <i class="bi bi-arrow-right-circle ms-2"></i>
                 </button>
-                
-                <a href="index.php" class="btn btn-link w-100 text-secondary-bright text-decoration-none text-center d-block">
-                    <i class="bi bi-chevron-left"></i> เลือกซื้อสินค้าต่อ
-                </a>
+                <a href="index.php" class="btn btn-link w-100 text-secondary-bright text-decoration-none text-center d-block">เลือกซื้อสินค้าต่อ</a>
             </div>
         </div>
     </div>
@@ -216,14 +189,12 @@ $result = $conn->query($sql);
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content delete-popup">
             <div class="modal-body text-center py-5">
-                <div class="mb-4">
-                    <i class="bi bi-trash3 neon-delete-icon"></i>
-                </div>
+                <div class="mb-4"><i class="bi bi-trash3 neon-delete-icon"></i></div>
                 <h3 class="fw-bold mb-3" style="color: #ff4d4d;">ยืนยันการลบ?</h3>
-                <p class="fs-5 opacity-75 mb-4 text-white">คุณแน่ใจที่จะลบสินค้าชิ้นนี้ออกจากตะกร้า?</p>
+                <p class="fs-5 opacity-75 mb-4 text-white">ลบสินค้าชิ้นนี้ออกจากตะกร้า?</p>
                 <div class="d-flex justify-content-center gap-3">
-                    <button type="button" class="btn btn-neon-cancel text-white" data-bs-dismiss="modal">ยกเลิก</button>
-                    <a id="confirmDeleteBtn" href="#" class="btn btn-neon-confirm text-decoration-none text-white">ยืนยันการลบ</a>
+                    <button type="button" class="btn btn-neon-cancel" data-bs-dismiss="modal">ยกเลิก</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-neon-confirm text-decoration-none">ยืนยัน</a>
                 </div>
             </div>
         </div>
