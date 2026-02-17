@@ -103,7 +103,6 @@ background:#d39ddb;
 </style>
 </head>
 <body>
-<?php include "includes/navbar.php"; ?>
 
 <div class="card">
 <h2 class="text-center mb-4">เข้าสู่ระบบ</h2>
@@ -158,6 +157,10 @@ background:#d39ddb;
 
 <p class="mt-3 text-center">
 ยังไม่มีบัญชี ? <a href="register.php">สมัครสมาชิก</a>
+</p>
+
+<p class="mt-3 text-center">
+<a href="index.php">กลับหน้าแรก</a>
 </p>
 
 </div>

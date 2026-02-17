@@ -174,6 +174,10 @@ background:#d39ddb;
 สมัครสมาชิก
 </button>
 
+<p class="mt-3 text-center">
+<a href="index.php">กลับหน้าแรก</a>
+</p>
+
 </form>
 
 
