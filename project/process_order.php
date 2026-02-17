@@ -13,7 +13,9 @@ $phone = $conn->real_escape_string($_POST['phone']);
 $address = $conn->real_escape_string($_POST['address']);
 $province = $conn->real_escape_string($_POST['province']);
 $zipcode = $conn->real_escape_string($_POST['zipcode']);
-$payment_method = $conn->real_escape_string($_POST['payment_method']); // เพิ่ม escape string
+
+// [แก้ไข]: ปรับค่าให้ตรงกับ ENUM ในฐานข้อมูล ('bank' หรือ 'cod')
+$payment_method = ($_POST['payment_method'] === 'bank_transfer') ? 'bank' : 'cod';
 $order_status = "pending";
 
 $sql_cart = "SELECT cart.*, products.price FROM cart 
@@ -28,26 +30,25 @@ while ($item = $cart_items->fetch_assoc()) { $total_price += ($item['price'] * $
 
 // จัดการรูปภาพสลิป
 $slip_name = "";
-if ($payment_method === 'bank_transfer' && isset($_FILES['slip_image']) && $_FILES['slip_image']['error'] == 0) {
+if ($payment_method === 'bank' && isset($_FILES['slip_image']) && $_FILES['slip_image']['error'] == 0) {
     $ext = pathinfo($_FILES['slip_image']['name'], PATHINFO_EXTENSION);
     $slip_name = "slip_" . time() . "_" . $user_id . "." . $ext;
     
     $target_dir = "uploads/slips/";
-    // ตรวจสอบโฟลเดอร์ก่อนบันทึก
+    // ตรวจสอบโฟลเดอร์ (แนะนำให้พี่สร้างไว้รอเลยจะดีที่สุด)
     if (!is_dir($target_dir)) { 
         @mkdir($target_dir, 0777, true); 
     }
     
-    // ย้ายไฟล์พร้อมตรวจสอบผล
     if (!move_uploaded_file($_FILES['slip_image']['tmp_name'], $target_dir . $slip_name)) {
-        $slip_name = ""; // หากย้ายไม่ได้ให้ปล่อยว่าง หรือแจ้งเตือนผู้ใช้
+        $slip_name = ""; // ถ้าอัปโหลดไม่สำเร็จให้บันทึกเป็นค่าว่างไปก่อนเพื่อไม่ให้ระบบหยุดทำงาน
     }
 }
 
 $conn->begin_transaction();
 
 try {
-    // อัปเดตข้อมูลผู้ใช้
+    // อัปเดตข้อมูลที่อยู่ลงใน Profile
     $sql_update_user = "UPDATE users SET 
                         fullname = '$fullname', phone = '$phone', address = '$address', 
                         province = '$province', zipcode = '$zipcode' 
@@ -70,7 +71,7 @@ try {
         $conn->commit();
         echo "<script>alert('สั่งซื้อสินค้าเรียบร้อยแล้ว!'); window.location.href='profile.php';</script>";
     } else {
-        throw new Exception("SQL Error: " . $conn->error); // แจ้ง Error ของ SQL ให้เห็นชัดเจน
+        throw new Exception("SQL Error: " . $conn->error);
     }
 } catch (Exception $e) {
     $conn->rollback();
