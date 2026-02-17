@@ -247,9 +247,15 @@ h2, h4, h5 {
                     <span class="h3 fw-bold text-neon-cyan">฿<?= number_format($grand_total ?? 0) ?></span>
                 </div>
                 
-                <button class="btn btn-checkout mb-4" <?= ($grand_total <= 0) ? 'disabled' : '' ?>>
-                    ชำระเงิน <i class="bi bi-arrow-right-circle ms-2"></i>
-                </button>
+                <?php if ($grand_total > 0): ?>
+    <a href="checkout.php" class="btn btn-checkout mb-4 text-decoration-none d-flex align-items-center justify-content-center">
+        ชำระเงิน <i class="bi bi-arrow-right-circle ms-2"></i>
+    </a>
+<?php else: ?>
+    <button class="btn btn-checkout mb-4" disabled style="opacity: 0.5; cursor: not_allowed;">
+        ชำระเงิน (ไม่มีสินค้า) <i class="bi bi-arrow-right-circle ms-2"></i>
+    </button>
+<?php endif; ?>
                 <a href="index.php" class="btn btn-link w-100 text-secondary-bright text-decoration-none text-center d-block">เลือกซื้อสินค้าต่อ</a>
             </div>
         </div>
