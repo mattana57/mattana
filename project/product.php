@@ -13,7 +13,7 @@ if(!$product){
     exit();
 }
 
-/* --- ส่วนที่เพิ่ม: ดึงจำนวนสินค้ามาโชว์ที่บาร์ --- */
+/* --- ส่วนที่เพิ่ม: ดึงจำนวนสินค้ามาโชว์ที่บาร์ให้เหมือนหน้าแรก --- */
 $cart_count = 0;
 if(isset($_SESSION['user_id'])){
     $u_id = $_SESSION['user_id'];
@@ -32,18 +32,19 @@ if(isset($_SESSION['user_id'])){
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <style>
-/* --- Neon Mystery Theme --- */
+/* --- Neon Mystery Theme & Typography Adjustment --- */
 body {
     background: radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%), 
                 radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%), 
                 linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
-    color: #fff;
+    color: #ffffff; /* ปรับตัวอักษรเป็นขาวบริสุทธิ์ให้อ่านง่าย */
     font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
 }
+
 .navbar { 
     background: rgba(26, 0, 40, 0.85); 
-    backdrop-filter: blur(10px); 
+    backdrop-filter: blur(15px); 
     position: sticky; 
     top: 0; 
     z-index: 1000; 
@@ -57,32 +58,35 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1); 
     border-radius: 20px; 
     padding: 40px; 
-    color: #fff; 
 }
 
 .product-title { 
     font-weight: 700; 
     font-size: 32px; 
-    color: #ffffff; /* ชื่อสินค้าหลักขาวชัดเจน */
+    color: #ffffff; 
     text-shadow: 0 0 15px rgba(187, 134, 252, 0.5); 
 }
 
 .product-price { 
-    color: #00f2fe; /* ราคา Cyan Neon สว่างชัด */
+    color: #00f2fe; /* สี Cyan Neon ตัดกับธีมและอ่านง่ายขึ้น */
     font-size: 30px; 
     font-weight: 700; 
     text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
 }
 
 .product-card-panel p {
-    color: rgba(255, 255, 255, 0.95) !important; /* คำอธิบายสินค้าปรับให้ขาวขึ้นมองเห็นชัด */
+    color: rgba(255, 255, 255, 0.95) !important; /* ปรับรายละเอียดสินค้าให้สว่างขึ้น */
 }
 
-.text-secondary {
-    color: #cbd5e1 !important; /* ตัวหนังสือรองปรับให้สว่างขึ้นกว่าเดิม */
+/* Search Input Styling */
+.search-input {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(187, 134, 252, 0.5) !important;
+    color: #ffffff !important;
+    border-radius: 25px !important;
 }
 
-/* ปุ่มสีใหม่ (Neon Style) */
+/* Button Colors (Neon Purple & Pink) */
 .btn-neon-purple {
     background: rgba(187, 134, 252, 0.1);
     border: 1px solid #bb86fc;
@@ -117,12 +121,21 @@ body {
     color: white;
 }
 
-/* Badge และ UI อื่นๆ */
-.badge-cart { position: absolute; top: -5px; right: -5px; background: #f107a3; color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold; border: 1px solid #1a0028; }
-.modern-btn { background: rgba(255,255,255,0.1); color:#fff; border: 1px solid rgba(255,255,255,0.2); padding:8px 18px; border-radius:30px; text-decoration:none; transition:0.3s; }
+.badge-cart { 
+    position: absolute; top: -5px; right: -5px; 
+    background: #f107a3; color: white; 
+    font-size: 11px; padding: 2px 6px; 
+    border-radius: 50%; font-weight: bold; 
+    border: 1px solid #1a0028; 
+}
+
+.modern-btn { 
+    background: rgba(255,255,255,0.1); color:#fff; 
+    border: 1px solid rgba(255,255,255,0.2); 
+    padding: 8px 18px; border-radius: 30px; 
+    text-decoration: none; transition: 0.3s; 
+}
 .modern-btn:hover { background: #bb86fc; color:#120018; }
-.img-thumbnail-custom { width: 80px; height: 80px; cursor: pointer; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); transition: 0.3s; }
-.img-thumbnail-custom:hover { border-color: #bb86fc; transform: scale(1.05); }
 </style>
 </head>
 <body>
@@ -132,7 +145,7 @@ body {
     <a class="navbar-brand fw-bold text-white" href="index.php">🎵 Goods Secret Store</a>
     <div class="ms-auto d-flex align-items-center gap-3">
         <form method="GET" action="index.php" class="d-flex">
-            <input class="form-control me-2 bg-dark border-secondary text-white" type="search" name="search" placeholder="ค้นหาความลับ...">
+            <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาความลับ...">
             <button class="modern-btn"><i class="bi bi-search"></i></button>
         </form>
 
@@ -159,7 +172,7 @@ body {
                 <img id="mainImage" src="images/<?= $product['image']; ?>" class="img-fluid mb-4 rounded-4 shadow-lg border border-secondary" style="max-height: 480px; object-fit: contain; background: rgba(0,0,0,0.2);">
                 <div class="d-flex gap-2 justify-content-center flex-wrap">
                     <?php while($img = $product_images->fetch_assoc()){ ?>
-                        <img src="images/<?= $img['image']; ?>" class="img-thumbnail-custom" onclick="changeImage(this.src)">
+                        <img src="images/<?= $img['image']; ?>" class="img-thumbnail border-secondary bg-dark" style="width: 80px; cursor: pointer;" onclick="document.getElementById('mainImage').src=this.src">
                     <?php } ?>
                 </div>
             </div>
@@ -177,7 +190,7 @@ body {
                     </div>
                 <?php } ?>
 
-                <p class="mt-2 text-light opacity-75 mb-5" style="line-height: 1.8; font-size: 1.1rem;">
+                <p class="mt-2" style="line-height: 1.8; font-size: 1.1rem;">
                     <?=$product['description']?>
                 </p>
 
@@ -202,7 +215,7 @@ body {
                     <?php } ?>
                 </div>
 
-                <div class="mt-5 border-top border-secondary pt-4 text-light opacity-50 small">
+                <div class="mt-5 border-top border-secondary pt-4 text-white-50 small">
                     <div class="row">
                         <div class="col-6 mb-2"><i class="bi bi-check2-circle text-success me-2"></i> สินค้าพร้อมส่ง</div>
                         <div class="col-6 mb-2"><i class="bi bi-truck text-info me-2"></i> จัดส่งภายใน 1-2 วัน</div>
@@ -212,40 +225,10 @@ body {
             </div>
         </div>
     </div>
-
-    <hr class="my-5 opacity-10">
-    <h5 class="mb-4 text-info fw-bold"><i class="bi bi-stars me-2"></i> สินค้าที่คุณอาจสนใจ</h5>
-    <div class="row g-4">
-        <?php
-        $recommend = $conn->query("SELECT * FROM products WHERE id!=$id LIMIT 4");
-        while($r = $recommend->fetch_assoc()){
-        ?>
-        <div class="col-md-3">
-            <div class="card product-card-panel p-3 h-100 text-center border-opacity-25" style="cursor: pointer;" onclick="location.href='product.php?id=<?=$r['id']?>'">
-                <img src="images/<?=$r['image']?>" class="rounded mb-3" style="height:160px; object-fit:cover;">
-                <div class="card-body p-0">
-                    <h6 class="text-truncate"><?=$r['name']?></h6>
-                    <p class="text-info fw-bold mb-0">฿<?=number_format($r['price'])?></p>
-                </div>
-            </div>
-        </div>
-        <?php } ?>
-    </div>
-</div>
-
-<div class="modal fade" id="loginModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 rounded-4 shadow-lg bg-dark text-white p-5" style="border: 1px solid #f107a3 !important;">
-        <h4 class="fw-bold mb-4">💫 กรุณาเข้าสู่ระบบก่อนสั่งซื้อสินค้า</h4>
-        <a href="login.php" class="btn btn-neon-pink w-100 mb-3 text-white text-decoration-none d-block">เข้าสู่ระบบ</a>
-        <a href="register.php" class="btn btn-outline-light w-100 py-2 rounded-3 text-white border-white">สมัครสมาชิก</a>
-    </div>
-  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-/* ฟังก์ชัน AJAX สำหรับเพิ่มสินค้า */
 function addToCart(productId) {
     fetch('add_to_cart.php?id=' + productId + '&ajax=1')
     .then(response => response.json())
@@ -257,7 +240,6 @@ function addToCart(productId) {
         } else { window.location.href = 'login.php'; }
     });
 }
-function changeImage(src){ document.getElementById("mainImage").src = src; }
 </script>
 </body>
 </html>
