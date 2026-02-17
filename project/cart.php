@@ -55,7 +55,7 @@ $result = $conn->query($sql);
         }
 
         /* 3. ตารางสินค้า */
-        .table { color: #ffffff !important; margin-bottom: 0; }
+        .table { color: #965f9e !important; margin-bottom: 0; }
         .table thead th {
             color: #bb86fc !important;
             border-bottom: 2px solid rgba(255, 255, 255, 0.2);
@@ -77,7 +77,7 @@ $result = $conn->query($sql);
         .btn-checkout {
             background: linear-gradient(135deg, #f107a3, #ff0080) !important;
             border: none !important;
-            color: #9865aa !important;
+            color: #ffffff !important;
             font-weight: 700;
             padding: 15px 30px;
             border-radius: 50px;
