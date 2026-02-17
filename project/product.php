@@ -1,6 +1,5 @@
 <?php
 include "connectdb.php";
-include "navbar.php"; 
 $id = intval($_GET['id']);
 $product = $conn->query("SELECT * FROM products WHERE id=$id")->fetch_assoc();
 $product_images = $conn->query("

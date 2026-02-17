@@ -103,6 +103,7 @@ background:#d39ddb;
 </style>
 </head>
 <body>
+<?php include "navbar.php"; ?>
 
 <div class="card">
 <h2 class="text-center mb-4">เข้าสู่ระบบ</h2>

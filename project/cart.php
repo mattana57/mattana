@@ -1,5 +1,5 @@
 <?php include "connectdb.php";
-include "navbar.php"; 
+
 if(!isset($_SESSION['user'])) header("Location:login.php");
 
 $user=$_SESSION['user'];
@@ -26,3 +26,6 @@ WHERE cart.user_id=$user");
 <?php } ?>
 </table>
 </div>
+<body>
+    <?php include "navbar.php"; ?>
+</body>

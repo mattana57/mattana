@@ -1,7 +1,6 @@
 <?php
 session_start();
 include "connectdb.php";
-include "navbar.php";
 
 /* ================= GET CATEGORY ================= */
 $category_slug = $_GET['category'] ?? "";
@@ -169,7 +168,7 @@ margin-bottom:20px;
 </style>
 </head>
 <body>
-
+<?php include "navbar.php"; ?>
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark py-3">
 <div class="container">
