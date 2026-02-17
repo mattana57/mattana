@@ -66,13 +66,23 @@ else{
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-body {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 100px 0 60px 0;
+body{
+background: linear-gradient(135deg,#2a0845,#6a1b9a,#3d1e6d);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family:'Segoe UI',sans-serif;
 }
+
+body {
+    padding-top: 60px;
+}
+
+.card {
+    margin-top: 40px;
+}
+
 
 .card{
 background:rgba(255,255,255,0.05);
