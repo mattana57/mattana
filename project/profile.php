@@ -11,16 +11,7 @@ $user_id = $_SESSION['user_id'];
 $update_success = false;
 $order_complete = isset($_GET['order_complete']);
 
-// --- [ระบบยกเลิกคำสั่งซื้อ] ---
-if (isset($_GET['cancel_order'])) {
-    $order_id = intval($_GET['cancel_order']);
-    // ยกเลิกได้เฉพาะออเดอร์ของตัวเอง และสถานะยังเป็น 'pending' เท่านั้น
-    $conn->query("UPDATE orders SET status = 'cancelled' WHERE id = $order_id AND user_id = $user_id AND status = 'pending'");
-    header("Location: profile.php");
-    exit();
-}
-
-// --- [ระบบบันทึกการแก้ไขโปรไฟล์] ---
+// --- ระบบบันทึกการแก้ไขโปรไฟล์ (คงเดิมไว้ทั้งหมด) ---
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     $fullname = $conn->real_escape_string($_POST['fullname']);
     $email = $conn->real_escape_string($_POST['email']);
@@ -36,18 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
 
 $user_q = $conn->query("SELECT * FROM users WHERE id = $user_id");
 $user_data = $user_q->fetch_assoc();
-
-// --- [ดึงข้อมูลออเดอร์พร้อมรายละเอียดสินค้า] ---
-$orders_query = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY created_at DESC");
-$orders_data = [];
-while($row = $orders_query->fetch_assoc()) {
-    $order_id = $row['id'];
-    $details_q = $conn->query("SELECT od.*, p.name FROM order_details od JOIN products p ON od.product_id = p.id WHERE od.order_id = $order_id");
-    $items = [];
-    while($item = $details_q->fetch_assoc()) { $items[] = $item; }
-    $row['items'] = $items;
-    $orders_data[] = $row;
-}
+$orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY created_at DESC");
 ?>
 
 <!DOCTYPE html>
@@ -72,8 +52,11 @@ while($row = $orders_query->fetch_assoc()) {
         .info-value { font-size: 1.1rem; color: #fff; margin-bottom: 15px; border-bottom: 1px solid rgba(187, 134, 252, 0.2); padding-bottom: 5px; }
         .custom-input { background: rgba(20, 0, 40, 0.6) !important; border: 1px solid rgba(187, 134, 252, 0.3) !important; color: #fff !important; border-radius: 12px !important; }
         .btn-neon-pink { background: linear-gradient(135deg, #f107a3, #bb86fc); color: #fff; border: none; font-weight: bold; border-radius: 12px; padding: 12px; transition: 0.3s; }
-        .btn-outline-neon { border: 1px solid #bb86fc; color: #bb86fc; background: transparent; border-radius: 12px; padding: 12px; transition: 0.3s; }
-        .table-custom tr { background: rgba(255, 255, 255, 0.03); border-bottom: 8px solid transparent; }
+        
+        /* --- [ปรับ]: แก้ไขตารางให้โปร่งแสงและลบสีขาวออก --- */
+        .table { color: #fff !important; background: transparent !important; }
+        .table thead th { background: rgba(187, 134, 252, 0.1) !important; color: #bb86fc !important; border: none !important; padding: 15px; }
+        .table tbody td { background: transparent !important; border-bottom: 1px solid rgba(187, 134, 252, 0.1) !important; color: #fff !important; padding: 15px; }
         .badge-status { border: 1px solid #bb86fc; color: #bb86fc; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
         .modal-content.custom-popup { background: rgba(26, 0, 40, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(187, 134, 252, 0.4); border-radius: 25px; color: #fff; }
     </style>
@@ -88,9 +71,7 @@ while($row = $orders_query->fetch_assoc()) {
             <div class="card-custom p-4 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="text-neon-cyan mb-0"><i class="bi bi-person-badge me-2"></i> โปรไฟล์ของฉัน</h4>
-                    <button class="btn btn-outline-info btn-sm rounded-pill" id="toggleEditBtn" onclick="toggleEdit()">
-                        <i class="bi bi-pencil-square me-1"></i> แก้ไข
-                    </button>
+                    <button class="btn btn-outline-info btn-sm rounded-pill" id="toggleEditBtn" onclick="toggleEdit()">แก้ไข</button>
                 </div>
 
                 <div id="displayMode">
@@ -106,8 +87,8 @@ while($row = $orders_query->fetch_assoc()) {
                         <div class="col-6"><div class="info-label">จังหวัด</div><div class="info-value"><?= htmlspecialchars($user_data['province']) ?: '-' ?></div></div>
                         <div class="col-6"><div class="info-label">รหัสไปรษณีย์</div><div class="info-value"><?= htmlspecialchars($user_data['zipcode']) ?: '-' ?></div></div>
                     </div>
-                    <div class="d-flex gap-2 mt-2">
-                        <a href="index.php" class="btn btn-outline-neon w-50"><i class="bi bi-house-door me-1"></i> หน้าหลัก</a>
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="index.php" class="btn btn-outline-info w-50" style="border-radius:12px;">หน้าหลัก</a>
                         <a href="logout.php" class="btn btn-outline-danger w-50" style="border-radius:12px;">ออกจากระบบ</a>
                     </div>
                 </div>
@@ -134,44 +115,29 @@ while($row = $orders_query->fetch_assoc()) {
         <div class="col-lg-7">
             <div class="card-custom p-4 h-100">
                 <h4 class="text-neon-cyan mb-4"><i class="bi bi-clock-history me-2"></i> ประวัติการสั่งซื้อ</h4>
-                <?php if(count($orders_data) > 0): ?>
-                    <div class="table-responsive">
-                        <table class="table text-white border-0">
-                            <thead><tr class="text-white-50 small border-0"><th>เลขออเดอร์</th><th>ยอดรวม</th><th class="text-end">สถานะ</th></tr></thead>
-                            <tbody>
-                                <?php foreach($orders_data as $order): ?>
-                                <tr class="border-0 align-middle" style="background: rgba(255,255,255,0.03); cursor: pointer;" onclick='viewOrderDetails(<?= json_encode($order) ?>)'>
-                                    <td class="py-3 px-3 fw-bold text-neon-purple">#<?= str_pad($order['id'], 5, '0', STR_PAD_LEFT) ?></td>
-                                    <td class="text-neon-cyan">฿<?= number_format($order['total_price']) ?></td>
-                                    <td class="text-end">
-                                        <span class="badge-status">
-                                            <?= $order['status'] == 'pending' ? 'รอตรวจสอบ' : ($order['status'] == 'cancelled' ? 'ยกเลิกแล้ว' : 'สำเร็จ') ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php else: ?>
-                    <div class="text-center py-5 opacity-25"><i class="bi bi-bag-x display-1"></i><p>ไม่มีรายการสั่งซื้อ</p></div>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="orderDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content custom-popup p-4">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title text-neon-cyan" id="detailTitle"></h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div id="itemList" class="mb-4"></div>
-                <div id="cancelArea" class="text-center border-top border-secondary pt-3" style="display: none;">
-                    <a href="" id="cancelLink" class="btn btn-outline-danger w-100 rounded-pill" onclick="return confirm('ยืนยันยกเลิกออเดอร์นี้?')">ยกเลิกคำสั่งซื้อนี้</a>
+                <div class="table-responsive">
+                    <table class="table border-0">
+                        <thead>
+                            <tr class="small"><th>เลขออเดอร์ (กดเพื่อดูบิล)</th><th>ยอดรวม</th><th class="text-end">สถานะ</th></tr>
+                        </thead>
+                        <tbody>
+                            <?php while($row = $orders->fetch_assoc()): ?>
+                            <tr class="align-middle">
+                                <td>
+                                    <a href="order_detail.php?id=<?= $row['id'] ?>" class="fw-bold text-decoration-none" style="color:#bb86fc;">
+                                        #<?= str_pad($row['id'], 5, '0', STR_PAD_LEFT) ?> <i class="bi bi-arrow-right-short"></i>
+                                    </a>
+                                </td>
+                                <td class="text-neon-cyan">฿<?= number_format($row['total_price']) ?></td>
+                                <td class="text-end">
+                                    <span class="badge-status">
+                                        <?= $row['status'] == 'pending' ? 'รอตรวจสอบ' : ($row['status'] == 'cancelled' ? 'ยกเลิกแล้ว' : 'สำเร็จ') ?>
+                                    </span>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -197,32 +163,8 @@ while($row = $orders_query->fetch_assoc()) {
         const d = document.getElementById('displayMode'), e = document.getElementById('editMode'), b = document.getElementById('toggleEditBtn');
         const isEdit = d.style.display === 'none';
         d.style.display = isEdit ? 'block' : 'none'; e.style.display = isEdit ? 'none' : 'block';
-        b.innerHTML = isEdit ? '<i class="bi bi-pencil-square me-1"></i> แก้ไข' : '<i class="bi bi-eye me-1"></i> ดูข้อมูล';
+        b.innerHTML = isEdit ? 'แก้ไข' : 'ดูข้อมูล';
     }
-
-    function viewOrderDetails(order) {
-        document.getElementById('detailTitle').innerText = 'รายละเอียดออเดอร์ #' + order.id.toString().padStart(5, '0');
-        let html = '<ul class="list-unstyled">';
-        order.items.forEach(item => {
-            html += `<li class="d-flex justify-content-between mb-2 border-bottom border-secondary pb-2">
-                        <span>${item.name} <small class="opacity-50">x ${item.quantity}</small></span>
-                        <span class="text-neon-purple">฿${(item.price * item.quantity).toLocaleString()}</span>
-                    </li>`;
-        });
-        html += '</ul>';
-        document.getElementById('itemList').innerHTML = html;
-
-        const cancelArea = document.getElementById('cancelArea');
-        const cancelLink = document.getElementById('cancelLink');
-        if (order.status === 'pending') {
-            cancelArea.style.display = 'block';
-            cancelLink.href = '?cancel_order=' + order.id;
-        } else {
-            cancelArea.style.display = 'none';
-        }
-        new bootstrap.Modal(document.getElementById('orderDetailModal')).show();
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
         <?php if ($update_success || $order_complete): ?>
             if (<?= $order_complete ? 'true' : 'false' ?>) {
@@ -230,7 +172,6 @@ while($row = $orders_query->fetch_assoc()) {
                 document.getElementById('modalBody').innerText = 'เราได้รับคำสั่งซื้อความลับของคุณแล้ว ✨';
             }
             new bootstrap.Modal(document.getElementById('successModal')).show();
-            if (window.history.replaceState) { window.history.replaceState(null, '', window.location.pathname); }
         <?php endif; ?>
     });
 </script>
