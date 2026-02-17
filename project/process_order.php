@@ -14,7 +14,7 @@ $address = $conn->real_escape_string($_POST['address']);
 $province = $conn->real_escape_string($_POST['province']);
 $zipcode = $conn->real_escape_string($_POST['zipcode']);
 
-// [แก้ไข]: ปรับค่าให้ตรงกับ ENUM ในฐานข้อมูล ('bank' หรือ 'cod')
+// ปรับค่าให้ตรงกับ ENUM ในฐานข้อมูล
 $payment_method = ($_POST['payment_method'] === 'bank_transfer') ? 'bank' : 'cod';
 $order_status = "pending";
 
@@ -35,20 +35,14 @@ if ($payment_method === 'bank' && isset($_FILES['slip_image']) && $_FILES['slip_
     $slip_name = "slip_" . time() . "_" . $user_id . "." . $ext;
     
     $target_dir = "uploads/slips/";
-    // ตรวจสอบโฟลเดอร์ (แนะนำให้พี่สร้างไว้รอเลยจะดีที่สุด)
-    if (!is_dir($target_dir)) { 
-        @mkdir($target_dir, 0777, true); 
-    }
-    
-    if (!move_uploaded_file($_FILES['slip_image']['tmp_name'], $target_dir . $slip_name)) {
-        $slip_name = ""; // ถ้าอัปโหลดไม่สำเร็จให้บันทึกเป็นค่าว่างไปก่อนเพื่อไม่ให้ระบบหยุดทำงาน
-    }
+    if (!is_dir($target_dir)) { @mkdir($target_dir, 0777, true); }
+    move_uploaded_file($_FILES['slip_image']['tmp_name'], $target_dir . $slip_name);
 }
 
 $conn->begin_transaction();
 
 try {
-    // อัปเดตข้อมูลที่อยู่ลงใน Profile
+    // อัปเดตที่อยู่ลงโปรไฟล์
     $sql_update_user = "UPDATE users SET 
                         fullname = '$fullname', phone = '$phone', address = '$address', 
                         province = '$province', zipcode = '$zipcode' 
@@ -69,12 +63,15 @@ try {
         }
         $conn->query("DELETE FROM cart WHERE user_id = $user_id");
         $conn->commit();
-        echo "<script>alert('สั่งซื้อสินค้าเรียบร้อยแล้ว!'); window.location.href='profile.php';</script>";
+        
+        // --- [จุดที่แก้ไข]: แทนที่จะใช้ alert ให้ส่งค่าไปเปิด Modal ที่หน้า profile ---
+        header("Location: profile.php?order_complete=1");
+        exit();
     } else {
         throw new Exception("SQL Error: " . $conn->error);
     }
 } catch (Exception $e) {
     $conn->rollback();
-    die("เกิดข้อผิดพลาดในการประมวลผล: " . $e->getMessage());
+    die("เกิดข้อผิดพลาด: " . $e->getMessage());
 }
 ?>
