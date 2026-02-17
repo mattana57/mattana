@@ -388,7 +388,7 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 
       <div class="modal-body text-center p-5 text-white">
 
-        <h4 class="fw-bold mb-4">💫เข้าสู่ระบบหรือสมัครสมาชิกเพื่อทำการสั่งซื้อสินค้า💫</h4>
+        <h4 class="fw-bold mb-4">💫กรุณาเข้าสู่ระบบก่อนทำการสั่งซื้อสินค้า💫</h4>
 
         <a href="login.php" class="btn btn-gradient w-100 mb-3">
           <i class="bi bi-box-arrow-in-right me-2"></i> เข้าสู่ระบบ
