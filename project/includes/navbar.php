@@ -67,17 +67,21 @@ if(session_status() === PHP_SESSION_NONE){
 <nav class="navbar-custom">
     <div class="container d-flex justify-content-between align-items-center">
 
-        <!-- โลโก้ -->
-        <div class="logo">
+        <a class="navbar-brand fw-bold text-white" href="index.php">
             🎵 Goods Secret Store
-        </div>
+        </a>
 
-        <!-- ค้นหา -->
-        <form class="search-box d-flex" action="search.php" method="GET">
-            <input type="text" name="keyword" placeholder="ค้นหาสินค้า..." required>
-            <button type="submit">🔍</button>
-        </form>
+    <div class="ms-auto d-flex align-items-center gap-3">
 
+    <form method="GET" class="d-flex">
+    <input class="form-control me-2" 
+        type="search"
+        name="search"
+        placeholder="ค้นหาสินค้า...">
+        <button class="modern-btn">
+            <i class="bi bi-search"></i>
+        </button>
+    </form>
         <!-- เมนูด้านขวา -->
         <div class="nav-right d-flex align-items-center gap-3">
 
