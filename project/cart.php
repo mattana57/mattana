@@ -37,34 +37,53 @@ $result = $conn->query($sql);
             background-color: #0f172a;
             color: #ffffff !important;
             background-image: radial-gradient(circle at top right, #3d1263, transparent), 
-                              radial-gradient(circle at bottom left, #1e1b4b, transparent);
+                              radial-gradient(circle at bottom left, #1e1b4b, transparent),
+                              linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
             min-height: 100vh;
             font-family: 'Segoe UI', sans-serif;
         }
 
-        /* แก้ไขจุดนี้: เปลี่ยนจากขาวทึบเป็นโปร่งแสง (Glassmorphism) */
+        /* เอาพื้นหลังขาวและกรอบออกทั้งหมด */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.05) !important; /* ความใส 5% */
-            backdrop-filter: blur(20px); /* เอฟเฟกต์กระจกฝ้า */
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            padding: 25px;
+            background: transparent !important; /* โปร่งใส 100% */
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0px;
         }
 
-        .table { color: #ffffff !important; margin-bottom: 0; }
+        /* บังคับให้ตารางโปร่งใส ไม่ให้ Bootstrap ใส่สีพื้นหลัง */
+        .table { 
+            --bs-table-bg: transparent !important;
+            --bs-table-color: #ffffff !important;
+            background-color: transparent !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            margin-bottom: 0; 
+        }
+
         .table thead th {
+            background-color: transparent !important;
             color: #bb86fc !important;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
             text-transform: uppercase;
         }
-        .table td { vertical-align: middle; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 1.5rem 0.75rem; }
 
-        .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .table td { 
+            background-color: transparent !important;
+            vertical-align: middle; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            padding: 1.5rem 0.75rem; 
+        }
+
+        .product-img { 
+            width: 80px; height: 80px; 
+            object-fit: cover; border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+        }
+
         .text-neon-cyan { color: #00f2fe !important; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
         .text-secondary-bright { color: #cbd5e1 !important; }
 
-        /* ปุ่มชำระเงิน Neon */
+        /* ปุ่มชำระเงิน Neon Magenta */
         .btn-checkout {
             background: linear-gradient(135deg, #f107a3, #ff0080) !important;
             border: none !important;
@@ -83,16 +102,12 @@ $result = $conn->query($sql);
 
         /* Modal Delete */
         .modal-content.delete-popup {
-            background: rgba(40, 0, 10, 0.85);
+            background: rgba(40, 0, 10, 0.9);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 77, 77, 0.3);
             border-radius: 25px;
             color: #fff;
         }
-        .neon-delete-icon { font-size: 4rem; color: #ff4d4d; animation: delete-glow 1.5s infinite alternate; }
-        @keyframes delete-glow { from { opacity: 0.8; } to { text-shadow: 0 0 20px #ff944d; color: #ff944d; } }
-        .btn-neon-confirm { background: linear-gradient(135deg, #ff4d4d, #ff944d); border: none; border-radius: 30px; padding: 10px 30px; color: white; font-weight: 600; }
-        .btn-neon-cancel { background: rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 10px 30px; color: white; border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
@@ -160,7 +175,7 @@ $result = $conn->query($sql);
         </div>
 
         <div class="col-lg-4">
-            <div class="glass-panel h-100">
+            <div class="glass-panel p-3">
                 <h4 class="mb-4 text-white">สรุปการสั่งซื้อ</h4>
                 <div class="d-flex justify-content-between mb-3 fs-5">
                     <span class="text-secondary-bright">ยอดรวม</span>
@@ -189,12 +204,12 @@ $result = $conn->query($sql);
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content delete-popup">
             <div class="modal-body text-center py-5">
-                <div class="mb-4"><i class="bi bi-trash3 neon-delete-icon"></i></div>
+                <div class="mb-4"><i class="bi bi-trash3 neon-delete-icon" style="font-size: 4rem; color: #ff4d4d;"></i></div>
                 <h3 class="fw-bold mb-3" style="color: #ff4d4d;">ยืนยันการลบ?</h3>
                 <p class="fs-5 opacity-75 mb-4 text-white">ลบสินค้าชิ้นนี้ออกจากตะกร้า?</p>
                 <div class="d-flex justify-content-center gap-3">
-                    <button type="button" class="btn btn-neon-cancel" data-bs-dismiss="modal">ยกเลิก</button>
-                    <a id="confirmDeleteBtn" href="#" class="btn btn-neon-confirm text-decoration-none">ยืนยัน</a>
+                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">ยกเลิก</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger rounded-pill px-4">ยืนยัน</a>
                 </div>
             </div>
         </div>
