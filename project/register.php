@@ -108,7 +108,7 @@ background:#d39ddb;
 .password-wrapper i{
     position: absolute;
     right: 15px;
-    top: 65%;
+    top: 75%;
     transform: translateY(-50%);
     cursor: pointer;
 }
