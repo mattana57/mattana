@@ -119,6 +119,29 @@ body {
     color: #ffffff; /* หัวข้อขาวสว่าง */
     text-shadow: 0 0 10px rgba(241, 7, 163, 0.8); 
 }
+
+/* ปรับปรุงช่องค้นหาให้โดดเด่นขึ้น */
+.search-input {
+    background: rgba(255, 255, 255, 0.15) !important; /* เพิ่มความสว่างของพื้นหลังช่องค้นหา */
+    border: 1px solid rgba(187, 134, 252, 0.5) !important; /* เพิ่มเส้นขอบสีม่วงนีออนจางๆ */
+    color: #ffffff !important; /* กำหนดตัวอักษรเป็นสีขาวบริสุทธิ์ */
+    border-radius: 25px !important;
+    padding-left: 20px !important;
+    transition: all 0.3s ease;
+}
+
+/* เอฟเฟกต์เมื่อคลิกที่ช่องค้นหา */
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: #bb86fc !important;
+    box-shadow: 0 0 10px rgba(187, 134, 252, 0.5) !important;
+    outline: none;
+}
+
+/* ปรับสีตัวอักษร Placeholder (คำเกริ่นในช่อง) */
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
 </style>
 </head>
 <body>
@@ -127,8 +150,8 @@ body {
 <div class="container">
     <a class="navbar-brand fw-bold text-white" href="index.php">🎵 Goods Secret Store</a>
     <div class="ms-auto d-flex align-items-center gap-3">
-        <form method="GET" class="d-flex">
-            <input class="form-control me-2 bg-dark border-secondary text-white rounded-pill px-3" type="search" name="search" placeholder="ค้นหาความลับ...">
+        <form method="GET" class="d-flex d-none d-md-flex">
+            <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาความลับ...">
             <button class="modern-btn"><i class="bi bi-search"></i></button>
         </form>
         <?php if(isset($_SESSION['user_id'])){ ?>
