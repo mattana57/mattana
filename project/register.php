@@ -25,22 +25,33 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $check->execute();
         $check->store_result();
 
-        if($check->num_rows > 0){
-            $error = "มีบัญชีนี้ในระบบแล้ว กรุณาเข้าสู่ระบบ";
-        }
-        else{
+if($check->num_rows > 0){
+    $error = "มีบัญชีนี้ในระบบแล้ว กรุณาเข้าสู่ระบบ";
+}
+else{
 
-            $hashed = password_hash($password, PASSWORD_DEFAULT);
+    $hashed = password_hash($password, PASSWORD_DEFAULT);
 
-            $stmt = $conn->prepare("INSERT INTO users(username,phone,password) VALUES(?,?,?)");
-            $stmt->bind_param("sss",$username,$phone,$hashed);
+    $stmt = $conn->prepare("INSERT INTO users(username,phone,password) VALUES(?,?,?)");
+    $stmt->bind_param("sss",$username,$phone,$hashed);
 
-            if($stmt->execute()){
-                $success = "สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบ";
-            } else {
-                $error = "เกิดข้อผิดพลาดในการสมัคร";
-            }
-        }
+    if($stmt->execute()){
+
+        // ดึง id ของ user ที่เพิ่งสมัคร
+        $user_id = $stmt->insert_id;
+
+        // สร้าง session ให้ล็อกอินทันที
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['username'] = $username;
+
+        // เด้งไปหน้าแรก
+        header("Location: index.php");
+        exit();
+
+    } else {
+        $error = "เกิดข้อผิดพลาดในการสมัคร";
+    }
+}
     }
 }
 ?>
