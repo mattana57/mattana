@@ -2,53 +2,108 @@
 if(session_status() === PHP_SESSION_NONE){
     session_start();
 }
-include "connectdb.php";
 ?>
 
 <style>
-.nav-purple {
-    background: linear-gradient(90deg,#3c1a5b,#5b2a86);
+.navbar-custom {
+    background: linear-gradient(135deg,#2d0b4e,#5b21b6);
+    padding: 15px 0;
+    color: #fff;
 }
-.category-btn {
-    border:1px solid #fff;
-    color:#fff;
+
+.logo {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
 }
-.category-btn:hover {
-    background:#fff;
-    color:#3c1a5b;
+
+.search-box input {
+    border: none;
+    border-radius: 25px 0 0 25px;
+    padding: 8px 15px;
+    width: 220px;
+    outline: none;
+}
+
+.search-box button {
+    border: none;
+    background: #c084fc;
+    border-radius: 0 25px 25px 0;
+    padding: 8px 15px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.icon-btn {
+    background: #c084fc;
+    padding: 8px 12px;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.logout-btn,
+.login-btn,
+.register-btn {
+    background: #c084fc;
+    padding: 8px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.logout-btn:hover,
+.login-btn:hover,
+.register-btn:hover,
+.icon-btn:hover {
+    background: #a855f7;
 }
 </style>
 
-<nav class="navbar navbar-expand-lg nav-purple navbar-dark">
-<div class="container">
+<nav class="navbar-custom">
+    <div class="container d-flex justify-content-between align-items-center">
 
-<a class="navbar-brand fw-bold text-white" href="index.php">
-📚 ComicShop
-</a>
+        <!-- โลโก้ -->
+        <div class="logo">
+            🎵 Goods Secret Store
+        </div>
 
-<div class="d-flex flex-wrap gap-2">
+        <!-- ค้นหา -->
+        <form class="search-box d-flex" action="search.php" method="GET">
+            <input type="text" name="keyword" placeholder="ค้นหาสินค้า..." required>
+            <button type="submit">🔍</button>
+        </form>
 
-<?php
-$cats = $conn->query("SELECT * FROM categories");
-while($c = $cats->fetch_assoc()){
-?>
-<a href="category.php?slug=<?=$c['slug']?>"
-class="btn btn-sm category-btn">
-<?=$c['name']?>
-</a>
-<?php } ?>
+        <!-- เมนูด้านขวา -->
+        <div class="nav-right d-flex align-items-center gap-3">
 
-</div>
+            <?php if(isset($_SESSION['user_id'])){ ?>
 
-<div class="ms-auto d-flex gap-2">
-<?php if(isset($_SESSION['user'])){ ?>
-<a href="cart.php" class="btn btn-light px-4">ตะกร้า</a>
-<a href="logout.php" class="btn btn-dark px-4">ออกจากระบบ</a>
-<?php } else { ?>
-<a href="login.php" class="btn btn-light px-4">เข้าสู่ระบบ</a>
-<a href="register.php" class="btn btn-warning px-4">สมัครสมาชิก</a>
-<?php } ?>
-</div>
+                <!-- กรณีเข้าสู่ระบบแล้ว -->
+                <a href="cart.php" class="icon-btn">🛒</a>
 
-</div>
+                <a href="logout.php" class="logout-btn">
+                    ออกจากระบบ
+                </a>
+
+            <?php } else { ?>
+
+                <!-- กรณียังไม่เข้าสู่ระบบ -->
+                <a href="login.php" class="login-btn">
+                    เข้าสู่ระบบ
+                </a>
+
+                <a href="register.php" class="register-btn">
+                    สมัครสมาชิก
+                </a>
+
+            <?php } ?>
+
+        </div>
+
+    </div>
 </nav>

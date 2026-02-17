@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "connectdb.php";
+include "navbar.php";
 
 /* ================= GET CATEGORY ================= */
 $category_slug = $_GET['category'] ?? "";

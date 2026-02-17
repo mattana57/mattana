@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "connectdb.php";
+include "navbar.php";
 
 $slug = $_GET['slug'] ?? "";
 $search = $_GET['search'] ?? "";
