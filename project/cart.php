@@ -85,37 +85,87 @@ $result = $conn->query($sql);
         }
 
         /* 5. กู้คืนปุ่มชำระเงิน (Neon Magenta) */
-        .btn-checkout {
-            background: linear-gradient(135deg, #f107a3, #ff0080) !important;
-            border: none !important;
-            color: #ffffff !important;
-            font-weight: 700;
-            padding: 15px 30px;
-            border-radius: 50px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 5px 20px rgba(241, 7, 163, 0.5);
-            width: 100%;
-            text-transform: uppercase;
-        }
-        .btn-checkout:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(241, 7, 163, 0.7);
-            filter: brightness(1.2);
-        }
-        .btn-checkout:disabled {
-            background: rgba(255, 255, 255, 0.1) !important;
-            box-shadow: none;
-            cursor: not-allowed;
-            color: rgba(255, 255, 255, 0.3) !important;
-        }
+        /* 1. ปุ่มชำระเงินแบบ Neon Glow */
+.btn-checkout {
+    background: linear-gradient(135deg, #f107a3, #ff0080) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    padding: 15px 30px;
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* ลูกเล่นการเด้ง */
+    box-shadow: 0 5px 15px rgba(241, 7, 163, 0.4);
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
 
-        /* ปุ่มลบสินค้า */
-        .btn-remove {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 1.2rem;
-            transition: 0.3s;
-        }
-        .btn-remove:hover { color: #ff4d4d; transform: scale(1.1); }
+/* เอฟเฟกต์แสงวิ่งผ่านปุ่ม (Shine Effect) */
+.btn-checkout::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(45deg);
+    transition: 0.5s;
+    opacity: 0;
+}
+
+.btn-checkout:hover {
+    transform: translateY(-5px) scale(1.02); /* ยกตัวขึ้นและขยายเล็กน้อย */
+    box-shadow: 0 0 30px rgba(241, 7, 163, 0.8); /* เรืองแสงเข้มขึ้น */
+    color: #ffffff !important;
+}
+
+.btn-checkout:hover::after {
+    left: 120%;
+    opacity: 1;
+}
+
+/* 2. ปุ่ม "เลือกซื้อสินค้าต่อ" แบบ Minimal Neon */
+.btn-link {
+    color: #cbd5e1 !important;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.btn-link:hover {
+    color: #bb86fc !important; /* เปลี่ยนเป็นสีม่วงนีออนเมื่อชี้ */
+    text-shadow: 0 0 10px rgba(187, 134, 252, 0.6);
+    text-decoration: none;
+    transform: translateX(-5px); /* ขยับไปทางซ้ายเล็กน้อย */
+}
+
+/* 3. ปุ่ม "เริ่มช้อปปิ้ง" (กรณีตะกร้าว่าง) */
+.btn-outline-info {
+    border: 2px solid #00f2fe !important;
+    color: #00f2fe !important;
+    transition: 0.3s;
+}
+
+.btn-outline-info:hover {
+    background: #00f2fe !important;
+    color: #0f172a !important;
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
+}
+
+/* 4. ปุ่มลบสินค้าแบบไอคอนสั่น (Trash Icon) */
+.btn-remove {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.btn-remove:hover {
+    color: #ff4d4d;
+    transform: rotate(15deg) scale(1.2); /* หมุนและขยาย */
+    filter: drop-shadow(0 0 8px #ff4d4d);
+}
     </style>
 </head>
 <body>
