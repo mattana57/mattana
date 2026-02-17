@@ -149,6 +149,46 @@ body {
     text-decoration: none; transition: 0.3s; 
 }
 .modern-btn:hover { background: #bb86fc; color:#120018; }
+
+/* ดีไซน์ Modal แบบ Glassmorphism */
+.modal-content.custom-popup {
+    background: rgba(26, 0, 40, 0.85);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(187, 134, 252, 0.3);
+    border-radius: 25px;
+    color: #fff;
+    box-shadow: 0 0 30px rgba(187, 134, 252, 0.2);
+}
+
+/* ไอคอนนีออนกะพริบ */
+.neon-icon {
+    font-size: 4rem;
+    color: #bb86fc;
+    text-shadow: 0 0 10px #bb86fc, 0 0 20px #bb86fc;
+    animation: neon-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes neon-glow {
+    from { opacity: 0.8; transform: scale(1); }
+    to { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #f107a3, 0 0 30px #f107a3; color: #f107a3; }
+}
+
+/* ปุ่มตกลงดีไซน์ใหม่ */
+.btn-neon-close {
+    background: linear-gradient(135deg, #bb86fc, #7c3aed);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 40px;
+    font-weight: 600;
+    color: white;
+    transition: 0.3s;
+}
+
+.btn-neon-close:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(187, 134, 252, 0.5);
+    color: white;
+}
 </style>
 </head>
 <body>
@@ -241,17 +281,44 @@ body {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content custom-popup">
+            <div class="modal-body text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-magic neon-icon"></i>
+                </div>
+                <h3 class="fw-bold mb-3" style="color: #00f2fe;">สำเร็จแล้ว!</h3>
+                <p class="fs-5 opacity-75 mb-4">ความลับชิ้นนี้ถูกเพิ่มลงในตะกร้าของคุณแล้ว 🔮</p>
+                <button type="button" class="btn btn-neon-close" data-bs-dismiss="modal">ตกลง</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-function addToCart(productId) {
+    function addToCart(productId) {
+    // ส่งข้อมูลแบบ AJAX ไปยัง add_to_cart.php
     fetch('add_to_cart.php?id=' + productId + '&ajax=1')
     .then(response => response.json())
     .then(data => {
         if(data.status === 'success') {
+            // 1. อัปเดตตัวเลขที่ไอคอนตะกร้าบน Navbar
             const badge = document.getElementById('cart-badge');
-            if(badge) { badge.textContent = data.total; badge.style.display = 'block'; }
-            alert('เพิ่มสินค้าลงตะกร้าแล้ว! 🔮');
-        } else { window.location.href = 'login.php'; }
-    });
+            if(badge) { 
+                badge.textContent = data.total; 
+                badge.style.display = 'block'; 
+            }
+            
+            // 2. เรียกใช้ Bootstrap Modal สวยๆ แทน alert() แบบเดิม
+            var myModal = new bootstrap.Modal(document.getElementById('cartModal'));
+            myModal.show();
+            
+        } else { 
+            // กรณีไม่ได้ Login ให้เด้งไปหน้า Login
+            window.location.href = 'login.php'; 
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 </script>
 </body>
