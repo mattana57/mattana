@@ -168,7 +168,6 @@ margin-bottom:20px;
 </style>
 </head>
 <body>
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark py-3">
 <div class="container">
 
@@ -202,7 +201,6 @@ placeholder="ค้นหาสินค้า...">
 </div>
 </nav>
 
-<!-- BANNER -->
 <div class="container mt-4">
 <div id="mainBanner" class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden"
      data-bs-ride="carousel"
@@ -221,26 +219,10 @@ placeholder="ค้นหาสินค้า...">
 </div>
 
 </div>
-
-<!-- ปุ่มเลื่อนซ้าย 
-<button class="carousel-control-prev" type="button"
-        data-bs-target="#mainBanner"
-        data-bs-slide="prev">
-<span class="carousel-control-prev-icon"></span>
-</button>-->
-
-<!-- ปุ่มเลื่อนขวา 
-<button class="carousel-control-next" type="button"
-        data-bs-target="#mainBanner"
-        data-bs-slide="next">
-<span class="carousel-control-next-icon"></span>
-</button>-->
-
 </div>
 </div>
 
 
-<!-- CATEGORY BUTTONS -->
 <div class="container text-center mt-4">
 
 <a href="index.php?category=all"
@@ -265,27 +247,18 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="row">
 <?php while($p = $recommended->fetch_assoc()){ ?>
 <div class="col-md-3 mb-4">
-<div class="card product-card p-3 text-center">
-<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
+<div class="card product-card p-3 text-center h-100">
+<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded" style="height:200px; object-fit:cover;">
 <h6><?= $p['name']; ?></h6>
 <p><?= number_format($p['price']); ?> บาท</p>
-<a href="product.php?id=<?= $p['id'] ?>" 
-   class="btn btn-light btn-sm mt-2">
-   รายละเอียด
-</a>
-
-<?php if(isset($_SESSION['user_id'])){ ?>
-<a href="add_to_cart.php?id=<?= $p['id'] ?>" 
-   class="btn btn-warning btn-sm mt-2">
-   เพิ่มลงตะกร้า
-</a>
-<?php } else { ?>
-<button class="btn btn-warning btn-sm mt-2" 
-        data-bs-toggle="modal" 
-        data-bs-target="#loginModal">
-   เพิ่มลงตะกร้า
-</button>
-<?php } ?>
+<div class="mt-auto">
+    <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
+    <?php if(isset($_SESSION['user_id'])){ ?>
+        <a href="add_to_cart.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-2 w-100">เพิ่มลงตะกร้า</a>
+    <?php } else { ?>
+        <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
+    <?php } ?>
+</div>
 </div>
 </div>
 <?php } ?>
@@ -295,27 +268,18 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="row">
 <?php while($p = $newArrival->fetch_assoc()){ ?>
 <div class="col-md-3 mb-4">
-<div class="card product-card p-3 text-center">
-<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
+<div class="card product-card p-3 text-center h-100">
+<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded" style="height:200px; object-fit:cover;">
 <h6><?= $p['name']; ?></h6>
 <p><?= number_format($p['price']); ?> บาท</p>
-<a href="product.php?id=<?= $p['id'] ?>" 
-   class="btn btn-light btn-sm mt-2">
-   รายละเอียด
-</a>
-
-<?php if(isset($_SESSION['user_id'])){ ?>
-<a href="add_to_cart.php?id=<?= $p['id'] ?>" 
-   class="btn btn-warning btn-sm mt-2">
-   เพิ่มลงตะกร้า
-</a>
-<?php } else { ?>
-<button class="btn btn-warning btn-sm mt-2" 
-        data-bs-toggle="modal" 
-        data-bs-target="#loginModal">
-   เพิ่มลงตะกร้า
-</button>
-<?php } ?>
+<div class="mt-auto">
+    <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
+    <?php if(isset($_SESSION['user_id'])){ ?>
+        <a href="add_to_cart.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-2 w-100">เพิ่มลงตะกร้า</a>
+    <?php } else { ?>
+        <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
+    <?php } ?>
+</div>
 </div>
 </div>
 <?php } ?>
@@ -325,34 +289,21 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="row">
 <?php while($p = $discountProducts->fetch_assoc()){ ?>
 <div class="col-md-3 mb-4">
-<div class="card product-card p-3 text-center">
-<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
+<div class="card product-card p-3 text-center h-100">
+<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded" style="height:200px; object-fit:cover;">
 <h6><?= $p['name']; ?></h6>
 <p>
-<span class="text-danger fw-bold">
-<?= number_format($p['price'] - $p['discount']); ?> บาท
-</span>
-<small class="text-decoration-line-through text-light">
-<?= number_format($p['price']); ?>
-<a href="product.php?id=<?= $p['id'] ?>" 
-   class="btn btn-light btn-sm mt-2">
-   รายละเอียด
-</a>
-
-<?php if(isset($_SESSION['user_id'])){ ?>
-<a href="add_to_cart.php?id=<?= $p['id'] ?>" 
-   class="btn btn-warning btn-sm mt-2">
-   เพิ่มลงตะกร้า
-</a>
-<?php } else { ?>
-<button class="btn btn-warning btn-sm mt-2" 
-        data-bs-toggle="modal" 
-        data-bs-target="#loginModal">
-   เพิ่มลงตะกร้า
-</button>
-<?php } ?>
-</small>
+<span class="text-danger fw-bold"><?= number_format($p['price'] - $p['discount']); ?> บาท</span>
+<small class="text-decoration-line-through text-light opacity-50 ms-1"><?= number_format($p['price']); ?></small>
 </p>
+<div class="mt-auto">
+    <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
+    <?php if(isset($_SESSION['user_id'])){ ?>
+        <a href="add_to_cart.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-2 w-100">เพิ่มลงตะกร้า</a>
+    <?php } else { ?>
+        <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
+    <?php } ?>
+</div>
 </div>
 </div>
 <?php } ?>
@@ -364,27 +315,18 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="row">
 <?php while($p = $products->fetch_assoc()){ ?>
 <div class="col-md-3 mb-4">
-<div class="card product-card p-3 text-center">
-<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
+<div class="card product-card p-3 text-center h-100">
+<img src="images/<?= $p['image']; ?>" class="img-fluid mb-2 rounded" style="height:200px; object-fit:cover;">
 <h6><?= $p['name']; ?></h6>
 <p><?= number_format($p['price']); ?> บาท</p>
-<a href="product.php?id=<?= $p['id'] ?>" 
-   class="btn btn-light btn-sm mt-2">
-   รายละเอียด
-</a>
-
-<?php if(isset($_SESSION['user_id'])){ ?>
-    <a href="add_to_cart.php?id=<?= $p['id'] ?>" 
-       class="btn btn-warning btn-sm mt-2 w-100 shadow-sm">
-       <i class="bi bi-cart-plus"></i> เพิ่มลงตะกร้า
-    </a>
-<?php } else { ?>
-    <button class="btn btn-outline-light btn-sm mt-2 w-100" 
-            data-bs-toggle="modal" 
-            data-bs-target="#loginModal">
-       เข้าสู่ระบบเพื่อซื้อ
-    </button>
-<?php } ?>
+<div class="mt-auto">
+    <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2 w-100">รายละเอียด</a>
+    <?php if(isset($_SESSION['user_id'])){ ?>
+        <a href="add_to_cart.php?id=<?= $p['id'] ?>" class="btn btn-warning btn-sm mt-2 w-100">เพิ่มลงตะกร้า</a>
+    <?php } else { ?>
+        <button class="btn btn-warning btn-sm mt-2 w-100" data-bs-toggle="modal" data-bs-target="#loginModal">เพิ่มลงตะกร้า</button>
+    <?php } ?>
+</div>
 </div>
 </div>
 <?php } ?>
@@ -399,25 +341,13 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <div class="modal fade" id="loginModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 rounded-4 shadow-lg auth-modal">
-
       <div class="modal-body text-center p-5 text-white">
-
         <h4 class="fw-bold mb-4">💫กรุณาเข้าสู่ระบบก่อนสั่งซื้อสินค้า</h4>
-
-        <a href="login.php" class="btn btn-gradient w-100 mb-3">
-          <i class="bi bi-box-arrow-in-right me-2"></i> เข้าสู่ระบบ
-        </a>
-
-        <a href="register.php" class="btn btn-outline-modern w-100">
-          <i class="bi bi-person-plus me-2"></i> สมัครสมาชิก
-        </a>
-
+        <a href="login.php" class="btn btn-gradient w-100 mb-3">เข้าสู่ระบบ</a>
+        <a href="register.php" class="btn btn-outline-modern w-100">สมัครสมาชิก</a>
       </div>
-
     </div>
   </div>
 </div>
-
-
 </body>
 </html>
