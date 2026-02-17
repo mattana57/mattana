@@ -374,16 +374,16 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 </a>
 
 <?php if(isset($_SESSION['user_id'])){ ?>
-<a href="add_to_cart.php?id=<?= $p['id'] ?>" 
-   class="btn btn-warning btn-sm mt-2">
-   เพิ่มลงตะกร้า
-</a>
+    <a href="add_to_cart.php?id=<?= $p['id'] ?>" 
+       class="btn btn-warning btn-sm mt-2 w-100 shadow-sm">
+       <i class="bi bi-cart-plus"></i> เพิ่มลงตะกร้า
+    </a>
 <?php } else { ?>
-<button class="btn btn-warning btn-sm mt-2" 
-        data-bs-toggle="modal" 
-        data-bs-target="#loginModal">
-   เพิ่มลงตะกร้า
-</button>
+    <button class="btn btn-outline-light btn-sm mt-2 w-100" 
+            data-bs-toggle="modal" 
+            data-bs-target="#loginModal">
+       เข้าสู่ระบบเพื่อซื้อ
+    </button>
 <?php } ?>
 </div>
 </div>
