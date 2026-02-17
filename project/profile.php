@@ -71,8 +71,6 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
         }
 
         .text-neon-cyan { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
-        .text-neon-purple { color: #bb86fc; text-shadow: 0 0 10px rgba(187, 134, 252, 0.5); }
-
         .info-label { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
         .info-value { font-size: 1.1rem; color: #fff; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
 
@@ -88,14 +86,19 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
             color: #bb86fc; border: 1px solid #bb86fc;
             border-radius: 50px; padding: 5px 20px; transition: 0.3s;
         }
-        .btn-edit-toggle:hover { background: #bb86fc; color: #120018; box-shadow: 0 0 15px #bb86fc; }
 
         .btn-neon-save {
             background: linear-gradient(45deg, #00f2fe, #00c6ff);
             color: #0f172a; border: none; font-weight: bold;
-            border-radius: 12px; padding: 15px; transition: 0.3s;
+            border-radius: 12px; padding: 12px; transition: 0.3s;
         }
         .btn-neon-save:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 242, 254, 0.5); }
+
+        .btn-outline-neon {
+            border: 1px solid #bb86fc; color: #bb86fc;
+            background: transparent; border-radius: 12px; padding: 12px; transition: 0.3s;
+        }
+        .btn-outline-neon:hover { background: rgba(187, 134, 252, 0.1); color: #fff; box-shadow: 0 0 15px #bb86fc; }
 
         .modal-content.custom-popup {
             background: rgba(26, 0, 40, 0.9); backdrop-filter: blur(20px);
@@ -131,26 +134,24 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
                     <div class="info-value"><?= $user_data['email'] ?></div>
 
                     <div class="info-label">ชื่อ-นามสกุล</div>
-                    <div class="info-value text-neon-purple"><?= $user_data['fullname'] ?: '<span class="opacity-25">ยังไม่ได้ระบุ</span>' ?></div>
+                    <div class="info-value" style="color:#bb86fc;"><?= $user_data['fullname'] ?: 'ยังไม่ได้ระบุ' ?></div>
 
                     <div class="info-label">เบอร์โทรศัพท์</div>
-                    <div class="info-value"><?= $user_data['phone'] ?: '<span class="opacity-25">ยังไม่ได้ระบุ</span>' ?></div>
+                    <div class="info-value"><?= $user_data['phone'] ?: 'ยังไม่ได้ระบุ' ?></div>
 
                     <div class="info-label">ที่อยู่จัดส่ง</div>
-                    <div class="info-value small"><?= $user_data['address'] ?: '<span class="opacity-25">ยังไม่ได้ระบุ</span>' ?></div>
-
-                    <div class="row">
+                    <div class="info-value small"><?= $user_data['address'] ?: 'ยังไม่ได้ระบุ' ?></div>
+                    
+                    <div class="row g-3 mt-2">
                         <div class="col-6">
-                            <div class="info-label">จังหวัด</div>
-                            <div class="info-value"><?= $user_data['province'] ?: '-' ?></div>
+                            <a href="index.php" class="btn btn-outline-neon w-100">
+                                <i class="bi bi-house-door me-1"></i> หน้าหลัก
+                            </a>
                         </div>
                         <div class="col-6">
-                            <div class="info-label">รหัสไปรษณีย์</div>
-                            <div class="info-value"><?= $user_data['zipcode'] ?: '-' ?></div>
+                            <a href="logout.php" class="btn btn-outline-danger w-100 rounded-3 py-2" style="border-radius:12px !important;">ออกจากระบบ</a>
                         </div>
                     </div>
-                    
-                    <a href="logout.php" class="btn btn-outline-danger w-100 rounded-pill mt-3">ออกจากระบบ</a>
                 </div>
 
                 <div id="editMode" style="display: none;">
@@ -169,7 +170,7 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
                         </div>
                         <div class="mb-3">
                             <label class="small text-white-50 mb-1">ที่อยู่จัดส่ง</label>
-                            <textarea name="address" class="form-control custom-input" rows="3"><?= $user_data['address'] ?? '' ?></textarea>
+                            <textarea name="address" class="form-control custom-input" rows="2"><?= $user_data['address'] ?? '' ?></textarea>
                         </div>
                         <div class="row g-2">
                             <div class="col-6"><input type="text" name="province" class="form-control custom-input" placeholder="จังหวัด" value="<?= $user_data['province'] ?? '' ?>"></div>
@@ -196,7 +197,11 @@ $orders = $conn->query("SELECT * FROM orders WHERE user_id = $user_id ORDER BY c
                                 <tr class="border-0 align-middle" style="background: rgba(255,255,255,0.03);">
                                     <td class="py-3 px-3 fw-bold" style="color:#bb86fc;">#<?= str_pad($row['id'], 5, '0', STR_PAD_LEFT) ?></td>
                                     <td class="text-neon-cyan">฿<?= number_format($row['total_price']) ?></td>
-                                    <td class="text-end"><span class="badge-status" style="border:1px solid #bb86fc; padding:4px 10px; border-radius:20px; font-size:12px; color:#bb86fc;">รอตรวจสอบ</span></td>
+                                    <td class="text-end">
+                                        <span class="badge" style="border:1px solid #bb86fc; color:#bb86fc; border-radius:20px; font-size:12px;">
+                                            <?= $row['status'] == 'pending' ? 'รอตรวจสอบ' : 'สำเร็จ' ?>
+                                        </span>
+                                    </td>
                                 </tr>
                                 <?php endwhile; ?>
                             </tbody>
