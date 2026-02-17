@@ -345,7 +345,7 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!--<div class="modal fade" id="loginModal">
+<div class="modal fade" id="loginModal">
 <div class="modal-dialog">
 <div class="modal-content text-center p-4">
 <h5>กรุณาเข้าสู่ระบบก่อน</h5>
@@ -353,7 +353,7 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <a href="register.php" class="btn btn-secondary">สมัครสมาชิก</a>
 </div>
 </div>
-</div> -->
+</div> 
 
 </body>
 </html>
