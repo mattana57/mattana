@@ -206,7 +206,7 @@ while($row = $result->fetch_assoc()) {
                     </button>
                     
                     <a href="cart.php" class="btn btn-cancel">
-                        <i class="bi bi-arrow-left me-1"></i> ย้อนกลับไปตะกร้า
+                        <i class="bi bi-arrow-left me-1"></i> ย้อนกลับไปหน้าตะกร้าสินค้า
                     </a>
                 </div>
             </div>
