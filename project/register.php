@@ -74,7 +74,7 @@ body {
     align-items: center;
     justify-content: center;
 
-    background: linear-gradient(135deg, #5b0f8a, #7b2cbf);
+    background: linear-gradient(135deg,#2a0845,#6a1b9a,#3d1e6d);
     padding: 80px 20px; /* กันโดนตัดด้านบน */
 }
 
