@@ -40,10 +40,24 @@ $result = $conn->query($sql);
             min-height: 100vh;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+    /* ปรับพื้นหลังให้สว่างขึ้นจาก 0.03 เป็น 0.1 หรือ 0.15 */
+            background: rgba(255, 255, 255, 0.12); 
+            backdrop-filter: blur(15px);
+    /* ปรับเส้นขอบให้เป็นสีขาวที่สว่างและหนาขึ้นเล็กน้อย */
+            border: 1px solid rgba(255, 255, 255, 0.3); 
             border-radius: 1rem;
+    /* เพิ่มเงาสีขาวจางๆ รอบกรอบเพื่อให้ดูมีมิติและลอยออกมา */
+            box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.1); 
+        }
+
+/* หากต้องการให้ตารางข้างในดูสว่างและอ่านง่ายขึ้นด้วย */
+        .table thead th {
+            color: #ffffff !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .table tbody td {
+            color: rgba(255, 255, 255, 0.9) !important;
         }
         .product-img {
             width: 70px; height: 70px;
