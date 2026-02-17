@@ -381,6 +381,7 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="modal fade" id="authModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
