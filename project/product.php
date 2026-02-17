@@ -60,8 +60,27 @@ body {
     color: #fff; 
 }
 
-.product-title { font-weight: 700; font-size: 32px; text-shadow: 0 0 15px rgba(187, 134, 252, 0.3); }
-.product-price { color: #bb86fc; font-size: 30px; font-weight: 700; }
+.product-title { 
+    font-weight: 700; 
+    font-size: 32px; 
+    color: #ffffff; /* ชื่อสินค้าหลักขาวชัดเจน */
+    text-shadow: 0 0 15px rgba(187, 134, 252, 0.5); 
+}
+
+.product-price { 
+    color: #00f2fe; /* ราคา Cyan Neon สว่างชัด */
+    font-size: 30px; 
+    font-weight: 700; 
+    text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+}
+
+.product-card-panel p {
+    color: rgba(255, 255, 255, 0.95) !important; /* คำอธิบายสินค้าปรับให้ขาวขึ้นมองเห็นชัด */
+}
+
+.text-secondary {
+    color: #cbd5e1 !important; /* ตัวหนังสือรองปรับให้สว่างขึ้นกว่าเดิม */
+}
 
 /* ปุ่มสีใหม่ (Neon Style) */
 .btn-neon-purple {

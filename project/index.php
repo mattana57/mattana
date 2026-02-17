@@ -91,6 +91,34 @@ body {
 
 .section-title { border-left: 5px solid #f107a3; padding-left: 15px; margin-bottom: 30px; font-weight: 700; text-shadow: 0 0 10px rgba(241, 7, 163, 0.5); }
 .badge-cart { position: absolute; top: -5px; right: -5px; background: #f107a3; color: white; font-size: 10px; padding: 3px 7px; border-radius: 50%; font-weight: bold; }
+
+body {
+    background: radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%), 
+                radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%), 
+                linear-gradient(135deg,#120018,#2a0845,#3d1e6d);
+    color: #ffffff; /* ปรับเป็นขาวบริสุทธิ์ */
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+}
+
+.product-card h6 {
+    color: #ffffff !important; /* ชื่อสินค้าต้องขาวชัดเจน */
+    font-weight: 600;
+}
+
+.text-info {
+    color: #00f2fe !important; /* ปรับราคาสี Cyan Neon ตัดกับพื้นหลังม่วงได้ดีกว่า */
+    text-shadow: 0 0 5px rgba(0, 242, 254, 0.5);
+}
+
+.section-title { 
+    border-left: 5px solid #f107a3; 
+    padding-left: 15px; 
+    margin-bottom: 30px; 
+    font-weight: 700; 
+    color: #ffffff; /* หัวข้อขาวสว่าง */
+    text-shadow: 0 0 10px rgba(241, 7, 163, 0.8); 
+}
 </style>
 </head>
 <body>
