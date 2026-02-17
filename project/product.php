@@ -17,6 +17,42 @@ if(!$product){
 <head>
 <title><?=$product['name']?></title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+.product-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+}
+
+.product-title {
+    font-weight: 600;
+    font-size: 28px;
+}
+
+.product-price {
+    color: #e11d48;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.btn-cart {
+    background: linear-gradient(135deg,#7c3aed,#a855f7);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 25px;
+    font-weight: 500;
+    color: #fff;
+    transition: 0.3s;
+}
+
+.btn-cart:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(124,58,237,0.4);
+}
+
+</style>
+
 </head>
 <body>
 
@@ -47,26 +83,37 @@ if(!$product){
 </div>
 
 <div class="col-md-7">
-<h3><?=$product['name']?></h3>
+    <div class="product-card">
 
-<h4 class="text-danger">฿<?=$product['price']?></h4>
+        <h2 class="product-title"><?=$product['name']?></h2>
 
-<?php if($product['old_price']>0){ ?>
-<p>
-<span class="badge bg-danger">SALE</span>
-<small class="text-muted text-decoration-line-through">
-฿<?=$product['old_price']?>
-</small>
-</p>
-<?php } ?>
+        <div class="product-price">
+            ฿<?=number_format($product['price'],2)?>
+        </div>
 
-<p><?=$product['description']?></p>
+        <?php if($product['old_price']>0){ ?>
+            <div class="mt-2">
+                <span class="badge bg-danger">SALE</span>
+                <small class="text-muted text-decoration-line-through ms-2">
+                    ฿<?=number_format($product['old_price'],2)?>
+                </small>
+            </div>
+        <?php } ?>
 
-<a href="cart.php?add=<?=$product['id']?>" 
-class="btn btn-success btn-lg">
-เพิ่มลงตะกร้า
-</a>
-</div>
+        <p class="mt-3"><?=$product['description']?></p>
+
+        <a href="cart.php?add=<?=$product['id']?>" 
+        class="btn btn-cart mt-3">
+            เพิ่มลงตะกร้า 🛒
+        </a>
+
+        <div class="mt-3 text-muted small">
+            ✔ สินค้าพร้อมส่ง <br>
+            ✔ จัดส่งภายใน 1-2 วัน <br>
+            ✔ รับประกันสินค้า
+        </div>
+
+    </div>
 </div>
 
 <hr>
