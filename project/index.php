@@ -56,6 +56,7 @@ SELECT * FROM products WHERE discount > 0 LIMIT 8
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
 body{
@@ -112,6 +113,42 @@ box-shadow:0 0 20px #bb86fc;
 border-left:5px solid #bb86fc;
 padding-left:10px;
 margin-bottom:20px;
+}
+
+/* Modern Glass Modal */
+.auth-modal {
+    background: rgba(40, 0, 70, 0.85);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+}
+
+/* Gradient Primary Button */
+.btn-gradient {
+    background: linear-gradient(135deg, #7b2ff7, #f107a3);
+    border: none;
+    color: white;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* Outline Secondary */
+.btn-outline-modern {
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 12px;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.btn-outline-modern:hover {
+    background: rgba(255,255,255,0.1);
 }
 </style>
 </head>
@@ -345,15 +382,28 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<div class="modal fade" id="loginModal">
-<div class="modal-dialog">
-<div class="modal-content text-center p-4">
-<h5>กรุณาเข้าสู่ระบบก่อน</h5>
-<a href="login.php" class="btn btn-primary">เข้าสู่ระบบ</a>
-<a href="register.php" class="btn btn-secondary">สมัครสมาชิก</a>
+<div class="modal fade" id="authModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg auth-modal">
+
+      <div class="modal-body text-center p-5 text-white">
+
+        <h4 class="fw-bold mb-4">ยินดีต้อนรับ 👋</h4>
+
+        <a href="login.php" class="btn btn-gradient w-100 mb-3">
+          <i class="bi bi-box-arrow-in-right me-2"></i> เข้าสู่ระบบ
+        </a>
+
+        <a href="register.php" class="btn btn-outline-modern w-100">
+          <i class="bi bi-person-plus me-2"></i> สมัครสมาชิก
+        </a>
+
+      </div>
+
+    </div>
+  </div>
 </div>
-</div>
-</div> 
+
 
 </body>
 </html>
