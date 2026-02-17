@@ -14,7 +14,7 @@ if(isset($_SESSION['user_id'])){
 ?>
 
 <style>
-/* --- โค้ด CSS เดิมของคุณทั้งหมด --- */
+/* --- โค้ดเดิมของคุณทั้งหมด (ห้ามยุ่ง) --- */
 .navbar-custom { background: linear-gradient(135deg,#2d0b4e,#5b21b6); padding: 15px 0; color: #fff; }
 .logo { font-size: 22px; font-weight: 600; color: #fff; }
 .icon-btn { 
@@ -34,13 +34,23 @@ if(isset($_SESSION['user_id'])){
 }
 .logout-btn:hover, .login-btn:hover, .register-btn:hover, .icon-btn:hover { background: #a855f7; }
 
-/* [ส่วนที่แทรกเพิ่ม]: สไตล์สำหรับปุ่มโปรไฟล์เพื่อให้เข้ากับของเดิม */
-.account-btn {
-    background: rgba(255, 255, 255, 0.1); padding: 8px 15px; border-radius: 20px;
-    text-decoration: none; color: #fff; font-weight: 500; transition: 0.3s;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+/* --- [แทรกเพิ่ม]: สไตล์ปุ่มโปรไฟล์ให้เข้ากับธีมคุณ --- */
+.account-link {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.1);
+    transition: 0.3s;
+    border: 1px solid rgba(255,255,255,0.2);
+    margin-right: 5px;
 }
-.account-btn:hover { background: rgba(255, 255, 255, 0.2); color: #00f2fe; }
+.account-link:hover {
+    background: #bb86fc;
+    color: #120018;
+    box-shadow: 0 0 15px rgba(187, 134, 252, 0.4);
+}
 </style>
 
 <nav class="navbar-custom">
@@ -53,17 +63,17 @@ if(isset($_SESSION['user_id'])){
             </form>
 
             <?php if(isset($_SESSION['user_id'])){ ?>
-                <a href="profile.php" class="account-btn">
+                
+                <a href="profile.php" class="account-link">
                     👤 บัญชีของฉัน
                 </a>
 
                 <a href="cart.php" class="icon-btn">
                     🛒
-                    <span id="cart-badge" class="badge-cart" style="<?= ($cart_count > 0) ? '' : 'display: none;' ?>">
+                    <span id="cart-badge" class="badge-cart" style="<?= ($cart_count > 0) ? '' : 'display:none;' ?>">
                         <?= $cart_count ?>
                     </span>
                 </a>
-
                 <a href="logout.php" class="logout-btn">ออกจากระบบ</a>
 
             <?php } else { ?>

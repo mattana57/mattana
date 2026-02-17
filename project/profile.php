@@ -2,7 +2,7 @@
 session_start();
 include "connectdb.php";
 
-// ตรวจสอบการเข้าสู่ระบบ
+// 1. ตรวจสอบ Login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -10,11 +10,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 1. ดึงข้อมูลผู้ใช้งาน
+// 2. ดึงข้อมูลจากตาราง users (เชื่อมกับตารางที่คุณส่งรูปมา)
 $user_q = $conn->query("SELECT * FROM users WHERE id = $user_id");
 $user_data = $user_q->fetch_assoc();
 
-// 2. ดึงประวัติการสั่งซื้อ (เรียงจากล่าสุดขึ้นก่อน)
+// 3. ดึงประวัติการสั่งซื้อจากตาราง orders (ถ้ายังไม่สร้างตารางจะไม่มีข้อมูลขึ้น)
 $order_sql = "SELECT * FROM orders WHERE user_id = $user_id ORDER BY created_at DESC";
 $orders = $conn->query($order_sql);
 ?>
@@ -23,7 +23,7 @@ $orders = $conn->query($order_sql);
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>บัญชีของฉัน | Goods Secret Store</title>
+    <title>โปรไฟล์ของฉัน | Goods Secret Store</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
@@ -40,27 +40,23 @@ $orders = $conn->query($order_sql);
             border: 1.5px solid rgba(187, 134, 252, 0.3);
             border-radius: 20px;
             padding: 30px;
-            margin-bottom: 30px;
         }
         .text-neon-cyan { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
         .text-neon-purple { color: #bb86fc; text-shadow: 0 0 10px rgba(187, 134, 252, 0.5); }
         
-        /* สไตล์ตารางประวัติการสั่งซื้อ */
-        .table { color: #ffffff !important; --bs-table-bg: transparent; }
-        .table thead th { color: #bb86fc; border-bottom: 2px solid rgba(187, 134, 252, 0.3); }
-        
-        /* สไตล์ป้ายสถานะ (Status Badge) */
-        .badge-pending { background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid #ffc107; }
-        .badge-paid { background: rgba(0, 242, 254, 0.1); color: #00f2fe; border: 1px solid #00f2fe; }
-        .badge-shipped { background: rgba(40, 255, 191, 0.1); color: #28ffbf; border: 1px solid #28ffbf; }
-        
         .user-avatar {
-            width: 80px; height: 80px;
+            width: 100px; height: 100px;
             background: linear-gradient(135deg, #bb86fc, #f107a3);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: bold; margin-bottom: 15px;
+            font-size: 2.5rem; font-weight: bold; margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(187, 134, 252, 0.5);
         }
+        .info-label { color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+        .info-value { font-size: 1.1rem; font-weight: 500; color: #fff; }
+        
+        .table { color: #ffffff !important; --bs-table-bg: transparent; }
+        .table thead th { color: #bb86fc; border-bottom: 2px solid rgba(187, 134, 252, 0.3); }
     </style>
 </head>
 <body>
@@ -68,59 +64,53 @@ $orders = $conn->query($order_sql);
 <?php include "navbar.php"; ?>
 
 <div class="container py-5">
-    <div class="row">
+    <div class="row g-4">
         <div class="col-lg-4">
             <div class="glass-panel text-center">
-                <div class="d-flex justify-content-center">
-                    <div class="user-avatar text-white">
-                        <?= strtoupper(substr($user_data['username'], 0, 1)) ?>
+                <div class="user-avatar">
+                    <?= strtoupper(substr($user_data['username'], 0, 1)) ?>
+                </div>
+                <h3 class="fw-bold mb-1 text-neon-cyan"><?= $user_data['username'] ?></h3>
+                <p class="text-white-50 small mb-4">Member ID: #<?= str_pad($user_id, 5, '0', STR_PAD_LEFT) ?></p>
+                
+                <div class="text-start bg-white bg-opacity-10 p-3 rounded-4 mb-4">
+                    <div class="mb-3">
+                        <div class="info-label"><i class="bi bi-telephone me-2"></i>เบอร์โทรศัพท์</div>
+                        <div class="info-value"><?= $user_data['phone'] ?: 'ไม่ได้ระบุเบอร์โทร' ?></div>
+                    </div>
+                    <div class="mb-0">
+                        <div class="info-label"><i class="bi bi-calendar3 me-2"></i>วันที่เข้าร่วม</div>
+                        <div class="info-value"><?= date('d/m/Y', strtotime($user_data['created_at'])) ?></div>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-1 text-white"><?= $user_data['username'] ?></h3>
-                <p class="text-white-50 mb-4"><?= $user_data['email'] ?></p>
-                <hr class="border-secondary opacity-25">
-                <div class="text-start mt-4">
-                    <p class="mb-2 small text-secondary-bright">ระดับสมาชิก: <span class="text-neon-purple">VIP Member</span></p>
-                    <p class="mb-2 small text-secondary-bright">วันที่เข้าร่วม: <?= date('d/m/Y', strtotime($user_data['created_at'])) ?></p>
-                </div>
-                <a href="logout.php" class="btn btn-outline-danger w-100 rounded-pill mt-4">ออกจากระบบ</a>
+                
+                <a href="logout.php" class="btn btn-outline-danger w-100 rounded-pill">ออกจากระบบ</a>
             </div>
         </div>
 
         <div class="col-lg-8">
-            <div class="glass-panel">
-                <h4 class="mb-4 text-neon-cyan"><i class="bi bi-box-seam me-2"></i>ประวัติการสั่งซื้อสินค้า</h4>
+            <div class="glass-panel h-100">
+                <h4 class="mb-4 text-neon-purple"><i class="bi bi-bag-check me-2"></i>ประวัติการสั่งซื้อของคุณ</h4>
                 
-                <?php if($orders->num_rows > 0): ?>
+                <?php if($orders && $orders->num_rows > 0): ?>
                 <div class="table-responsive">
                     <table class="table align-middle">
                         <thead>
                             <tr>
-                                <th>ออเดอร์ #</th>
-                                <th>วันที่สั่ง</th>
-                                <th>ราคารวม</th>
-                                <th>วิธีชำระ</th>
-                                <th>สถานะ</th>
+                                <th>เลขออเดอร์</th>
+                                <th>วันที่</th>
+                                <th>ยอดรวม</th>
+                                <th class="text-end">สถานะ</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php while($row = $orders->fetch_assoc()): ?>
                             <tr>
                                 <td class="fw-bold text-white">#<?= str_pad($row['id'], 5, '0', STR_PAD_LEFT) ?></td>
-                                <td class="small text-white-50"><?= date('d/m/Y H:i', strtotime($row['created_at'])) ?></td>
+                                <td class="small"><?= date('d/m/Y', strtotime($row['created_at'])) ?></td>
                                 <td class="text-neon-cyan">฿<?= number_format($row['total_price']) ?></td>
-                                <td>
-                                    <span class="small text-white">
-                                        <?= $row['payment_method'] == 'bank' ? 'โอนเงิน (สลิป)' : 'เก็บเงินปลายทาง' ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php 
-                                        $s = $row['status'];
-                                        $class = ($s == 'pending') ? 'badge-pending' : (($s == 'paid') ? 'badge-paid' : 'badge-shipped');
-                                        $text = ($s == 'pending') ? 'รอตรวจสอบ' : (($s == 'paid') ? 'ชำระเงินแล้ว' : 'ส่งแล้ว');
-                                    ?>
-                                    <span class="badge <?= $class ?> rounded-pill px-3 py-2"><?= $text ?></span>
+                                <td class="text-end">
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-2">สำเร็จ</span>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
@@ -129,8 +119,9 @@ $orders = $conn->query($order_sql);
                 </div>
                 <?php else: ?>
                 <div class="text-center py-5 opacity-50">
-                    <i class="bi bi-cart-x display-1 d-block mb-3"></i>
-                    <p>คุณยังไม่มีประวัติการสั่งซื้อในขณะนี้</p>
+                    <i class="bi bi-cart-x display-1 mb-3 d-block"></i>
+                    <p>ยังไม่มีรายการสั่งซื้อในระบบ</p>
+                    <a href="index.php" class="btn btn-outline-info btn-sm rounded-pill mt-2">ไปช้อปปิ้งเลย</a>
                 </div>
                 <?php endif; ?>
             </div>
