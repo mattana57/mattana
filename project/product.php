@@ -50,7 +50,7 @@ class="btn btn-success btn-lg">
 
 <hr>
 
-<h5>🔥 หนังสือที่คุณอาจสนใจ</h5>
+<h5>🔥 สินค้าที่คุณอาจสนใจ</h5>
 <div class="row">
 <?php
 $recommend = $conn->query("SELECT * FROM products WHERE is_trending=1 AND id!=$id LIMIT 4");
