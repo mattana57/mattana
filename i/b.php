@@ -9,7 +9,8 @@
 <h1>งานi --มัทนา รัตนแสง(น้ำฝน)</h1>
 
 <form method="post" action="">
-    ชื่อภาค <input type="text" name="rname" autofocus required>
+    ชื่อจังหวัด <input type="text" name="pname" autofocus required><br>
+    รูป <input type="file" name="pimage" required><br>
     <button type="submit" name="Submit"> บันทึก </button>
 </form><br><br>
 
