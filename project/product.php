@@ -80,10 +80,23 @@ body {
 
 /* Search Input Styling */
 .search-input {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(187, 134, 252, 0.5) !important;
-    color: #ffffff !important;
+    background: #c6a9cdd5 !important; /* เพิ่มความสว่างของพื้นหลังช่องค้นหา */
+    border: 1px solid rgba(187, 134, 252, 0.5) !important; /* เพิ่มเส้นขอบสีม่วงนีออนจางๆ */
+    color: #ffffff !important; /* กำหนดตัวอักษรเป็นสีขาวบริสุทธิ์ */
     border-radius: 25px !important;
+    padding-left: 20px !important;
+    transition: all 0.3s ease;
+}
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: #bb86fc !important;
+    box-shadow: 0 0 10px rgba(187, 134, 252, 0.5) !important;
+    outline: none;
+}
+
+/* ปรับสีตัวอักษร Placeholder (คำเกริ่นในช่อง) */
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
 }
 
 /* Button Colors (Neon Purple & Pink) */
