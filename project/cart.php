@@ -89,7 +89,38 @@ h2, h5 {
     color: #e2e8f0 !important;
     font-size: 1.1rem;
 }
-    </style>
+/* ปรับปรุงปุ่มชำระเงินให้เป็นสีชมพู Magenta นีออน */
+.btn-checkout {
+    background: linear-gradient(135deg, #f107a3, #ff0080) !important; /* บังคับใช้สี Gradient ชมพูนีออน */
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 12px 25px;
+    border-radius: 50px; /* ทรงมนยาวแบบโมเดิร์น */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(241, 7, 163, 0.4); /* เพิ่มเงาเรืองแสงรอบปุ่ม */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* เอฟเฟกต์เมื่อเอาเมาส์วาง (Hover) */
+.btn-checkout:hover {
+    transform: translateY(-3px); /* ยกตัวขึ้นเล็กน้อย */
+    box-shadow: 0 8px 25px rgba(241, 7, 163, 0.6); /* เงาเรืองแสงเข้มขึ้น */
+    filter: brightness(1.1);
+    color: #ffffff !important;
+}
+
+/* กรณีปุ่มถูกปิดใช้งาน (เช่น ไม่มีสินค้าในตะกร้า) */
+.btn-checkout:disabled {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+}
+</style>
 </head>
 <body>
 
@@ -170,7 +201,7 @@ h2, h5 {
                     <span class="h5">รวมสุทธิ</span>
                     <span class="h4 fw-bold text-info">฿<?= number_format($grand_total ?? 0) ?></span>
                 </div>
-                <button class="btn btn-checkout w-100 rounded-pill mb-3">
+                <button class="btn btn-checkout w-100 rounded-pill mb-3" <?= ($grand_total <= 0) ? 'disabled' : '' ?>>
                     ชำระเงิน <i class="bi bi-arrow-right ms-2"></i>
                 </button>
                 <a href="index.php" class="btn btn-link w-100 text-secondary text-decoration-none small">
