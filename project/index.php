@@ -218,17 +218,23 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
 <h6><?= $p['name']; ?></h6>
 <p><?= number_format($p['price']); ?> บาท</p>
-<br>
-
 <a href="product.php?id=<?= $p['id'] ?>" 
    class="btn btn-light btn-sm mt-2">
    รายละเอียด
 </a>
 
+<?php if(isset($_SESSION['user_id'])){ ?>
 <a href="add_to_cart.php?id=<?= $p['id'] ?>" 
    class="btn btn-warning btn-sm mt-2">
    เพิ่มลงตะกร้า
 </a>
+<?php } else { ?>
+<button class="btn btn-warning btn-sm mt-2" 
+        data-bs-toggle="modal" 
+        data-bs-target="#loginModal">
+   เพิ่มลงตะกร้า
+</button>
+<?php } ?>
 </div>
 </div>
 <?php } ?>
@@ -288,7 +294,7 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<div class="modal fade" id="loginModal">
+<!--<div class="modal fade" id="loginModal">
 <div class="modal-dialog">
 <div class="modal-content text-center p-4">
 <h5>กรุณาเข้าสู่ระบบก่อน</h5>
@@ -296,7 +302,7 @@ class="modern-btn m-1 <?= ($category_slug==$cat['slug'])?'active-category':'' ?>
 <a href="register.php" class="btn btn-secondary">สมัครสมาชิก</a>
 </div>
 </div>
-</div>
+</div> -->
 
 </body>
 </html>
