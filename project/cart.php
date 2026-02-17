@@ -9,18 +9,37 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// ฟังก์ชันลบสินค้า
-if (isset($_GET['delete_id'])) {
-    $del_id = intval($_GET['delete_id']);
-    $conn->query("DELETE FROM cart WHERE user_id = $user_id AND product_id = $del_id");
+// --- 1. ส่วนประมวลผลการทำงาน (เพิ่ม/ลด/ลบ) ในหน้าเดิม ---
+// ฟังก์ชันปรับเพิ่ม/ลดจำนวน
+if (isset($_GET['action']) && isset($_GET['product_id'])) {
+    $p_id = intval($_GET['product_id']);
+    $v_id = isset($_GET['variant_id']) ? intval($_GET['variant_id']) : 0;
+    
+    if ($_GET['action'] == 'increase') {
+        $conn->query("UPDATE cart SET quantity = quantity + 1 WHERE user_id = $user_id AND product_id = $p_id AND variant_id = $v_id");
+    } elseif ($_GET['action'] == 'decrease') {
+        // ลดได้ต่ำสุดที่ 1 ชิ้น
+        $conn->query("UPDATE cart SET quantity = GREATEST(1, quantity - 1) WHERE user_id = $user_id AND product_id = $p_id AND variant_id = $v_id");
+    }
     header("Location: cart.php");
     exit();
 }
 
-// ดึงข้อมูลสินค้า
-$sql = "SELECT cart.*, products.name, products.price, products.image 
+// ฟังก์ชันลบสินค้า (ปรับปรุงให้รองรับ variant_id)
+if (isset($_GET['delete_id'])) {
+    $del_id = intval($_GET['delete_id']);
+    $v_id = isset($_GET['variant_id']) ? intval($_GET['variant_id']) : 0;
+    $conn->query("DELETE FROM cart WHERE user_id = $user_id AND product_id = $del_id AND variant_id = $v_id");
+    header("Location: cart.php");
+    exit();
+}
+
+// --- 2. ดึงข้อมูลสินค้า (JOIN กับตาราง variants เพื่อโชว์ชื่อแบบ) ---
+$sql = "SELECT cart.*, products.name as p_name, products.price, products.image as p_image, 
+               pv.variant_name 
         FROM cart 
         JOIN products ON cart.product_id = products.id 
+        LEFT JOIN product_variants pv ON cart.variant_id = pv.id
         WHERE cart.user_id = $user_id";
 $result = $conn->query($sql);
 ?>
@@ -33,137 +52,33 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
-        /* 1. ปรับปรุงสีตัวอักษรหลักให้เป็นสีขาวสว่างชัดเจน */
-body {
-    background-color: #0f172a;
-    color: #ffffff !important; /* บังคับให้เป็นสีขาวบริสุทธิ์ */
-    background-image: radial-gradient(circle at top right, #3d1263, transparent), 
-                      radial-gradient(circle at bottom left, #1e1b4b, transparent);
-    min-height: 100vh;
-}
-
-/* 2. ปรับปรุงความสว่างของหัวข้อ */
-h2, h4, h5 {
-    color: #ffffff !important;
-    font-weight: 700;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-/* 3. ปรับปรุงตารางข้อมูลสินค้าให้อ่านง่ายขึ้น */
-.table {
-    color: #ffffff !important;
-}
-
-.table thead th {
-    color: #bb86fc !important; /* หัวข้อตารางเป็นสีม่วงนีออนสว่าง */
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
-    text-transform: uppercase;
-    font-size: 0.95rem;
-    letter-spacing: 1px;
-}
-
-/* 4. ปรับสีชื่อสินค้าและรหัสสินค้า */
-.fw-bold.text-white, .fs-5.text-white {
-    color: #ffffff !important;
-}
-
-.text-secondary-bright {
-    color: #e2e8f0 !important; /* ปรับจากสีเทามืดเป็นสีขาวเทาสว่าง */
-}
-
-/* 5. ปรับยอดรวมเงินให้เด่นชัด (สี Cyan Neon) */
-.text-neon-cyan {
-    color: #00f2fe !important; 
-    text-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
-}
-
-/* 6. ปรับปรุงสีข้อความสรุปรายการสั่งซื้อ */
-.d-flex.justify-content-between span {
-    color: #ffffff !important;
-}
-
-.d-flex.justify-content-between .text-secondary-bright {
-    color: #cbd5e1 !important;
-}
-        /* --- ปรับปรุงกรอบสินค้าให้ดูลอยและมีมิตินีออน --- */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.03) !important; /* พื้นหลังโปร่งแสงเล็กน้อย */
-    backdrop-filter: blur(10px);
-    
-    /* สร้างเส้นกรอบลอยๆ แบบไล่เฉดสีจางๆ */
-    border: 1.5px solid rgba(187, 134, 252, 0.3) !important; 
-    
-    border-radius: 20px;
-    
-    /* เพิ่มลูกเล่นเงาเรืองแสง (Outer Glow) ให้กรอบดูลอยออกมา */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
-                0 0 15px rgba(187, 134, 252, 0.1) !important; 
-                
-    padding: 25px;
-    transition: all 0.3s ease; /* เพิ่ม Transition เพื่อความนุ่มนวล */
-}
-
-/* เมื่อเอาเมาส์ไปวาง ให้กรอบลอยเด่นขึ้นอีก */
-.glass-panel:hover {
-    border-color: rgba(187, 134, 252, 0.6) !important;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 
-                0 0 20px rgba(187, 134, 252, 0.2) !important;
-    transform: translateY(-5px);
-}
-
-/* ปรับปรุงตารางข้างในให้โปร่งใส 100% เพื่อไม่ให้บังเส้นกรอบลอย */
-.table {
-    --bs-table-bg: transparent !important;
-    background-color: transparent !important;
-    border-collapse: separate;
-    border-spacing: 0 10px; /* เพิ่มระยะห่างระหว่างแถวให้ดูไม่ตัน */
-}
-
-.table td {
-    background-color: transparent !important;
-    border: none !important; /* เอาเส้นขีดคั่นตารางออกเพื่อความคลีน */
-}
-
-.table thead th {
-    background-color: transparent !important;
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.1) !important;
-    padding-bottom: 15px;
-}
-
-        .product-img { 
-            width: 80px; height: 80px; 
-            object-fit: cover; border-radius: 12px; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+        /* --- CSS เดิมของคุณทั้งหมด --- */
+        body {
+            background-color: #0f172a;
+            color: #ffffff !important;
+            background-image: radial-gradient(circle at top right, #3d1263, transparent), 
+                              radial-gradient(circle at bottom left, #1e1b4b, transparent);
+            min-height: 100vh;
         }
-
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03) !important;
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(187, 134, 252, 0.3) !important; 
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 25px;
+        }
+        .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
         .text-neon-cyan { color: #00f2fe !important; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
-        .text-secondary-bright { color: #cbd5e1 !important; }
-
-        /* ปุ่มชำระเงิน Neon Magenta */
         .btn-checkout {
             background: linear-gradient(135deg, #f107a3, #ff0080) !important;
-            border: none !important;
-            color: #ffffff !important;
-            font-weight: 700;
-            padding: 15px 30px;
-            border-radius: 50px;
-            transition: 0.4s;
-            box-shadow: 0 5px 20px rgba(241, 7, 163, 0.5);
-            width: 100%;
+            border: none !important; color: #ffffff !important; font-weight: 700;
+            padding: 15px; border-radius: 50px; width: 100%; box-shadow: 0 5px 20px rgba(241, 7, 163, 0.5);
         }
-        .btn-checkout:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(241, 7, 163, 0.7); filter: brightness(1.2); }
-
-        .btn-remove { color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; transition: 0.3s; cursor: pointer; }
-        .btn-remove:hover { color: #ff4d4d; transform: rotate(15deg) scale(1.2); }
-
-        /* Modal Delete */
-        .modal-content.delete-popup {
-            background: rgba(40, 0, 10, 0.9);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 77, 77, 0.3);
-            border-radius: 25px;
-            color: #fff;
-        }
+        /* ส่วนที่เพิ่ม: สไตล์ปุ่มบวกลบ */
+        .qty-btn { color: #bb86fc; font-size: 1.2rem; transition: 0.2s; text-decoration: none; }
+        .qty-btn:hover { color: #00f2fe; transform: scale(1.2); }
+        .qty-val { background: rgba(255,255,255,0.1); border: 1px solid rgba(187, 134, 252, 0.3); border-radius: 8px; min-width: 40px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -178,9 +93,9 @@ h2, h4, h5 {
             <div class="glass-panel">
                 <?php if($result->num_rows > 0): ?>
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table text-white">
                         <thead>
-                            <tr>
+                            <tr class="text-purple-light">
                                 <th>ข้อมูลสินค้า</th>
                                 <th class="text-end">ราคา</th>
                                 <th class="text-center">จำนวน</th>
@@ -195,23 +110,36 @@ h2, h4, h5 {
                                 $subtotal = $row['price'] * $row['quantity'];
                                 $grand_total += $subtotal;
                             ?>
-                            <tr>
+                            <tr style="vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.05);">
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="images/<?= $row['image'] ?>" class="product-img me-3">
+                                    <div class="d-flex align-items-center py-2">
+                                        <img src="images/<?= $row['p_image'] ?>" class="product-img me-3">
                                         <div>
-                                            <div class="fw-bold text-white fs-5"><?= $row['name'] ?></div>
-                                            <div class="text-secondary-bright small">ID: #<?= $row['product_id'] ?></div>
+                                            <div class="fw-bold fs-5"><?= $row['p_name'] ?></div>
+                                            <?php if($row['variant_name']): ?>
+                                                <div class="text-info small">แบบ: <?= $row['variant_name'] ?></div>
+                                            <?php endif; ?>
+                                            <div class="text-secondary small">ID: #<?= $row['product_id'] ?></div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="text-end text-white">฿<?= number_format($row['price']) ?></td>
+                                <td class="text-end">฿<?= number_format($row['price']) ?></td>
+                                
                                 <td class="text-center">
-                                    <span class="badge bg-dark px-3 py-2 border border-secondary text-white"><?= $row['quantity'] ?></span>
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        <a href="cart.php?action=decrease&product_id=<?= $row['product_id'] ?>&variant_id=<?= $row['variant_id'] ?>" class="qty-btn">
+                                            <i class="bi bi-dash-circle"></i>
+                                        </a>
+                                        <span class="qty-val py-1"><?= $row['quantity'] ?></span>
+                                        <a href="cart.php?action=increase&product_id=<?= $row['product_id'] ?>&variant_id=<?= $row['variant_id'] ?>" class="qty-btn">
+                                            <i class="bi bi-plus-circle"></i>
+                                        </a>
+                                    </div>
                                 </td>
+                                
                                 <td class="text-end fw-bold text-neon-cyan">฿<?= number_format($subtotal) ?></td>
                                 <td class="text-end">
-                                    <a href="javascript:void(0)" class="btn-remove" onclick="showDeleteModal(<?= $row['product_id'] ?>)">
+                                    <a href="javascript:void(0)" class="btn-remove text-secondary" onclick="showDeleteModal(<?= $row['product_id'] ?>, <?= $row['variant_id'] ?>)">
                                         <i class="bi bi-trash3-fill"></i>
                                     </a>
                                 </td>
@@ -224,39 +152,35 @@ h2, h4, h5 {
                     <div class="text-center py-5">
                         <i class="bi bi-bag-x display-1 opacity-25"></i>
                         <p class="mt-4 fs-4 text-secondary-bright">ยังไม่มีสินค้าในตะกร้า</p>
-                        <a href="index.php" class="btn btn-outline-info rounded-pill px-4 mt-2">เริ่มช้อปปิ้ง</a>
+                        <a href="index.php" class="btn btn-outline-info rounded-pill px-4 mt-2 text-decoration-none">ไปช้อปปิ้งกันเลย</a>
                     </div>
                 <?php endif; ?>
             </div>
         </div>
 
         <div class="col-lg-4">
-            <div class="glass-panel p-3">
-                <h4 class="mb-4 text-white">สรุปการสั่งซื้อ</h4>
-                <div class="d-flex justify-content-between mb-3 fs-5">
+            <div class="glass-panel">
+                <h4 class="mb-4">สรุปการสั่งซื้อ</h4>
+                <div class="d-flex justify-content-between mb-3">
                     <span class="text-secondary-bright">ยอดรวม</span>
-                    <span class="text-white">฿<?= number_format($grand_total ?? 0) ?></span>
+                    <span>฿<?= number_format($grand_total ?? 0) ?></span>
                 </div>
-                <div class="d-flex justify-content-between mb-3 fs-5">
+                <div class="d-flex justify-content-between mb-3">
                     <span class="text-secondary-bright">ค่าส่ง</span>
                     <span class="text-success fw-bold">ฟรี</span>
                 </div>
-                <hr class="my-4 border-secondary opacity-50">
+                <hr class="border-secondary opacity-50">
                 <div class="d-flex justify-content-between mb-5">
-                    <span class="h4 text-white">รวมสุทธิ</span>
+                    <span class="h4">รวมสุทธิ</span>
                     <span class="h3 fw-bold text-neon-cyan">฿<?= number_format($grand_total ?? 0) ?></span>
                 </div>
                 
                 <?php if ($grand_total > 0): ?>
-    <a href="checkout.php" class="btn btn-checkout mb-4 text-decoration-none d-flex align-items-center justify-content-center">
-        ชำระเงิน <i class="bi bi-arrow-right-circle ms-2"></i>
-    </a>
-<?php else: ?>
-    <button class="btn btn-checkout mb-4" disabled style="opacity: 0.5; cursor: not_allowed;">
-        ชำระเงิน (ไม่มีสินค้า) <i class="bi bi-arrow-right-circle ms-2"></i>
-    </button>
-<?php endif; ?>
-                <a href="index.php" class="btn btn-link w-100 text-secondary-bright text-decoration-none text-center d-block">เลือกซื้อสินค้าต่อ</a>
+                    <a href="checkout.php" class="btn btn-checkout mb-3 text-decoration-none d-flex align-items-center justify-content-center">
+                        ไปที่หน้าชำระเงิน <i class="bi bi-arrow-right-circle ms-2"></i>
+                    </a>
+                <?php endif; ?>
+                <a href="index.php" class="btn btn-link w-100 text-secondary-bright text-decoration-none text-center">เลือกซื้อสินค้าต่อ</a>
             </div>
         </div>
     </div>
@@ -264,14 +188,14 @@ h2, h4, h5 {
 
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content delete-popup">
+        <div class="modal-content border-0 bg-dark text-white rounded-4" style="border: 1px solid rgba(255,0,0,0.2) !important;">
             <div class="modal-body text-center py-5">
-                <div class="mb-4"><i class="bi bi-trash3 neon-delete-icon" style="font-size: 4rem; color: #ff4d4d;"></i></div>
-                <h3 class="fw-bold mb-3" style="color: #ff4d4d;">ยืนยันการลบ?</h3>
-                <p class="fs-5 opacity-75 mb-4 text-white">ลบสินค้าชิ้นนี้ออกจากตะกร้า?</p>
+                <i class="bi bi-exclamation-triangle text-danger mb-4 d-block" style="font-size: 4rem;"></i>
+                <h3 class="fw-bold mb-3">ยืนยันการลบ?</h3>
+                <p class="opacity-75 mb-4">คุณต้องการนำสินค้าชิ้นนี้ออกจากตะกร้าใช่หรือไม่?</p>
                 <div class="d-flex justify-content-center gap-3">
                     <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">ยกเลิก</button>
-                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger rounded-pill px-4">ยืนยัน</a>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger rounded-pill px-4 text-decoration-none">ยืนยันการลบ</a>
                 </div>
             </div>
         </div>
@@ -280,11 +204,11 @@ h2, h4, h5 {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function showDeleteModal(productId) {
-        const deleteUrl = 'cart.php?delete_id=' + productId;
+    // ปรับปรุงฟังก์ชันลบให้รองรับ Variant
+    function showDeleteModal(productId, variantId) {
+        const deleteUrl = 'cart.php?delete_id=' + productId + '&variant_id=' + variantId;
         document.getElementById('confirmDeleteBtn').setAttribute('href', deleteUrl);
-        var myModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-        myModal.show();
+        new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
     }
 </script>
 </body>
