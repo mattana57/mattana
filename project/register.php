@@ -78,51 +78,22 @@ body {
     padding: 80px 20px; /* กันโดนตัดด้านบน */
 }
 
-.register-card {
-    width: 100%;
-    max-width: 450px;
-    padding: 45px 35px;
-    border-radius: 20px;
 
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(15px);
-
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-
-    text-align: center;
-    color: #fff;
+.card{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(12px);
+border:none;
+padding:40px;
+width:420px;
+box-shadow:0 0 40px rgba(187,134,252,.4);
+color:#fff;
 }
 
-.register-card h2 {
-    margin-bottom: 30px;
-    font-size: 28px;
-}
-
-.register-card input {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 18px;
-
-    border-radius: 10px;
-    border: none;
-    outline: none;
-}
-
-.register-card button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-
-    background: #e0c3fc;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.register-card button:hover {
-    background: #d4a5ff;
-    transform: translateY(-2px);
+.card h2,
+.card label,
+.card p,
+.card a{
+color:#fff !important;
 }
 
 .form-control{
