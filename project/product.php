@@ -85,6 +85,24 @@ min-height: 100vh;
     padding: 12px;
     border-radius: 12px;
 }
+/* เพิ่ม CSS สำหรับปุ่มสั่งซื้อทันทีที่ขาดไป */
+.btn-buy-now {
+    background: linear-gradient(135deg, #ff0080, #ff8c00);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-buy-now:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(255, 140, 0, 0.4);
+    color: white;
+}
 </style>
 
 </head>
