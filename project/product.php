@@ -3,10 +3,15 @@ session_start();
 include "connectdb.php";
 $id = intval($_GET['id']);
 $product = $conn->query("SELECT * FROM products WHERE id=$id")->fetch_assoc();
+
+// 1. ดึงรูปภาพแกลเลอรี่ประกอบ
 $product_images = $conn->query("
     SELECT * FROM product_images 
     WHERE product_id = $id
 ");
+
+// 2. ดึงข้อมูลตัวเลือกสินค้าแยกย่อย (เช่น เลือก 1 ใน 5 ตัวละคร)
+$variants = $conn->query("SELECT * FROM product_variants WHERE product_id = $id");
 
 if(!$product){
     header("Location:index.php");
@@ -31,7 +36,7 @@ if(isset($_SESSION['user_id'])){
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <style>
-/* --- ธีมหลักและสไตล์ดั้งเดิมของคุณทั้งหมด --- */
+/* --- ธีมหลัก Neon Mystery ห้ามลบ --- */
 body {
     background: radial-gradient(circle at 20% 30%, #4b2c63 0%, transparent 40%), 
                 radial-gradient(circle at 80% 70%, #6a1b9a 0%, transparent 40%), 
@@ -48,6 +53,18 @@ body {
     top: 0; 
     z-index: 1000; 
     border-bottom: 1px solid rgba(187, 134, 252, 0.2); 
+}
+
+.search-input {
+    background: #c6a9cdd5 !important;
+    border: 1px solid rgba(187, 134, 252, 0.5) !important;
+    color: #ffffff !important;
+    border-radius: 25px !important;
+    padding-left: 20px !important;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .product-card-panel { 
@@ -72,17 +89,44 @@ body {
     text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
 }
 
-.search-input {
-    background: #c6a9cdd5 !important;
-    border: 1px solid rgba(187, 134, 252, 0.5) !important;
-    color: #ffffff !important;
-    border-radius: 25px !important;
-    padding-left: 20px !important;
+/* --- ส่วนใหม่: ปุ่มเลือกแบบสินค้า --- */
+.variant-option {
+    display: inline-block;
+    padding: 8px 18px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border: 1.5px solid rgba(187, 134, 252, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+    color: white;
+}
+.variant-option:hover {
+    border-color: #bb86fc;
+    background: rgba(187, 134, 252, 0.1);
+}
+.variant-option.active {
+    border-color: #00f2fe;
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+    background: rgba(0, 242, 254, 0.15);
+    font-weight: bold;
 }
 
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
+/* --- ส่วนใหม่: ระบบเลือกจำนวน --- */
+.qty-control {
+    width: 140px;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(187, 134, 252, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
 }
+.qty-btn { background: transparent; border: none; color: white; width: 40px; height: 40px; transition: 0.3s; }
+.qty-btn:hover { background: rgba(187, 134, 252, 0.2); }
+#product_qty { background: transparent !important; border: none !important; color: white !important; text-align: center; width: 60px; font-weight: bold; }
 
 .btn-neon-purple {
     background: rgba(187, 134, 252, 0.1);
@@ -135,20 +179,7 @@ body {
 }
 .modern-btn:hover { background: #bb86fc; color:#120018; }
 
-/* --- สไตล์ส่วนใหม่ (จำนวนสินค้า และ สินค้าแนะนำ) --- */
-.qty-control {
-    width: 140px;
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(187, 134, 252, 0.3);
-    border-radius: 10px;
-    overflow: hidden;
-}
-.qty-btn { background: transparent; border: none; color: white; width: 40px; height: 40px; transition: 0.3s; }
-.qty-btn:hover { background: rgba(187, 134, 252, 0.2); }
-#product_qty { background: transparent !important; border: none !important; color: white !important; text-align: center; width: 60px; font-weight: bold; }
-
+/* --- ส่วนใหม่: สินค้าแนะนำ --- */
 .suggested-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
@@ -164,19 +195,20 @@ body {
 }
 
 .modal-content.custom-popup {
-    background: rgba(26, 0, 40, 0.85);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(187, 134, 252, 0.3);
+    background: rgba(26, 0, 40, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(187, 134, 252, 0.4);
     border-radius: 25px;
     color: #fff;
+    box-shadow: 0 0 40px rgba(187, 134, 252, 0.2);
 }
 .neon-icon {
-    font-size: 4rem; color: #bb86fc; text-shadow: 0 0 10px #bb86fc, 0 0 20px #bb86fc;
+    font-size: 4rem; color: #bb86fc; text-shadow: 0 0 20px #bb86fc;
     animation: neon-glow 1.5s ease-in-out infinite alternate;
 }
 @keyframes neon-glow {
     from { opacity: 0.8; transform: scale(1); }
-    to { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #f107a3; color: #f107a3; }
+    to { opacity: 1; transform: scale(1.1); text-shadow: 0 0 20px #f107a3, 0 0 30px #f107a3; color: #f107a3; }
 }
 </style>
 </head>
@@ -187,7 +219,7 @@ body {
     <a class="navbar-brand fw-bold text-white" href="index.php">🎵 Goods Secret Store</a>
     <div class="ms-auto d-flex align-items-center gap-3">
         <form method="GET" action="index.php" class="d-flex">
-            <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาสินค้า...">
+            <input class="form-control me-2 search-input" type="search" name="search" placeholder="ค้นหาความลับ...">
             <button class="modern-btn"><i class="bi bi-search"></i></button>
         </form>
 
@@ -201,7 +233,6 @@ body {
             <a href="logout.php" class="modern-btn">ออกจากระบบ</a>
         <?php } else { ?>
             <a href="login.php" class="modern-btn">เข้าสู่ระบบ</a>
-            <a href="register.php" class="modern-btn">สมัครสมาชิก</a>
         <?php } ?>
     </div>
 </div>
@@ -214,10 +245,8 @@ body {
                 <img id="mainImage" src="images/<?= $product['image']; ?>" class="img-fluid mb-4 rounded-4 shadow-lg border border-secondary" style="max-height: 480px; object-fit: contain; background: rgba(0,0,0,0.2);">
                 <div class="d-flex gap-2 justify-content-center flex-wrap">
                     <?php 
-                    // รีเซ็ต pointer ของรูปภาพแกลเลอรี่เพื่อให้วนลูปแสดงผลได้
                     $product_images->data_seek(0);
-                    while($img = $product_images->fetch_assoc()){ 
-                    ?>
+                    while($img = $product_images->fetch_assoc()){ ?>
                         <img src="images/<?= $img['image']; ?>" class="img-thumbnail border-secondary bg-dark" style="width: 80px; cursor: pointer;" onclick="document.getElementById('mainImage').src=this.src">
                     <?php } ?>
                 </div>
@@ -229,19 +258,38 @@ body {
                 <h2 class="product-title mb-3"><?=$product['name']?></h2>
                 <div class="product-price mb-4">฿<?=number_format($product['price'])?></div>
 
-                <?php if(isset($product['old_price']) && $product['old_price']>0){ ?>
+                <?php if(isset($product['old_price']) && $product['old_price'] > 0){ ?>
                     <div class="mb-4">
                         <span class="badge bg-danger px-3 py-2">ลดราคาพิเศษ</span>
                         <small class="text-light text-decoration-line-through ms-2 opacity-50">฿<?=number_format($product['old_price'])?></small>
                     </div>
                 <?php } ?>
 
-                <p class="mt-2" style="line-height: 1.8; font-size: 1.1rem; color: rgba(255, 255, 255, 0.9);">
+                <p class="mt-2" style="line-height: 1.8; opacity: 0.9;">
                     <?=$product['description']?>
                 </p>
 
-                <div class="mt-4">
-                    <label class="form-label small opacity-75">จำนวนสินค้า</label>
+                <?php if ($variants && $variants->num_rows > 0): ?>
+                <div class="mt-4 mb-4">
+                    <label class="form-label small opacity-75 d-block mb-3">เลือกแบบที่คุณชอบ:</label>
+                    <div class="d-flex flex-wrap" id="variant-container">
+                        <?php while($v = $variants->fetch_assoc()): ?>
+                            <div class="variant-option" 
+                                 data-variant-id="<?= $v['id'] ?>" 
+                                 data-variant-name="<?= $v['variant_name'] ?>"
+                                 data-image="images/<?= $v['variant_image'] ?>"
+                                 onclick="selectVariant(this)">
+                                <?= $v['variant_name'] ?>
+                            </div>
+                        <?php endwhile; ?>
+                    </div>
+                    <input type="hidden" id="selected_variant_id" value="">
+                    <input type="hidden" id="selected_variant_name" value="">
+                </div>
+                <?php endif; ?>
+
+                <div class="mt-4 mb-4">
+                    <label class="form-label small opacity-75">ระบุจำนวน:</label>
                     <div class="qty-control">
                         <button class="qty-btn" type="button" onclick="changeQty(-1)"><i class="bi bi-dash"></i></button>
                         <input type="number" id="product_qty" class="form-control" value="1" min="1" readonly>
@@ -253,20 +301,14 @@ body {
                     <?php if(isset($_SESSION['user_id'])){ ?>
                         <div class="row g-3">
                             <div class="col-6">
-                                <a href="javascript:void(0)" onclick="buyNow(<?=$product['id']?>)" class="btn btn-neon-pink">
-                                    <i class="bi bi-bag-check-fill me-2"></i> สั่งซื้อทันที
-                                </a>
+                                <a href="javascript:void(0)" onclick="buyNow(<?=$product['id']?>)" class="btn btn-neon-pink text-white">สั่งซื้อทันที</a>
                             </div>
                             <div class="col-6">
-                                <button onclick="addToCart(<?=$product['id']?>)" class="btn btn-neon-purple w-100">
-                                    <i class="bi bi-cart-plus me-2"></i> เพิ่มลงตะกร้า
-                                </button>
+                                <button onclick="addToCart(<?=$product['id']?>)" class="btn btn-neon-purple">เพิ่มลงตะกร้า</button>
                             </div>
                         </div>
                     <?php } else { ?>
-                        <a href="login.php" class="btn btn-neon-purple w-100 py-3 text-center text-decoration-none d-block">
-                            <i class="bi bi-cart-plus me-2"></i> เข้าสู่ระบบเพื่อสั่งซื้อสินค้า
-                        </a>
+                        <a href="login.php" class="btn btn-neon-purple w-100 py-3 text-decoration-none d-block text-center">เข้าสู่ระบบเพื่อสั่งซื้อ</a>
                     <?php } ?>
                 </div>
 
@@ -291,8 +333,8 @@ body {
             <div class="col-6 col-md-3">
                 <div class="card suggested-card h-100 p-2 border-0" onclick="location.href='product.php?id=<?= $rp['id'] ?>'">
                     <img src="images/<?= $rp['image'] ?>" class="card-img-top rounded-3" style="height: 180px; object-fit: cover;">
-                    <div class="card-body p-2 text-center">
-                        <h6 class="text-white text-truncate small"><?= $rp['name'] ?></h6>
+                    <div class="card-body p-2 text-center text-white">
+                        <h6 class="text-truncate"><?= $rp['name'] ?></h6>
                         <p class="text-info fw-bold mb-0">฿<?= number_format($rp['price']) ?></p>
                     </div>
                 </div>
@@ -306,12 +348,12 @@ body {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content custom-popup text-center py-5">
             <div class="modal-body">
-                <div class="mb-4">
-                    <i class="bi bi-magic neon-icon"></i>
-                </div>
-                <h3 class="fw-bold mb-3" style="color: #00f2fe;">เพิ่มสินค้าสำเร็จ!</h3>
-                <p class="fs-5 opacity-75 mb-4">สินค้าจำนวน <span id="modal_qty" class="fw-bold text-white">1</span> ชิ้น ถูกเพิ่มแล้ว 🔮</p>
-                <button type="button" class="btn btn-neon-close" data-bs-dismiss="modal">ตกลง</button>
+                <i class="bi bi-magic neon-icon mb-4"></i>
+                <h3 class="fw-bold mb-3" style="color: #00f2fe;">สำเร็จแล้ว!</h3>
+                <p class="fs-5 opacity-75 mb-4">
+                    <span id="modal_variant_name" class="text-info"></span> จำนวน <span id="modal_qty" class="fw-bold text-white">1</span> ชิ้น ถูกเพิ่มแล้ว 🔮
+                </p>
+                <button type="button" class="btn px-5 py-2 rounded-pill text-white" style="background: linear-gradient(45deg, #7c3aed, #db2777); border:none;" data-bs-dismiss="modal">ตกลง</button>
             </div>
         </div>
     </div>
@@ -319,37 +361,58 @@ body {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function changeQty(amt) {
-        let q = document.getElementById('product_qty');
-        let v = parseInt(q.value) + amt;
-        if (v >= 1) q.value = v;
+// จัดการเลือกแบบสินค้า
+function selectVariant(el) {
+    document.querySelectorAll('.variant-option').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('selected_variant_id').value = el.getAttribute('data-variant-id');
+    document.getElementById('selected_variant_name').value = el.getAttribute('data-variant-name');
+    
+    const newImg = el.getAttribute('data-image');
+    if(newImg && newImg !== 'images/') {
+        document.getElementById('mainImage').src = newImg;
+    }
+}
+
+// จัดการจำนวน
+function changeQty(amt) {
+    let q = document.getElementById('product_qty');
+    let v = parseInt(q.value) + amt;
+    if (v >= 1) q.value = v;
+}
+
+function addToCart(pid) {
+    let qty = document.getElementById('product_qty').value;
+    let vid = document.getElementById('selected_variant_id').value;
+    let vname = document.getElementById('selected_variant_name').value;
+
+    if(document.getElementById('variant-container') && vid === "") {
+        alert("กรุณาเลือกแบบที่ต้องการก่อนครับ!");
+        return;
     }
 
-    function buyNow(pid) {
-        let qty = document.getElementById('product_qty').value;
-        window.location.href = 'add_to_cart.php?id=' + pid + '&qty=' + qty + '&action=buy';
-    }
+    fetch('add_to_cart.php?id=' + pid + '&qty=' + qty + '&variant_id=' + vid + '&ajax=1')
+    .then(r => r.json())
+    .then(data => {
+        if(data.status === 'success') {
+            const badge = document.getElementById('cart-badge');
+            if(badge) { badge.textContent = data.total; badge.style.display = 'block'; }
+            document.getElementById('modal_qty').textContent = qty;
+            document.getElementById('modal_variant_name').textContent = vname ? "(" + vname + ")" : "";
+            new bootstrap.Modal(document.getElementById('cartModal')).show();
+        } else { window.location.href = 'login.php'; }
+    });
+}
 
-    function addToCart(productId) {
-        let qty = document.getElementById('product_qty').value;
-        fetch('add_to_cart.php?id=' + productId + '&qty=' + qty + '&ajax=1')
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === 'success') {
-                const badge = document.getElementById('cart-badge');
-                if(badge) { 
-                    badge.textContent = data.total; 
-                    badge.style.display = 'block'; 
-                }
-                document.getElementById('modal_qty').textContent = qty;
-                var myModal = new bootstrap.Modal(document.getElementById('cartModal'));
-                myModal.show();
-            } else { 
-                window.location.href = 'login.php'; 
-            }
-        })
-        .catch(error => console.error('Error:', error));
+function buyNow(pid) {
+    let qty = document.getElementById('product_qty').value;
+    let vid = document.getElementById('selected_variant_id').value;
+    if(document.getElementById('variant-container') && vid === "") {
+        alert("กรุณาเลือกแบบที่ต้องการก่อนครับ!");
+        return;
     }
+    window.location.href = 'add_to_cart.php?id=' + pid + '&qty=' + qty + '&variant_id=' + vid + '&action=buy';
+}
 </script>
 </body>
 </html>
