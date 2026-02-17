@@ -43,36 +43,50 @@ $result = $conn->query($sql);
             font-family: 'Segoe UI', sans-serif;
         }
 
-        /* เอาพื้นหลังขาวและกรอบออกทั้งหมด */
-        .glass-panel {
-            background: transparent !important; /* โปร่งใส 100% */
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0px;
-        }
+        /* --- ปรับปรุงกรอบสินค้าให้ดูลอยและมีมิตินีออน --- */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.03) !important; /* พื้นหลังโปร่งแสงเล็กน้อย */
+    backdrop-filter: blur(10px);
+    
+    /* สร้างเส้นกรอบลอยๆ แบบไล่เฉดสีจางๆ */
+    border: 1.5px solid rgba(187, 134, 252, 0.3) !important; 
+    
+    border-radius: 20px;
+    
+    /* เพิ่มลูกเล่นเงาเรืองแสง (Outer Glow) ให้กรอบดูลอยออกมา */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
+                0 0 15px rgba(187, 134, 252, 0.1) !important; 
+                
+    padding: 25px;
+    transition: all 0.3s ease; /* เพิ่ม Transition เพื่อความนุ่มนวล */
+}
 
-        /* บังคับให้ตารางโปร่งใส ไม่ให้ Bootstrap ใส่สีพื้นหลัง */
-        .table { 
-            --bs-table-bg: transparent !important;
-            --bs-table-color: #ffffff !important;
-            background-color: transparent !important;
-            border-color: rgba(255, 255, 255, 0.1) !important;
-            margin-bottom: 0; 
-        }
+/* เมื่อเอาเมาส์ไปวาง ให้กรอบลอยเด่นขึ้นอีก */
+.glass-panel:hover {
+    border-color: rgba(187, 134, 252, 0.6) !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 
+                0 0 20px rgba(187, 134, 252, 0.2) !important;
+    transform: translateY(-5px);
+}
 
-        .table thead th {
-            background-color: transparent !important;
-            color: #bb86fc !important;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
-            text-transform: uppercase;
-        }
+/* ปรับปรุงตารางข้างในให้โปร่งใส 100% เพื่อไม่ให้บังเส้นกรอบลอย */
+.table {
+    --bs-table-bg: transparent !important;
+    background-color: transparent !important;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* เพิ่มระยะห่างระหว่างแถวให้ดูไม่ตัน */
+}
 
-        .table td { 
-            background-color: transparent !important;
-            vertical-align: middle; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important; 
-            padding: 1.5rem 0.75rem; 
-        }
+.table td {
+    background-color: transparent !important;
+    border: none !important; /* เอาเส้นขีดคั่นตารางออกเพื่อความคลีน */
+}
+
+.table thead th {
+    background-color: transparent !important;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.1) !important;
+    padding-bottom: 15px;
+}
 
         .product-img { 
             width: 80px; height: 80px; 
