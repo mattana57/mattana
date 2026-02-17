@@ -81,15 +81,6 @@ if(session_status() === PHP_SESSION_NONE){
             <!--<button class="modern-btn">
                 <i class="bi bi-search">ค้นหา</i>
             </button> -->
-            <h4 class="section-title">ผลลัพธ์สินค้า</h4>
-            <div class="row">
-            <?php while($p = $products->fetch_assoc()){ ?>
-            <div class="col-md-3 mb-4">
-            <div class="card product-card p-3 text-center">
-            <img src="images/<?= $p['image']; ?>" class="img-fluid mb-2">
-            <h6><?= $p['name']; ?></h6>
-            <p><?= number_format($p['price']); ?> บาท</p>
-            <a href="product.php?id=<?= $p['id'] ?>" class="btn btn-light btn-sm mt-2">รายละเอียด</a>
             </form>
 
             <?php if(isset($_SESSION['user_id'])){ ?>
