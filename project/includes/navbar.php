@@ -73,9 +73,14 @@ if(session_status() === PHP_SESSION_NONE){
         </div>
 
         <!-- ค้นหา -->
-        <form class="search-box d-flex" action="search.php" method="GET">
-            <input type="text" name="keyword" placeholder="ค้นหาสินค้า..." required>
-            <button type="submit">🔍</button>
+        <form method="GET" class="d-flex">
+        <input class="form-control me-2" 
+        type="search"
+        name="search"
+        placeholder="ค้นหาสินค้า...">
+        <button class="modern-btn">
+        <i class="bi bi-search"></i>
+        </button>
         </form>
 
         <!-- เมนูด้านขวา -->
