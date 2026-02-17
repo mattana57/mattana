@@ -1,6 +1,6 @@
 <?php include "connectdb.php";
 
-if(!isset($_SESSION['user'])) header("Location:login.php");
+if(!isset($_SESSION['user'])) header("Location:cart.php");
 
 $user=$_SESSION['user'];
 

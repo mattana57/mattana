@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'connectdb.php'; // ถ้ามีไฟล์เชื่อมต่อฐานข้อมูล
+include 'connectdb.php'; 
 
 if(!isset($_GET['id'])){
     header("Location: cart.php");
