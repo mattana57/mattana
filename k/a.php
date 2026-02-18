@@ -10,9 +10,9 @@
     <!--<button type="button" class="btn btn-success">มัทนา</button>
     <button type="button" class="btn btn-warning">Warning</button> 
     <img src="images/1.jpg" width ="240"> -->
-
-    <button type="button" class="btn btn-success" onclick="showImage('images/1.jpg')">คลิก</button>
-    <button type="button" class="btn btn-warning" onclick="showImage('images/2.jpg')">คลิก</button>
-</div>
+    <div class="container mt-4">
+        <button type="button" class="btn btn-success" onclick="showImage('images/1.jpg')">คลิก</button>
+        <button type="button" class="btn btn-warning" onclick="showImage('images/2.jpg')">คลิก</button>
+    </div>
 </body>
 </html>
