@@ -8,8 +8,8 @@
 <body class="container mt-4">
     <h1>งาน k 66010914057 มัทนา รัตนแสง (น้ำฝน)</h1>
     
-    <button class="btn btn-success" onclick="img src='images/1.jpg'; ">คลิก</button>
-    <button class="btn btn-warning" onclick="img src='images/2.jpg'; ">คลิก</button>
+    <button class="btn btn-success" onclick="img src='images/1.jpg'; pic.style.display='block'">คลิก</button>
+    <button class="btn btn-warning" onclick="img src='images/2.jpg'; pic.style.display='block'">คลิก</button>
     
     <div class="mt-3">
         <img id="pic" src="" width="240" class="img-thumbnail" style="display:none">
