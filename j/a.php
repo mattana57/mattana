@@ -6,6 +6,6 @@
 </head>
 
 <body>
-    <h1>งาน j 66010914057 มัทนา รัตนแสง (น้ำฝน)</h1><img src="images/1.jpg">
+    <h1>งาน j 66010914057 มัทนา รัตนแสง (น้ำฝน)</h1><img src="images/1.jpg" width ="140">
 </body>
 </html>
