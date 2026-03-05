@@ -15,5 +15,8 @@
     <button type="button" class="btn-teacher" onclick="window.location.href='images/2.jpg'">
         อาจารย์
     </button>
+    <div class="mt-3">
+        <img id="pic" src="" width="240" class="img-thumbnail" style="display:none">
+    </div>
 </body>
 </html>
