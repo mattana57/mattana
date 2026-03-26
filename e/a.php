@@ -12,7 +12,7 @@
         align-items: center;
     }
     .color-box {
-        width: 40px;
+        width: 40px;  
         height: 40px;
         border: 1px solid #ccc;
         margin-right: 10px;
